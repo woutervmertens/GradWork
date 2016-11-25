@@ -12,4 +12,9 @@ public class Vehicle: MonoBehaviour
     public float DesiredSpeedPerc;
     public float DesiredBubbleSize;
     public float TimeOnRoad;
+
+    public Node GetTargetNode()
+    {
+        return null;
+    }
 }
