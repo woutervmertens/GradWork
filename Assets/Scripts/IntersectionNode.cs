@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 public class IntersectionNode : MonoBehaviour {
 
-    public Vector3 Position;
     public int NrVehiclesCont;
-    public NodeType Type;
     public float Fitness;
     public float SpeedLimit;
     public List<Connection> Connections = new List<Connection>();

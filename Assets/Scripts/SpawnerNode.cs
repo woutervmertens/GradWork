@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class SpawnerNode : MonoBehaviour {
 
-    public Vector3 Position;
     public List<Connection> Connections = new List<Connection>();
     //List of spawnables
 
