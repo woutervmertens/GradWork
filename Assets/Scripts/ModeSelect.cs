@@ -27,6 +27,9 @@ public class ModeSelect : MonoBehaviour
     public Canvas EditBoxesParent;
 
     public Button BtnToggleMode;
+    public Button BtnSpawner;
+    public Button BtnIntersection;
+    public Button BtnConnection;
 
     private MODE mode = MODE.CREATE;
     public MODE Mode { get { return mode; } }
@@ -134,13 +137,41 @@ public class ModeSelect : MonoBehaviour
         {
             BtnToggleMode.GetComponent<Text>().text = "Create";
             mode = MODE.EDIT;
+            BtnIntersection.enabled = false;
+            BtnConnection.enabled = false;
+            BtnSpawner.enabled = false;
         }
         else
         {
             BtnToggleMode.GetComponent<Text>().text = "Edit";
             mode = MODE.CREATE;
+            BtnIntersection.enabled = true;
+            BtnConnection.enabled = true;
+            BtnSpawner.enabled = false;
         }
     }
 
-    
+    public void BtnSpawnerClick()
+    {
+        BtnIntersection.enabled = true;
+        BtnConnection.enabled = true;
+        BtnSpawner.enabled = false;
+        node = NODE.SPAWNER;
+    }
+
+    public void BtnIntersectionClick()
+    {
+        BtnIntersection.enabled = false;
+        BtnConnection.enabled = true;
+        BtnSpawner.enabled = true;
+        node = NODE.INTERSECTION;
+    }
+
+    public void BtnConnectionClick()
+    {
+        BtnIntersection.enabled = true;
+        BtnConnection.enabled = false;
+        BtnSpawner.enabled = true;
+        node = NODE.CONNECTION;
+    }
 }
