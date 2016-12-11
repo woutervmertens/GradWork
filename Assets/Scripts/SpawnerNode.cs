@@ -26,7 +26,7 @@ public class SpawnerNode : MonoBehaviour {
                 Destroy(col.gameObject);
             }
         }
-        else if (col.gameObject.transform.parent.GetType() == typeof(Connection))
+        else if (col.gameObject.GetType() == typeof(Connection))
         {
             bool alreadyExists = false;
             foreach (var con in Connections)

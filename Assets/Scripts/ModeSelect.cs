@@ -40,7 +40,7 @@ public class ModeSelect : MonoBehaviour
 
     // Use this for initialization
     void Start () {
-        BtnToggleMode.GetComponent<Text>().text = "Edit";
+        BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
     }
 	
 	// Update is called once per frame
@@ -51,7 +51,8 @@ public class ModeSelect : MonoBehaviour
 	        {
 	            var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 	            RaycastHit hitInfo;
-	            if (Physics.Raycast(screenRay, out hitInfo))
+                int layerCast = 1 << 8;
+                if (Physics.Raycast(screenRay, out hitInfo, layerCast))
 	            {
 	                switch (node)
 	                {
@@ -92,7 +93,9 @@ public class ModeSelect : MonoBehaviour
 	        {
                 var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitInfo;
-	            if (Physics.Raycast(screenRay, out hitInfo))
+	            int layerCast = 1 << 8;
+	            layerCast = ~layerCast;
+	            if (Physics.Raycast(screenRay, out hitInfo, layerCast))
 	            {
 	                if (hitInfo.collider.gameObject.GetComponent<IntersectionNode>() != null)
 	                {
@@ -135,7 +138,7 @@ public class ModeSelect : MonoBehaviour
     {
         if (mode == MODE.CREATE)
         {
-            BtnToggleMode.GetComponent<Text>().text = "Create";
+            BtnToggleMode.GetComponentInChildren<Text>().text = "Create";
             mode = MODE.EDIT;
             BtnIntersection.enabled = false;
             BtnConnection.enabled = false;
@@ -143,7 +146,7 @@ public class ModeSelect : MonoBehaviour
         }
         else
         {
-            BtnToggleMode.GetComponent<Text>().text = "Edit";
+            BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
             mode = MODE.CREATE;
             BtnIntersection.enabled = true;
             BtnConnection.enabled = true;
