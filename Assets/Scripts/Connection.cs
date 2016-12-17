@@ -37,4 +37,9 @@ public class Connection : MonoBehaviour
     {
         return EndNode;
     }
+
+    public int GetCount()
+    {
+        return nodes.Count;
+    }
 }

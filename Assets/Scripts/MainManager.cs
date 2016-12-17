@@ -16,6 +16,8 @@ public class MainManager : MonoBehaviour
     private ArrayList connectionList = new ArrayList();
     public ArrayList ConnectionList { get { return connectionList;} }
 
+    private int connectionCount = 0;
+
     void Awake()
     {
         if (Main == null)
@@ -37,5 +39,11 @@ public class MainManager : MonoBehaviour
     public void AddConnection(Connection con)
     {
         connectionList.Add(con);
+        connectionCount += con.GetCount();
+    }
+
+    public int GetConnectionCount()
+    {
+        return connectionCount;
     }
 }

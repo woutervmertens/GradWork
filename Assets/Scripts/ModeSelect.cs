@@ -21,6 +21,10 @@ public class ModeSelect : MonoBehaviour
     public GameObject SpawnerPrefab;
     public GameObject IntersectionPrefab;
     public GameObject ConnectionNodePrefab;
+    public GameObject RoadDrawPrefab;
+    private GameObject roadDrawPrefab;
+
+    private LineRenderer lineRenderer;
 
     private GameObject selectedObject = null;
 
@@ -80,11 +84,13 @@ public class ModeSelect : MonoBehaviour
 	        }
 	        if (Input.GetMouseButtonUp(1) && node == NODE.CONNECTION)
 	        {
-	            //Add local connectionlist to main connectionlist and clear local
-	            Connection con = new Connection();
-	            con.Add(Connection);
-	            MainManager.Main.AddConnection(con);
-	            Connection.Clear();
+                AddRoad();
+	            GameObject[] delete = GameObject.FindGameObjectsWithTag("RoadDraw");
+	            int deleteCount = delete.Length;
+	            for (int i = deleteCount - 1; i >= 0; i--)
+	            {
+	                Destroy(delete[i]);
+	            }
 	        }
 	    }
         else if (mode == MODE.EDIT)
@@ -119,6 +125,35 @@ public class ModeSelect : MonoBehaviour
 
 	}
 
+    private void newLine()
+    {
+        roadDrawPrefab = GameObject.Instantiate(RoadDrawPrefab) as GameObject;
+        lineRenderer = roadDrawPrefab.GetComponent<LineRenderer>();
+        lineRenderer.numPositions = 0;
+    }
+
+    private void drawRoad()
+    {
+        
+    }
+
+    private void AddRoad()
+    {
+        ////Show connection in editor
+        GetComponent<LineRenderer>().numPositions = MainManager.Main.GetConnectionCount() + Connection.Count;
+        for (int j = 0; j < Connection.Count; j++)
+        {
+            GetComponent<LineRenderer>().SetPosition(j,(Connection[j] as GameObject).transform.position);
+            //Gizmos.color = Color.white;
+            //Gizmos.DrawLine((Connection[j - 1] as GameObject).transform.position, (Connection[j] as GameObject).transform.position);
+        }
+        //Add local connectionlist to main connectionlist and clear local
+        Connection con = new Connection();
+        con.Add(Connection);
+        MainManager.Main.AddConnection(con);
+        Connection.Clear();
+    }
+
     private void CloseAllUIBoxes()
     {
         foreach (Transform uibox in EditBoxesParent.transform)
@@ -138,6 +173,7 @@ public class ModeSelect : MonoBehaviour
     {
         if (mode == MODE.CREATE)
         {
+            if(node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
             BtnToggleMode.GetComponentInChildren<Text>().text = "Create";
             mode = MODE.EDIT;
             BtnIntersection.enabled = false;
@@ -156,6 +192,7 @@ public class ModeSelect : MonoBehaviour
 
     public void BtnSpawnerClick()
     {
+        if (node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
         BtnIntersection.enabled = true;
         BtnConnection.enabled = true;
         BtnSpawner.enabled = false;
@@ -164,6 +201,7 @@ public class ModeSelect : MonoBehaviour
 
     public void BtnIntersectionClick()
     {
+        if (node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
         BtnIntersection.enabled = false;
         BtnConnection.enabled = true;
         BtnSpawner.enabled = true;
