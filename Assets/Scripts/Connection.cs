@@ -7,7 +7,7 @@ public class Connection : MonoBehaviour
     public Node StartNode;
     public Node EndNode;
 
-    private ArrayList nodes = new ArrayList();
+    public ArrayList nodes = new ArrayList();
 	// Use this for initialization
 	void Start () {
 	

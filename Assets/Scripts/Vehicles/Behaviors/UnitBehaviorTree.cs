@@ -32,10 +32,42 @@ public class UnitBehaviorTree : BehaviorTree
     //Flocking Behavior
     private Vector3? _clickTarget;
 
+    //PathData
+    public Connection PathToFollow;
+    private int _currentWayPointId = 0;
+    public float Speed = 2.0f;
+    public float ReachDistance = 1.0f;
+    public float RotationSpeed = 5.0f;
+    private Vector3 current_pos;
+
 
     //------------------------------------------------------------------
     // AI BEHAVIOURS
     //------------------------------------------------------------------
+
+    public BehaviorState FollowPath()
+    {
+        if (_currentWayPointId > PathToFollow.nodes.Count - 1)
+        {
+            return BehaviorState.Success;
+        }
+        float distance = Vector3.Distance(PathToFollow.nodes[_currentWayPointId].position,
+                transform.position);
+
+        transform.position = Vector3.MoveTowards(transform.position, PathToFollow.nodes[_currentWayPointId].position,
+            Time.deltaTime * Speed);
+
+
+        Vector3 target = PathToFollow.nodes[_currentWayPointId].position;
+        var rotation =
+               Quaternion.LookRotation(target -
+                                    transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * RotationSpeed);
+
+        if (distance <= ReachDistance) ++_currentWayPointId;
+
+        return BehaviorState.Running;
+    }
     //public BehaviorState GoToClick()
     //{
     //    if ((!SelectionOnly || _selectableObj.IsSelected) && Input.GetMouseButtonUp(1))
