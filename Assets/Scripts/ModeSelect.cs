@@ -20,7 +20,7 @@ public class ModeSelect : MonoBehaviour
 {
     public GameObject SpawnerPrefab;
     public GameObject IntersectionPrefab;
-    public GameObject ConnectionNodePrefab;
+    public GameObject ConnectionParentPrefab;
     public GameObject RoadDrawPrefab;
     private GameObject roadDrawPrefab;
 
@@ -41,6 +41,9 @@ public class ModeSelect : MonoBehaviour
     private NODE node = NODE.SPAWNER;
 
     private ArrayList Connection = new ArrayList();
+
+    private bool _isDrawingRoad = false;
+    private GameObject _lastRoadParent = null;
 
     // Use this for initialization
     void Start () {
@@ -73,9 +76,18 @@ public class ModeSelect : MonoBehaviour
 	                        break;
 	                    case NODE.CONNECTION:
 	                        //Create new connection node and add to local Connectionlist
-	                        GameObject c =
-	                            Instantiate(ConnectionNodePrefab, hitInfo.point, Quaternion.identity) as GameObject;
-	                        Connection.Add(c);
+	                        if (!_isDrawingRoad)
+	                        {
+	                            GameObject c =
+	                                Instantiate(ConnectionParentPrefab, hitInfo.point, Quaternion.identity) as GameObject;
+	                            c.transform.parent = this.transform;
+	                            _lastRoadParent = c;
+	                            c.GetComponent<Connection>().Add(hitInfo.point);
+	                        }
+	                        else
+	                        {
+	                            _lastRoadParent.GetComponent<Connection>().Add(hitInfo.point);
+	                        }
 	                        break;
 	                    default:
 	                        throw new ArgumentOutOfRangeException();
@@ -132,10 +144,6 @@ public class ModeSelect : MonoBehaviour
         lineRenderer.numPositions = 0;
     }
 
-    private void drawRoad()
-    {
-        
-    }
 
     private void AddRoad()
     {
@@ -149,7 +157,7 @@ public class ModeSelect : MonoBehaviour
         }
         //Add local connectionlist to main connectionlist and clear local
         Connection con = new Connection();
-        con.Add(Connection);
+        //con.Add(Connection);
         MainManager.Main.AddConnection(con);
         Connection.Clear();
     }

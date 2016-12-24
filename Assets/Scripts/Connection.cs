@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Connection : MonoBehaviour
 {
+    public GameObject ConnectionNodePrefab;
 
-    public Node StartNode;
-    public Node EndNode;
-
-    public ArrayList nodes = new ArrayList();
+    public List<Transform> nodes = new List<Transform>();
 	// Use this for initialization
 	void Start () {
 	
@@ -18,24 +17,26 @@ public class Connection : MonoBehaviour
 	
 	}
 
-    public void Add(ArrayList l)
+    public void Add(List<Transform> l)
     {
         nodes = l;//work on this later
     }
 
-    public void Add(Node n)
+    public void Add(Vector3 v)
     {
-        nodes.Add(n);
+        GameObject n = Instantiate(ConnectionNodePrefab, v, Quaternion.identity) as GameObject;
+        n.transform.parent = this.transform;
+        nodes.Add(n.transform);
     }
 
     public Node GetStartNode()
     {
-        return StartNode;
+        return null;
     }
 
     public Node GetEndNode()
     {
-        return EndNode;
+        return null;
     }
 
     public int GetCount()
