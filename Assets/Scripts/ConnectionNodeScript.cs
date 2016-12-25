@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class ConnectionNodeScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	//I'm a connection node
+    public int index = 0;
 }

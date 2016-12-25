@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum MODE
@@ -21,10 +22,9 @@ public class ModeSelect : MonoBehaviour
     public GameObject SpawnerPrefab;
     public GameObject IntersectionPrefab;
     public GameObject ConnectionParentPrefab;
-    public GameObject RoadDrawPrefab;
-    private GameObject roadDrawPrefab;
 
-    private LineRenderer lineRenderer;
+    public Camera FlyCam;
+    public Camera DrawCam;
 
     private GameObject selectedObject = null;
 
@@ -48,6 +48,8 @@ public class ModeSelect : MonoBehaviour
     // Use this for initialization
     void Start () {
         BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
+        FlyCam.enabled = false;
+        DrawCam.enabled = true;
     }
 	
 	// Update is called once per frame
@@ -64,11 +66,13 @@ public class ModeSelect : MonoBehaviour
 	                switch (node)
 	                {
 	                    case NODE.SPAWNER:
+                            if(_isDrawingRoad) AddRoad();
 	                        //Create new spawner and add to main nodes list
 	                        GameObject s = Instantiate(SpawnerPrefab, hitInfo.point, Quaternion.identity) as GameObject;
 	                        MainManager.Main.AddNode(s);
 	                        break;
 	                    case NODE.INTERSECTION:
+                            if(_isDrawingRoad) AddRoad();
 	                        //Create new intersection and add to main nodes list
 	                        GameObject i =
 	                            Instantiate(IntersectionPrefab, hitInfo.point, Quaternion.identity) as GameObject;
@@ -83,6 +87,7 @@ public class ModeSelect : MonoBehaviour
 	                            c.transform.parent = this.transform;
 	                            _lastRoadParent = c;
 	                            c.GetComponent<Connection>().Add(hitInfo.point);
+	                            _isDrawingRoad = true;
 	                        }
 	                        else
 	                        {
@@ -125,7 +130,7 @@ public class ModeSelect : MonoBehaviour
 	                    CloseAllUIBoxes();
                         OpenUIBoxPos(1);
 	                }
-	                else if(hitInfo.collider.gameObject.GetComponent<Connection>() != null)
+	                else if(hitInfo.collider.gameObject.GetComponent<ConnectionNodeScript>() != null)
 	                    //dunno about connections yet
 	                {
 	                    CloseAllUIBoxes();
@@ -137,29 +142,12 @@ public class ModeSelect : MonoBehaviour
 
 	}
 
-    private void newLine()
-    {
-        roadDrawPrefab = GameObject.Instantiate(RoadDrawPrefab) as GameObject;
-        lineRenderer = roadDrawPrefab.GetComponent<LineRenderer>();
-        lineRenderer.numPositions = 0;
-    }
-
 
     private void AddRoad()
     {
-        ////Show connection in editor
-        GetComponent<LineRenderer>().numPositions = MainManager.Main.GetConnectionCount() + Connection.Count;
-        for (int j = 0; j < Connection.Count; j++)
-        {
-            GetComponent<LineRenderer>().SetPosition(j,(Connection[j] as GameObject).transform.position);
-            //Gizmos.color = Color.white;
-            //Gizmos.DrawLine((Connection[j - 1] as GameObject).transform.position, (Connection[j] as GameObject).transform.position);
-        }
-        //Add local connectionlist to main connectionlist and clear local
-        Connection con = new Connection();
-        //con.Add(Connection);
-        MainManager.Main.AddConnection(con);
-        Connection.Clear();
+        _lastRoadParent.GetComponent<Connection>().Draw();
+
+        _isDrawingRoad = false;
     }
 
     private void CloseAllUIBoxes()
@@ -187,6 +175,7 @@ public class ModeSelect : MonoBehaviour
             BtnIntersection.enabled = false;
             BtnConnection.enabled = false;
             BtnSpawner.enabled = false;
+            if(_isDrawingRoad) AddRoad();
         }
         else
         {
@@ -196,6 +185,8 @@ public class ModeSelect : MonoBehaviour
             BtnConnection.enabled = true;
             BtnSpawner.enabled = false;
         }
+        FlyCam.enabled = !FlyCam.enabled;
+        DrawCam.enabled = !DrawCam.enabled;
     }
 
     public void BtnSpawnerClick()

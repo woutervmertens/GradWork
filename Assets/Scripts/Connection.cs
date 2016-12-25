@@ -43,4 +43,13 @@ public class Connection : MonoBehaviour
     {
         return nodes.Count;
     }
+
+    public void Draw()
+    {
+        GetComponent<LineRenderer>().numPositions = transform.childCount;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            GetComponent<LineRenderer>().SetPosition(i, transform.GetChild(i).position);
+        }
+    }
 }
