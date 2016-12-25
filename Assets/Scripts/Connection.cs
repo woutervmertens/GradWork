@@ -1,21 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public class Connection : MonoBehaviour
 {
     public GameObject ConnectionNodePrefab;
 
+    public int Serial;
+
     public List<Transform> nodes = new List<Transform>();
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    void Start()
+    {
+        Serial = MainManager.Main.ConnectionList.Count + 1;
+    }
 
     public void Add(List<Transform> l)
     {
@@ -27,16 +26,6 @@ public class Connection : MonoBehaviour
         GameObject n = Instantiate(ConnectionNodePrefab, v, Quaternion.identity) as GameObject;
         n.transform.parent = this.transform;
         nodes.Add(n.transform);
-    }
-
-    public Node GetStartNode()
-    {
-        return null;
-    }
-
-    public Node GetEndNode()
-    {
-        return null;
     }
 
     public int GetCount()

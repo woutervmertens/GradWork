@@ -46,12 +46,12 @@ public class Node : MonoBehaviour
                 bool alreadyExists = false;
                 foreach (var con in Connections)
                 {
-                    if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
-                        con.GetEndNode() == col.gameObject.GetComponent<Node>())
-                    {
-                        alreadyExists = true;
-                        continue;
-                    }
+                    //if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
+                    //    con.GetEndNode() == col.gameObject.GetComponent<Node>())
+                    //{
+                    //    alreadyExists = true;
+                    //    continue;
+                    //}
                 }
                 if (alreadyExists)
                 {
@@ -70,12 +70,12 @@ public class Node : MonoBehaviour
                 bool alreadyExists = false;
                 foreach (var con in Connections)
                 {
-                    if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
-                        con.GetEndNode() == col.gameObject.GetComponent<Node>())
-                    {
-                        alreadyExists = true;
-                        continue;
-                    }
+                    //if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
+                    //    con.GetEndNode() == col.gameObject.GetComponent<Node>())
+                    //{
+                    //    alreadyExists = true;
+                    //    continue;
+                    //}
                 }
                 if (alreadyExists)
                 {

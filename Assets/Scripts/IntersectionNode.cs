@@ -7,7 +7,7 @@ public class IntersectionNode : MonoBehaviour {
     public int NrVehiclesCont;
     public float Fitness;
     public float SpeedLimit;
-    public List<Connection> Connections = new List<Connection>();
+    public List<int> Connections = new List<int>();
     // Use this for initialization
     void Start () {
 	
@@ -31,21 +31,20 @@ public class IntersectionNode : MonoBehaviour {
         {
             VehicleEntered(col.GetComponent<Vehicle>());
         }
-        else if (col.gameObject.GetType() == typeof(Connection))
+        else if (col.transform.GetComponentInParent<Connection>() != null)
         {
             bool alreadyExists = false;
             foreach (var con in Connections)
             {
-                if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
-                    con.GetEndNode() == col.gameObject.GetComponent<Node>())
+                if (con == col.GetComponentInParent<Connection>().Serial)
                 {
                     alreadyExists = true;
                     continue;
                 }
             }
-            if (alreadyExists)
+            if (!alreadyExists)
             {
-                Connections.Add(col.gameObject.transform.parent.GetComponent<Connection>());
+                Connections.Add(col.GetComponentInParent<Connection>().Serial);
             }
         }
     }

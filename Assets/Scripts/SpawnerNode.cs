@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class SpawnerNode : MonoBehaviour {
 
-    public List<Connection> Connections = new List<Connection>();
+    public List<int> Connections = new List<int>();
     //List of spawnables
 
     // Use this for initialization
@@ -26,21 +26,20 @@ public class SpawnerNode : MonoBehaviour {
                 Destroy(col.gameObject);
             }
         }
-        else if (col.gameObject.GetType() == typeof(Connection))
+        else if (col.transform.GetComponentInParent<Connection>() != null)
         {
             bool alreadyExists = false;
             foreach (var con in Connections)
             {
-                if (con.GetStartNode() == col.gameObject.GetComponent<Node>() ||
-                    con.GetEndNode() == col.gameObject.GetComponent<Node>())
+                if (con == col.gameObject.GetComponent<Connection>().Serial)
                 {
                     alreadyExists = true;
                     continue;
                 }
             }
-            if (alreadyExists)
+            if (!alreadyExists)
             {
-                Connections.Add(col.gameObject.transform.parent.GetComponent<Connection>());
+                Connections.Add(col.gameObject.transform.parent.GetComponent<Connection>().Serial);
             }
         }
     }
