@@ -13,22 +13,6 @@ public class UnitBehaviorTree : BehaviorTree
     private UnityEngine.AI.NavMeshAgent _agent;
     //private SelectableObject _selectableObj;
 
-    //Targeting data
-    private Transform _target = null;
-
-    //Selection
-    public bool SelectionOnly = true;
-
-    //Guarding data
-    public Transform GuardPosition;
-    public float GuardRange = 5.0f;
-
-    //Attacking Data
-    public float AttackRange = 1f;
-    public float Damage = 0.1f;
-    private float _damageDealt = 0.0f;
-    private float _damageToDeal = 200.0f;
-
     //Flocking Behavior
     private Vector3? _clickTarget;
 
@@ -39,6 +23,18 @@ public class UnitBehaviorTree : BehaviorTree
     public float ReachDistance = 1.0f;
     public float RotationSpeed = 5.0f;
     private Vector3 current_pos;
+
+    //RoadData
+    private float _laneWidth;
+    private int _lane = 1;
+    private float _overallPreferredLane = 0;
+    private float _turnProbability = 0;
+    private float _detetctionRayLength;
+
+    //CarData
+    private float _width;
+    private float _length;
+    
 
 
     //------------------------------------------------------------------
@@ -67,6 +63,31 @@ public class UnitBehaviorTree : BehaviorTree
         if (distance <= ReachDistance) ++_currentWayPointId;
 
         return BehaviorState.Running;
+    }
+
+    public bool CheckHitDetection()
+    {
+        return false;
+    }
+
+    public bool CheckChangeLane()
+    {
+        return false;
+    }
+
+    public BehaviorState ChangeLane()
+    {
+        return BehaviorState.Success;
+    }
+
+    public BehaviorState Avoid()
+    {
+        return BehaviorState.Success;
+    }
+
+    public BehaviorState Intersection()
+    {
+        return BehaviorState.Success;
     }
     //public BehaviorState GoToClick()
     //{
@@ -301,6 +322,9 @@ public class UnitBehaviorTree : BehaviorTree
         _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         //_selectableObj = GetComponent<SelectableObject>();
         _clickTarget = new Vector3(-50,0,20);
+
+        //Get Attributes
+
 
         //------------------------------------------------------------------
         // BEHAVIOUR TREES
