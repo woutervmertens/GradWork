@@ -48,8 +48,8 @@ public class ModeSelect : MonoBehaviour
     // Use this for initialization
     void Start () {
         BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
-        FlyCam.enabled = false;
-        DrawCam.enabled = true;
+        FlyCam.gameObject.SetActive(false);
+        DrawCam.gameObject.SetActive(true);
     }
 	
 	// Update is called once per frame
@@ -185,8 +185,8 @@ public class ModeSelect : MonoBehaviour
             BtnConnection.enabled = true;
             BtnSpawner.enabled = false;
         }
-        FlyCam.enabled = !FlyCam.enabled;
-        DrawCam.enabled = !DrawCam.enabled;
+        FlyCam.gameObject.SetActive(!FlyCam.gameObject.active);
+        DrawCam.gameObject.SetActive(!DrawCam.gameObject.active);
     }
 
     public void BtnSpawnerClick()
