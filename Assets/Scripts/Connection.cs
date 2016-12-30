@@ -13,7 +13,7 @@ public class Connection : MonoBehaviour
 
     void Start()
     {
-        Serial = MainManager.Main.ConnectionList.Count + 1;
+        Serial = MainManager.Main.GetConnectionCount() + 1;
     }
 
     public void Add(List<Transform> l)

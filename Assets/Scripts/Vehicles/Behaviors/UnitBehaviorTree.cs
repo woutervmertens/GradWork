@@ -29,7 +29,8 @@ public class UnitBehaviorTree : BehaviorTree
     private int _lane = 1;
     private float _overallPreferredLane = 0;
     private float _turnProbability = 0;
-    private float _detetctionRayLength;
+    private float _detectionRayLength;
+    private int _currentRoad = -1;
 
     //CarData
     private float _width;

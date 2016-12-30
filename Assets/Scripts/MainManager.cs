@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MainManager : MonoBehaviour
 {
@@ -13,8 +14,7 @@ public class MainManager : MonoBehaviour
         get { return nodeList; }
     }
 
-    private ArrayList connectionList = new ArrayList();
-    public ArrayList ConnectionList { get { return connectionList;} }
+    private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
 
     private int connectionCount = 0;
 
@@ -36,13 +36,28 @@ public class MainManager : MonoBehaviour
         nodeList.Add(node);
     }
 
-    public void AddConnection(Connection con)
+    public void AddConnection(Connection con, int n)
     {
-        connectionList.Add(con);
+        conDic.Add(n,con);
         connectionCount += con.GetCount();
     }
 
+    public void RemoveConnection(int n)
+    {
+        conDic.Remove(n);
+    }
+
+    public Connection GetCon(int n)
+    {
+        return conDic[n];
+    }
+
     public int GetConnectionCount()
+    {
+        return conDic.Count;
+    }
+
+    public int GetNodeCount()
     {
         return connectionCount;
     }

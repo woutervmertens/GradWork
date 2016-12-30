@@ -15,23 +15,12 @@ public class IntersectionNode : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    //Handle Lights
 	}
-
-    void VehicleEntered(Vehicle v)
-    {
-        //Check if light green else stop
-        //Turn and Go Towards Next StartNode
-
-    }
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.GetType() == typeof(Vehicle))
-        {
-            VehicleEntered(col.GetComponent<Vehicle>());
-        }
-        else if (col.transform.GetComponentInParent<Connection>() != null)
+        if (col.transform.GetComponentInParent<Connection>() != null)
         {
             bool alreadyExists = false;
             foreach (var con in Connections)
