@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -56,7 +57,7 @@ public class ModeSelect : MonoBehaviour
 	void Update () {
 	    if (mode == MODE.CREATE)
 	    {
-	        if (Input.GetMouseButtonUp(0))
+	        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
 	        {
 	            var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 	            RaycastHit hitInfo;

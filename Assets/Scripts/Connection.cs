@@ -39,6 +39,7 @@ public class Connection : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             GetComponent<LineRenderer>().SetPosition(i, transform.GetChild(i).position);
+            //can't stop linerenderer billboarding: check out https://github.com/geniikw/drawLine
         }
     }
 }
