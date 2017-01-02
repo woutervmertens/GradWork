@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Assets.Scripts.Behaviors;
 
 public class UnitBehaviorTree : BehaviorTree
@@ -9,8 +10,8 @@ public class UnitBehaviorTree : BehaviorTree
     // CONTENT -- A lot of data is Dummy - You need to assign the correct data to the correct objects (eg Health in Enemy instead of DamageDealt)
     //------------------------------------------------------------------
     //General Data
-    public List<GameObject> _enemies = new List<GameObject>();
-    private UnityEngine.AI.NavMeshAgent _agent;
+    //public List<GameObject> _enemies = new List<GameObject>();
+    //private UnityEngine.AI.NavMeshAgent _agent;
     //private SelectableObject _selectableObj;
 
     //Flocking Behavior
@@ -35,6 +36,9 @@ public class UnitBehaviorTree : BehaviorTree
     //CarData
     private float _width;
     private float _length;
+
+    //PathData
+    private List<int> _roads = new List<int>();
     
 
 
@@ -66,28 +70,39 @@ public class UnitBehaviorTree : BehaviorTree
         return BehaviorState.Running;
     }
 
+    public BehaviorState PathFinding()
+    {
+        //gimmegimme
+        return BehaviorState.Success;
+    }
     public bool CheckHitDetection()
     {
+        //run hitdetection in child
         return false;
     }
 
     public bool CheckChangeLane()
     {
+        //run lanecheck in child
         return false;
     }
 
     public BehaviorState ChangeLane()
     {
+        //move child to lane
         return BehaviorState.Success;
     }
 
     public BehaviorState Avoid()
     {
+        //if(CheckChangeLane()) ChangeLane() else slow down
+        //probably should be in actual tree instead of state
         return BehaviorState.Success;
     }
 
     public BehaviorState Intersection()
     {
+        //do stuff
         return BehaviorState.Success;
     }
     //public BehaviorState GoToClick()
@@ -320,9 +335,9 @@ public class UnitBehaviorTree : BehaviorTree
         //------------------------------------------------------------------
         // CONTEXT
         //------------------------------------------------------------------
-        _agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        //_agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         //_selectableObj = GetComponent<SelectableObject>();
-        _clickTarget = new Vector3(-50,0,20);
+        //_clickTarget = new Vector3(-50,0,20);
 
         //Get Attributes
 

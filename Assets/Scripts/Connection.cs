@@ -6,6 +6,9 @@ using UnityEngine.Networking;
 public class Connection : MonoBehaviour
 {
     public GameObject ConnectionNodePrefab;
+    public int NrOfLanes = 1;
+    public float MaxSpeed = 50;
+    public float LaneWidth = 1;
 
     public int Serial;
 
