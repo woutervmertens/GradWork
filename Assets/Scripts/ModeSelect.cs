@@ -70,6 +70,7 @@ public class ModeSelect : MonoBehaviour
                             if(_isDrawingRoad) AddRoad();
 	                        //Create new spawner and add to main nodes list
 	                        GameObject s = Instantiate(SpawnerPrefab, hitInfo.point, Quaternion.identity) as GameObject;
+	                        s.transform.parent = this.transform;
 	                        MainManager.Main.AddNode(s);
 	                        break;
 	                    case NODE.INTERSECTION:
@@ -77,6 +78,7 @@ public class ModeSelect : MonoBehaviour
 	                        //Create new intersection and add to main nodes list
 	                        GameObject i =
 	                            Instantiate(IntersectionPrefab, hitInfo.point, Quaternion.identity) as GameObject;
+	                        i.transform.parent = this.transform;
 	                        MainManager.Main.AddNode(i);
 	                        break;
 	                    case NODE.CONNECTION:
