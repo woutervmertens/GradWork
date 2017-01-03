@@ -119,24 +119,27 @@ public class ModeSelect : MonoBehaviour
 	        {
                 var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitInfo;
-	            int layerCast = 1 << 8;
-	            layerCast = ~layerCast;
-	            if (Physics.Raycast(screenRay, out hitInfo, layerCast))
+	            //int layerCast = 1 << 8;
+	            //layerCast = ~layerCast;
+	            if (Physics.Raycast(screenRay, out hitInfo/*, layerCast*/))
 	            {
 	                if (hitInfo.collider.gameObject.GetComponent<IntersectionNode>() != null)
 	                {
-	                    CloseAllUIBoxes();
+                        Debug.Log("IntersectionPrefab selected");
+                        CloseAllUIBoxes();
                         OpenUIBoxPos(0);
 	                }
 	                else if (hitInfo.collider.gameObject.GetComponent<SpawnerNode>() != null)
 	                {
+                        Debug.Log("SpawnerPrefab selected");
 	                    CloseAllUIBoxes();
                         OpenUIBoxPos(1);
 	                }
 	                else if(hitInfo.collider.gameObject.GetComponent<ConnectionNodeScript>() != null)
 	                    //dunno about connections yet
 	                {
-	                    CloseAllUIBoxes();
+                        Debug.Log("ConnectionNodePrefab selected");
+                        CloseAllUIBoxes();
                         OpenUIBoxPos(2);
 	                }
 	            }
