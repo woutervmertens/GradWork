@@ -29,7 +29,7 @@ public class ModeSelect : MonoBehaviour
 
     private GameObject selectedObject = null;
 
-    public Canvas EditBoxesParent;
+    public RectTransform EditBoxesParent;
 
     public Button BtnToggleMode;
     public Button BtnSpawner;
@@ -51,6 +51,7 @@ public class ModeSelect : MonoBehaviour
         BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
         FlyCam.gameObject.SetActive(false);
         DrawCam.gameObject.SetActive(true);
+        CloseAllUIBoxes();
     }
 	
 	// Update is called once per frame
@@ -115,7 +116,7 @@ public class ModeSelect : MonoBehaviour
 	    }
         else if (mode == MODE.EDIT)
 	    {
-	        if (Input.GetMouseButtonUp(0))
+	        if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
 	        {
                 var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitInfo;
@@ -162,12 +163,15 @@ public class ModeSelect : MonoBehaviour
         {
             uibox.gameObject.SetActive(false);
         }
+        EditBoxesParent.gameObject.SetActive(false);
     }
 
     private void OpenUIBoxPos(int index)
     {
+        Debug.Log(EditBoxesParent.transform.childCount);
+        EditBoxesParent.gameObject.SetActive(true);
+        EditBoxesParent.position = Input.mousePosition;
         var child = EditBoxesParent.transform.GetChild(index);
-        child.position = Input.mousePosition;
         child.gameObject.SetActive(true);
     }
 
@@ -190,6 +194,7 @@ public class ModeSelect : MonoBehaviour
             BtnIntersection.enabled = true;
             BtnConnection.enabled = true;
             BtnSpawner.enabled = false;
+            CloseAllUIBoxes();
         }
         FlyCam.gameObject.SetActive(!FlyCam.gameObject.active);
         DrawCam.gameObject.SetActive(!DrawCam.gameObject.active);
