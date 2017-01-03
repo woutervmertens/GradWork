@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class uiPanelScript : MonoBehaviour {
+public class UISpawnerPanel : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

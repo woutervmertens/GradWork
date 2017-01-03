@@ -6,6 +6,25 @@ public class SpawnerNode : MonoBehaviour {
 
     public List<int> Connections = new List<int>();
     //List of spawnables
+    public GameObject CarPrefab;
+    public GameObject TruckPrefab;
+    public GameObject BikePrefab;
+    public GameObject JeepPrefab;
+
+    public bool SpawnCar = true;
+    public bool SpawnJeep = false;
+    public bool SpawnBike = false;
+    public bool SpawnTruck = false;
+
+    public int CarSpawnPerc;
+    public int JeepSpawnPerc;
+    public int BikeSpawnPerc;
+    public int TruckSpawnPerc;
+
+    public float GeneralSpawnRate;
+
+    private float _timeCounter = 0;
+
 
     // Use this for initialization
     void Start () {
@@ -13,8 +32,14 @@ public class SpawnerNode : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	    //Spawn if i want to
+	void Update ()
+	{
+	    _timeCounter += Time.deltaTime + Random.Range(0,Time.deltaTime);
+	    if (GeneralSpawnRate <= _timeCounter)
+	    {
+	        _timeCounter = 0;
+
+	    }
 	}
 
     void OnTriggerEnter(Collider col)
