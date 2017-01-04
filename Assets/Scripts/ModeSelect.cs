@@ -127,19 +127,22 @@ public class ModeSelect : MonoBehaviour
 	                if (hitInfo.collider.gameObject.GetComponent<IntersectionNode>() != null)
 	                {
                         Debug.Log("IntersectionPrefab selected");
+	                    MainManager.Main.LastSelectedGameObject = hitInfo.collider.gameObject;
                         CloseAllUIBoxes();
                         OpenUIBoxPos(0);
 	                }
 	                else if (hitInfo.collider.gameObject.GetComponent<SpawnerNode>() != null)
 	                {
                         Debug.Log("SpawnerPrefab selected");
-	                    CloseAllUIBoxes();
+                        MainManager.Main.LastSelectedGameObject = hitInfo.collider.gameObject;
+                        CloseAllUIBoxes();
                         OpenUIBoxPos(1);
 	                }
 	                else if(hitInfo.collider.gameObject.GetComponent<ConnectionNodeScript>() != null)
 	                    //dunno about connections yet
 	                {
                         Debug.Log("ConnectionNodePrefab selected");
+                        MainManager.Main.LastSelectedGameObject = hitInfo.collider.transform.parent.gameObject;
                         CloseAllUIBoxes();
                         OpenUIBoxPos(2);
 	                }
