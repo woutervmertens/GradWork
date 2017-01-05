@@ -32,6 +32,7 @@ public class UIRoadPanel : MonoBehaviour
 
     public void Show()
     {
+        Start();
         LanesIn.text = NrOfLanes.ToString();
         WidthIn.text = LaneWidth.ToString();
         SpeedIn.text = MaxSpeed.ToString();

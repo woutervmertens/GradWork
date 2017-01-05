@@ -47,6 +47,7 @@ public class UISpawnerPanel : MonoBehaviour
 
     public void Show()
     {
+        Start();
         CarSlider.value = _carPerc;
         JeepSlider.value = _jeepPerc;
         BikeSlider.value = _bikePerc;
