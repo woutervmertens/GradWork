@@ -176,6 +176,21 @@ public class ModeSelect : MonoBehaviour
         EditBoxesParent.position = Input.mousePosition;
         var child = EditBoxesParent.transform.GetChild(index);
         child.gameObject.SetActive(true);
+        switch (index)
+        {
+            case 0:
+                child.GetComponent<UIIntersectionPanel>().Show();
+                break;
+            case 1:
+                child.GetComponent<UISpawnerPanel>().Show();
+                break;
+            case 2:
+                child.GetComponent<UIRoadPanel>().Show();
+                break;
+            default:
+                break;
+
+        }
     }
 
     public void BtnClick()

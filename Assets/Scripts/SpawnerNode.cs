@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 
 public class SpawnerNode : MonoBehaviour {
 
@@ -35,6 +36,11 @@ public class SpawnerNode : MonoBehaviour {
 	void Update ()
 	{
 	    _timeCounter += Time.deltaTime + Random.Range(0,Time.deltaTime);
+	    int totalPerc = 0;
+	    if(SpawnCar)totalPerc += CarSpawnPerc;
+        if (SpawnJeep) totalPerc += JeepSpawnPerc;
+        if (SpawnBike) totalPerc +=BikeSpawnPerc;
+        if (SpawnTruck) totalPerc += TruckSpawnPerc;
 	    if (GeneralSpawnRate <= _timeCounter)
 	    {
 	        _timeCounter = 0;

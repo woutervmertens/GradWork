@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class UIIntersectionPanel : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void Show()
+    {
+        
+    }
+
+    public void Close()
+    {
+        transform.parent.gameObject.SetActive(false);
+    }
 }

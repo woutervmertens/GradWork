@@ -18,7 +18,7 @@ public class MainManager : MonoBehaviour
 
     private int connectionCount = 0;
 
-    public GameObject LastSelectedGameObject = new GameObject();
+    public GameObject LastSelectedGameObject;
 
     void Awake()
     {
