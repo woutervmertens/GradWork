@@ -39,18 +39,21 @@ public class UIRoadPanel : MonoBehaviour
 
     public void ChangeLaneWidth(string i)
     {
+        i = WidthIn.text;
         float b = StripNonFloats(i);
         if (b > 0) LaneWidth = b;
     }
 
     public void ChangeMaxSpeed(string i)
     {
+        i = SpeedIn.text;
         float b = StripNonFloats(i);
         if (b > 0) MaxSpeed = b;
     }
 
     public void ChangeNrLanes(string i)
     {
+        i = LanesIn.text;
         int y = StripNonInts(i);
         if (y > 0) NrOfLanes = y;
     }

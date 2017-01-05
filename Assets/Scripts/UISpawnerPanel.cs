@@ -17,6 +17,11 @@ public class UISpawnerPanel : MonoBehaviour
     private int _bikePerc;
     private int _truckPerc;
 
+    public Toggle CarToggle;
+    public Toggle JeepToggle;
+    public Toggle BikesToggle;
+    public Toggle TruckToggle;
+
     public Slider CarSlider;
     public Slider JeepSlider;
     public Slider BikeSlider;
@@ -67,24 +72,28 @@ public class UISpawnerPanel : MonoBehaviour
 
     public void SpawnCar(bool b)
     {
+        b = CarToggle.isOn;
         _spawnCar = b;
         CarSlider.interactable = b;
     }
 
     public void SpawnJeep(bool b)
     {
+        b = JeepToggle.isOn;
         _spawnJeep = b;
         JeepSlider.interactable = b;
     }
 
     public void SpawnBike(bool b)
     {
+        b = BikesToggle.isOn;
         _spawnBike = b;
         BikeSlider.interactable = b;
     }
 
     public void SpawnTruck(bool b)
     {
+        b = TruckToggle.isOn;
         _spawnTruck = b;
         TruckSlider.interactable = b;
     }
@@ -108,6 +117,7 @@ public class UISpawnerPanel : MonoBehaviour
 
     public void RateChange(string s)
     {
+        s = RateIn.text;
         float b = StripNonFloats(s);
         if (b > 0) _generalSpawnRate = b;
     }
