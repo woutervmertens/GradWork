@@ -173,7 +173,10 @@ public class ModeSelect : MonoBehaviour
     {
         Debug.Log(EditBoxesParent.transform.childCount);
         EditBoxesParent.gameObject.SetActive(true);
-        EditBoxesParent.position = Input.mousePosition;
+        Vector3 offsetpos = Input.mousePosition;
+        offsetpos.x += EditBoxesParent.rect.width/2;
+        offsetpos.y += EditBoxesParent.rect.height/2;
+        EditBoxesParent.position = offsetpos;
         var child = EditBoxesParent.transform.GetChild(index);
         child.gameObject.SetActive(true);
         switch (index)
