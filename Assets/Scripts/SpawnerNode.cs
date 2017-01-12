@@ -29,7 +29,7 @@ public class SpawnerNode : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-	
+	    MainManager.Main.AddNode(this);
 	}
 	
 	// Update is called once per frame

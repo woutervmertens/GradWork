@@ -59,6 +59,8 @@ public class UIRoadPanel : MonoBehaviour
         if (y > 0) NrOfLanes = y;
     }
 
+    //One way streets?
+
     private float StripNonFloats(string i)
     {
         string resString = "";

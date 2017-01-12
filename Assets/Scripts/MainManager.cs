@@ -8,10 +8,10 @@ public class MainManager : MonoBehaviour
     public static MainManager Main;
     public double Vehicles { get; set; }
 
-    private ArrayList nodeList = new ArrayList();
-    public ArrayList NodeList
+    private ArrayList spawnerNodeList = new ArrayList();
+    public ArrayList SpawnerNodeList
     {
-        get { return nodeList; }
+        get { return spawnerNodeList; }
     }
 
     private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
@@ -35,7 +35,7 @@ public class MainManager : MonoBehaviour
 
     public void AddNode<T>(T node)
     {
-        nodeList.Add(node);
+        spawnerNodeList.Add(node);
     }
 
     public void AddConnection(Connection con, int n)
