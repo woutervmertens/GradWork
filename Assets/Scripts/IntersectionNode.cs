@@ -43,6 +43,10 @@ public class IntersectionNode : MonoBehaviour
             if (!alreadyExists)
             {
                 Connections.Add(col.GetComponentInParent<Connection>().Serial);
+                if (col.GetComponentInParent<Connection>().Val1 == null)
+                    col.GetComponentInParent<Connection>().Val1 = this.GetComponent<Nodes>();
+                else if(col.GetComponentInParent<Connection>().Val2 == null)
+                    col.GetComponentInParent<Connection>().Val2 = this.GetComponent<Nodes>();
             }
         }
     }

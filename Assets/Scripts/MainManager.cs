@@ -2,16 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public class DuoNodes
+{
+    public DuoNodes(Nodes v1, Nodes v2)
+    {
+        Val1 = v1;
+        Val2 = v2;
+    }
+    public Nodes Val1 { get; set; }
+    public Nodes Val2 { get; set; }
+}
+
 public class MainManager : MonoBehaviour
 {
 
     public static MainManager Main;
     public double Vehicles { get; set; }
 
-    private ArrayList spawnerNodeList = new ArrayList();
-    public ArrayList SpawnerNodeList
+    private ArrayList nodeList = new ArrayList();
+    public ArrayList NodeList
     {
-        get { return spawnerNodeList; }
+        get { return nodeList; }
     }
 
     private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
@@ -35,7 +46,7 @@ public class MainManager : MonoBehaviour
 
     public void AddNode<T>(T node)
     {
-        spawnerNodeList.Add(node);
+        nodeList.Add(node);
     }
 
     public void AddConnection(Connection con, int n)

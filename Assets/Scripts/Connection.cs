@@ -12,6 +12,9 @@ public class Connection : MonoBehaviour
 
     public int Serial;
 
+    public Nodes Val1 = null;
+    public Nodes Val2 = null;
+
     public List<Transform> nodes = new List<Transform>();
 
     void Start()
@@ -34,6 +37,21 @@ public class Connection : MonoBehaviour
     public int GetCount()
     {
         return nodes.Count;
+    }
+
+    public float GetFScore()
+    {
+        float length = 0;
+        for (int i = 0; i < nodes.Count-1; i++)
+        {
+            length += Vector3.Distance(nodes[i].position, nodes[i + 1].position);
+        }
+        return (length/MaxSpeed)/NrOfLanes;
+    }
+
+    public DuoNodes GetEndNodes()
+    {
+        return new DuoNodes(Val1,Val2);
     }
 
     public void Draw()
