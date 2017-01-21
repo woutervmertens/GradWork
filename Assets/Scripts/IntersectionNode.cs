@@ -9,6 +9,7 @@ public class IntersectionNode : MonoBehaviour
     public float LightSwitchingRate = 5;
     public float SpeedLimit;
     public List<int> Connections = new List<int>();
+    public Dictionary<Vehicle, int> Vehicles = new Dictionary<Vehicle, int>();
     // Use this for initialization
     void Start () {
 	
@@ -29,12 +30,13 @@ public class IntersectionNode : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.transform.GetComponentInParent<Connection>() != null)
+        Transform tr = col.transform.parent;
+        if (tr.GetComponent<Connection>() != null)
         {
             bool alreadyExists = false;
             foreach (var con in Connections)
             {
-                if (con == col.GetComponentInParent<Connection>().Serial)
+                if (con == tr.GetComponent<Connection>().Serial)
                 {
                     alreadyExists = true;
                     continue;
@@ -42,12 +44,17 @@ public class IntersectionNode : MonoBehaviour
             }
             if (!alreadyExists)
             {
-                Connections.Add(col.GetComponentInParent<Connection>().Serial);
-                if (col.GetComponentInParent<Connection>().Val1 == null)
-                    col.GetComponentInParent<Connection>().Val1 = this.GetComponent<Nodes>();
-                else if(col.GetComponentInParent<Connection>().Val2 == null)
-                    col.GetComponentInParent<Connection>().Val2 = this.GetComponent<Nodes>();
+                Connections.Add(tr.GetComponent<Connection>().Serial);
+                if (tr.GetComponent<Connection>().Val1 == null)
+                    tr.GetComponent<Connection>().Val1 = this.GetComponent<Nodes>();
+                else if(tr.GetComponent<Connection>().Val2 == null)
+                    tr.GetComponent<Connection>().Val2 = this.GetComponent<Nodes>();
             }
+        }
+        else if(tr.GetComponent<Vehicle>() != null && !Vehicles.ContainsKey(tr.GetComponent<Vehicle>()))
+        {
+            Vehicles.Add(tr.GetComponent<Vehicle>(),tr.GetComponent<UnitBehaviorTree>().NextConnection);
+            col.transform.parent.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
         }
     }
 }

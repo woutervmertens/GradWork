@@ -17,13 +17,15 @@ public class MainManager : MonoBehaviour
 {
 
     public static MainManager Main;
-    public double Vehicles { get; set; }
+    public double VehiclesNr { get; set; }
 
     private ArrayList nodeList = new ArrayList();
     public ArrayList NodeList
     {
         get { return nodeList; }
     }
+
+    public List<Vehicle> Vehicles = new List<Vehicle>(); 
 
     private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
 

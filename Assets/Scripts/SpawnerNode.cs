@@ -50,11 +50,11 @@ public class SpawnerNode : MonoBehaviour {
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.GetType() == typeof(Vehicle))
+        if (col.transform.parent.GetType() == typeof(Vehicle))
         {
-            if (col.gameObject.GetComponent<Vehicle>().GetTargetNode() == this.GetComponent<Nodes>())
+            if (col.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this.GetComponent<Nodes>())
             {
-                Destroy(col.gameObject);
+                Destroy(col.transform.parent.gameObject);
             }
         }
         else if (col.transform.GetComponentInParent<Connection>() != null)

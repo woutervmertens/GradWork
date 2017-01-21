@@ -24,18 +24,23 @@ public class UnitBehaviorTree : BehaviorTree
     public float ReachDistance = 1.0f;
     public float RotationSpeed = 5.0f;
     private Vector3 current_pos;
+    public int NextConnection;
 
     //LocalRoadData
     private float _laneWidth;
-    private int _lane = 1;
     private float _overallPreferredLane = 0;
     private float _turnProbability = 0;
-    private float _detectionRayLength;
+    private float _detectionLength;
     private int _currentRoad = -1;
+    private float _neighbourDistance;
 
     //CarData
     private float _width;
     private float _length;
+    public int Lane = 0;
+    public float LaneChangeSpeed;
+    public float _breakSpeed;
+    public float _bufferLength;
 
     //PathData
     private LinkedList<Nodes> PathFound = new LinkedList<Nodes>();
@@ -51,6 +56,9 @@ public class UnitBehaviorTree : BehaviorTree
     public int FailSafe = 10000; //cap nr of loops
     private int _failCheck = 0;
 
+    //IntersectionData
+    public bool IsOnIntersection = false;
+
 
 
     //------------------------------------------------------------------
@@ -61,9 +69,10 @@ public class UnitBehaviorTree : BehaviorTree
     {
         if (_currentWayPointId > PathToFollow.nodes.Count - 1)
         {
-            RoadNodeIndex++;
+            _currentWayPointId = 0;
             return BehaviorState.Success;
         }
+        if(_currentWayPointId == 0) NextConnection = RoadPath[RoadNodeIndex + 1];
         float distance = Vector3.Distance(PathToFollow.nodes[_currentWayPointId].position,
                 transform.position);
 
@@ -181,10 +190,20 @@ public class UnitBehaviorTree : BehaviorTree
                 }
             }
         }
+        NextConnection = RoadPath[1];
     }
-    public bool CheckHitDetection()
+    public bool CheckHitDetection()//if true -> avoid
     {
-        //run hitdetection in child
+        foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
+        {
+            if(neighbour == this.GetComponent<Vehicle>()) continue;
+            if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed) 
+                && (neighbour.GetComponent<UnitBehaviorTree>().Lane == Lane))
+            {
+                _neighbourDistance = Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position));
+                return GetComponent<Vehicle>().RayTest(_detectionLength * Speed);
+            }
+        }
         return false;
     }
 
@@ -200,16 +219,21 @@ public class UnitBehaviorTree : BehaviorTree
         return BehaviorState.Success;
     }
 
-    public BehaviorState Avoid()
+    public BehaviorState SlowDown()
     {
-        //if(CheckChangeLane()) ChangeLane() else slow down
-        //probably should be in actual tree instead of state
+        //slow down untill ray is false
+        Speed -= (_breakSpeed*(_detectionLength*Speed - _neighbourDistance)*Time.deltaTime);
+        if(GetComponent<Vehicle>().RayTest((_detectionLength * Speed) + _bufferLength)) return BehaviorState.Running;
         return BehaviorState.Success;
     }
 
     public BehaviorState Intersection()
     {
+        if(IsOnIntersection) return BehaviorState.Running;
+        Path[PathNodeIndex].GetComponent<IntersectionNode>().Vehicles.Remove(this.GetComponent<Vehicle>());
+        RoadNodeIndex++;
         PathNodeIndex++;
+        MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles.Add(this.GetComponent<Car>());
         return BehaviorState.Success;
     }
     //public BehaviorState GoToClick()
@@ -338,34 +362,34 @@ public class UnitBehaviorTree : BehaviorTree
     //    int countSeperation = 0;
     //    int countNeighbour = 0;
 
-        ////--------------------------------------
-        //// DATA CALCULATIONS
-        ////--------------------------------------
-        ////Steer away from all nearby friends
-        //foreach (var fr in friends)
-        //{
-        //    //Calculate distance
-        //    float d = Vector3.Distance(this.transform.position, fr.transform.position);
+    ////--------------------------------------
+    //// DATA CALCULATIONS
+    ////--------------------------------------
+    ////Steer away from all nearby friends
+    //foreach (var fr in friends)
+    //{
+    //    //Calculate distance
+    //    float d = Vector3.Distance(this.transform.position, fr.transform.position);
 
-        //    //Check if we need to separate it --- SEPARATION
-        //    if (d > 0 && d < desiredSeperation)
-        //    {
-        //        //Calculate vector pointing away from neighbour
-        //        Vector3 diff = this.transform.position - fr.transform.position;
-        //        diff.Normalize();
-        //        diff /= d;
-        //        separationVector += diff;
-        //        ++countSeperation;
-        //    }
+    //    //Check if we need to separate it --- SEPARATION
+    //    if (d > 0 && d < desiredSeperation)
+    //    {
+    //        //Calculate vector pointing away from neighbour
+    //        Vector3 diff = this.transform.position - fr.transform.position;
+    //        diff.Normalize();
+    //        diff /= d;
+    //        separationVector += diff;
+    //        ++countSeperation;
+    //    }
 
-        //    //ALIGNMENT + COHESION
-        //    if (d > 0 && d < neighbourDistance)
-        //    {
-        //        alignmentVector += fr.GetComponent<UnityEngine.AI.NavMeshAgent>().velocity;
-        //        cohesionVector += fr.transform.position;
-        //        ++countNeighbour;
-        //    }
-        //}
+    //    //ALIGNMENT + COHESION
+    //    if (d > 0 && d < neighbourDistance)
+    //    {
+    //        alignmentVector += fr.GetComponent<UnityEngine.AI.NavMeshAgent>().velocity;
+    //        cohesionVector += fr.transform.position;
+    //        ++countNeighbour;
+    //    }
+    //}
 
     //    //Average all vectors if needed
     //    if (countSeperation > 0)
@@ -422,7 +446,7 @@ public class UnitBehaviorTree : BehaviorTree
     //                  + (randomize*1.0f);
     //    _agent.destination = _clickTarget.Value;
     //    _agent.velocity += acc*Time.deltaTime;
-        
+
     //    //Exit condition
     //    if (Vector3.Distance(transform.position, _clickTarget.Value) < targetDistance)
     //    {
@@ -437,6 +461,11 @@ public class UnitBehaviorTree : BehaviorTree
     //------------------------------------------------------------------
     // AI SETUP
     //------------------------------------------------------------------
+
+    public Nodes GetTargetNode()
+    {
+        return _endNodes;
+    }
     void Start ()
     {
         //------------------------------------------------------------------

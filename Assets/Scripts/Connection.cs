@@ -15,6 +15,8 @@ public class Connection : MonoBehaviour
     public Nodes Val1 = null;
     public Nodes Val2 = null;
 
+    public List<Vehicle> Vehicles = new List<Vehicle>();
+
     public List<Transform> nodes = new List<Transform>();
 
     void Start()
