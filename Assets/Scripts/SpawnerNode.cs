@@ -52,7 +52,7 @@ public class SpawnerNode : MonoBehaviour {
     {
         if (col.GetType() == typeof(Vehicle))
         {
-            if (col.gameObject.GetComponent<Vehicle>().GetTargetNode() == this.GetComponent<Node>())
+            if (col.gameObject.GetComponent<Vehicle>().GetTargetNode() == this.GetComponent<Nodes>())
             {
                 Destroy(col.gameObject);
             }

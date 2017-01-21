@@ -15,9 +15,9 @@ public class UnitBehaviorTree : BehaviorTree
     //private SelectableObject _selectableObj;
 
     //Flocking Behavior
-    private Vector3? _clickTarget;
+    //private Vector3? _clickTarget;
 
-    //PathData
+    //RoadData
     public Connection PathToFollow;
     private int _currentWayPointId = 0;
     public float Speed = 2.0f;
@@ -25,7 +25,7 @@ public class UnitBehaviorTree : BehaviorTree
     public float RotationSpeed = 5.0f;
     private Vector3 current_pos;
 
-    //RoadData
+    //LocalRoadData
     private float _laneWidth;
     private int _lane = 1;
     private float _overallPreferredLane = 0;
@@ -38,18 +38,30 @@ public class UnitBehaviorTree : BehaviorTree
     private float _length;
 
     //PathData
-    private List<int> _roads = new List<int>();
-    
+    private LinkedList<Nodes> PathFound = new LinkedList<Nodes>();
+    private List<Nodes> Path = new List<Nodes>();
+    private int PathNodeIndex = 1;
+    private List<int> RoadPath = new List<int>();
+    private int RoadNodeIndex = 0;
+    private SpawnerNode startNode;
+    private SpawnerNode endNode;
+
+    //PathFinding Data
+    private Nodes _startNodes, _endNodes;
+    public int FailSafe = 10000; //cap nr of loops
+    private int _failCheck = 0;
+
 
 
     //------------------------------------------------------------------
     // AI BEHAVIOURS
     //------------------------------------------------------------------
 
-    public BehaviorState FollowPath()
+    public BehaviorState FollowRoad()//Run parallel to hit detection on child
     {
         if (_currentWayPointId > PathToFollow.nodes.Count - 1)
         {
+            RoadNodeIndex++;
             return BehaviorState.Success;
         }
         float distance = Vector3.Distance(PathToFollow.nodes[_currentWayPointId].position,
@@ -70,10 +82,105 @@ public class UnitBehaviorTree : BehaviorTree
         return BehaviorState.Running;
     }
 
-    public BehaviorState PathFinding()
+    public BehaviorState PathFinding()//Run once, if failed pick different endnode
     {
-        //gimmegimme
+        //Clear
+        Path.Clear();
+
+        //Temp cont
+        LinkedList<Nodes> openList = new LinkedList<Nodes>();
+        LinkedList<Nodes> closedList = new LinkedList<Nodes>();
+
+        //Add StartNode to OpenList
+        _startNodes = startNode.GetComponent<Nodes>();
+        _endNodes = endNode.GetComponent<Nodes>();
+        Nodes currNodes = null;
+        openList.AddFirst(_startNodes);
+
+        //while open list is not empty
+        while (openList.Count != 0 && _failCheck < FailSafe)
+        {
+            ++_failCheck;
+            //Get node with lowest F
+            float lowestFScore = float.MaxValue;
+            foreach (var n in openList)
+            {
+                if (n.GetComponent<Connection>().GetFScore() < lowestFScore)
+                {
+                    currNodes = n;
+                    lowestFScore = n.GetComponent<Connection>().GetFScore();
+                }
+            }
+            //Pop current off the open list and push it to the closed
+            openList.Remove(currNodes);
+            closedList.AddFirst(currNodes);
+
+            //retrieve the chosen nodes adjacent nodes
+            List<Nodes> adj = new List<Nodes>();
+            List<int> adjNrs = (currNodes.NodeType == Type.Intersection)
+                ? currNodes.GetComponent<IntersectionNode>().Connections
+                : currNodes.GetComponent<SpawnerNode>().Connections;
+            foreach (var i in adjNrs)
+            {
+                adj.Add((MainManager.Main.GetCon(i).Val1 == currNodes) ? MainManager.Main.GetCon(i).Val2 : MainManager.Main.GetCon(i).Val1);
+            }
+
+            //Check if any of neighbours is goal
+            if (adj.Contains(_endNodes))
+            {
+                _endNodes.Parent = currNodes;
+                openList.Clear();
+                break;
+            }
+            //else go over all the elements
+            foreach (var nodese in adj)
+            {
+                //if node is in closed, ignore it
+                if (closedList.Contains(nodese)) { }
+                else
+                {
+                    //if node not in open list, compute score and add it
+                    if (!adj.Contains(nodese))
+                    {
+                        nodese.Parent = currNodes;
+
+                        openList.AddFirst(nodese);
+                    }
+                }
+            }
+        }
+        if (_failCheck >= FailSafe) return BehaviorState.Failure;
+        //reconstruct path
+        PathFound.AddFirst(_endNodes);
+        PathFound.AddFirst(currNodes);
+        Nodes nextNodes = currNodes.Parent;
+        while (nextNodes != null)
+        {
+            PathFound.AddFirst(nextNodes);
+            nextNodes = nextNodes.Parent;
+        }
+        GetRoadPath();
         return BehaviorState.Success;
+    }
+
+    private void GetRoadPath()
+    {
+        foreach (var p in Path)//Convert to List
+        {
+            Path.Add(p);
+        }
+        for (int i = 0; i < Path.Count; i++)
+        {
+            foreach (var con in Path[i].GetComponent<Nodes>().GetConnections())
+            {
+                if (MainManager.Main.GetCon(con).Val1 == _endNodes || MainManager.Main.GetCon(con).Val2 == _endNodes ||
+                    MainManager.Main.GetCon(con).Val1 == Path[i + 1] || MainManager.Main.GetCon(con).Val2 == Path[i + 1])
+                {
+                    RoadPath.Add(con);
+                    break;
+                }
+            }
+        }
     }
     public bool CheckHitDetection()
     {
@@ -102,7 +209,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public BehaviorState Intersection()
     {
-        //do stuff
+        PathNodeIndex++;
         return BehaviorState.Success;
     }
     //public BehaviorState GoToClick()

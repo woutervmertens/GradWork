@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
@@ -7,6 +8,8 @@ public class Pathfinding : MonoBehaviour
 
     public LinkedList<Nodes> Path;
     private Nodes _startNodes, _endNodes;
+    public int FailSafe = 10000; //cap nr of loops
+    private int _failCheck = 0;
 
     public LinkedList<Nodes> FindPath(SpawnerNode startNode, SpawnerNode endNode)
     {
@@ -24,8 +27,9 @@ public class Pathfinding : MonoBehaviour
         openList.AddFirst(_startNodes);
 
         //while open list is not empty
-        while (openList.Count != 0)
+        while (openList.Count != 0 && _failCheck < FailSafe)
         {
+            ++_failCheck;
             //Get node with lowest F
             float lowestFScore = float.MaxValue;
             foreach (var n in openList)
@@ -74,6 +78,7 @@ public class Pathfinding : MonoBehaviour
                 }
             }
         }
+        if(_failCheck >= FailSafe) return null;
         //reconstruct path
         Path.AddFirst(_endNodes);
         Path.AddFirst(currNodes);

@@ -75,7 +75,7 @@ namespace Assets.Scripts.Behaviors
         }
     }
 
-    //PARTIAL SEQUENCE
+    //PARTIAL SEQUENCE (parallel untill all completed)
     public class PartialSequence : BehaviorComponent
     {
         //Our children
