@@ -8,7 +8,7 @@ public class Pathfinding : MonoBehaviour
     public LinkedList<Nodes> Path;
     private Nodes _startNodes, _endNodes;
 
-    public Pathfinding(SpawnerNode startNode, SpawnerNode endNode)
+    public LinkedList<Nodes> FindPath(SpawnerNode startNode, SpawnerNode endNode)
     {
         //Clear
         Path.Clear();
@@ -83,5 +83,6 @@ public class Pathfinding : MonoBehaviour
             Path.AddFirst(nextNodes);
             nextNodes = nextNodes.Parent;
         }
+        return Path;
     }
 }
