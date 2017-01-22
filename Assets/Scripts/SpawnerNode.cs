@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
 
-public class SpawnerNode : MonoBehaviour {
+public class SpawnerNode : Nodes {
 
     public List<int> Connections = new List<int>();
     //List of spawnables
@@ -52,7 +52,7 @@ public class SpawnerNode : MonoBehaviour {
     {
         if (col.transform.parent.GetType() == typeof(Vehicle))
         {
-            if (col.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this.GetComponent<Nodes>())
+            if (col.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
             {
                 Destroy(col.transform.parent.gameObject);
             }

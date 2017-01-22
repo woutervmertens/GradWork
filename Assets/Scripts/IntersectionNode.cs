@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class IntersectionNode : MonoBehaviour
+public class IntersectionNode : Nodes
 {
     private float _lightCounter = 0f;
     public int OpenConnectionIndex = 0;
@@ -12,7 +12,7 @@ public class IntersectionNode : MonoBehaviour
     public Dictionary<Vehicle, int> Vehicles = new Dictionary<Vehicle, int>();
     // Use this for initialization
     void Start () {
-	
+	    MainManager.Main.AddNode(this);
 	}
 	
 	// Update is called once per frame
@@ -46,9 +46,9 @@ public class IntersectionNode : MonoBehaviour
             {
                 Connections.Add(tr.GetComponent<Connection>().Serial);
                 if (tr.GetComponent<Connection>().Val1 == null)
-                    tr.GetComponent<Connection>().Val1 = this.GetComponent<Nodes>();
+                    tr.GetComponent<Connection>().Val1 = this;
                 else if(tr.GetComponent<Connection>().Val2 == null)
-                    tr.GetComponent<Connection>().Val2 = this.GetComponent<Nodes>();
+                    tr.GetComponent<Connection>().Val2 = this;
             }
         }
         else if(tr.GetComponent<Vehicle>() != null && !Vehicles.ContainsKey(tr.GetComponent<Vehicle>()))

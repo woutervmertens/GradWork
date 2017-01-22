@@ -62,6 +62,11 @@ public class MainManager : MonoBehaviour
         conDic.Remove(n);
     }
 
+    public void RemoveNode<T>(T node)
+    {
+        
+    }
+
     public Connection GetCon(int n)
     {
         return conDic[n];
