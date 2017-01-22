@@ -72,9 +72,9 @@ public class SpawnerNode : Nodes {
             {
                 Connections.Add(col.gameObject.transform.parent.GetComponent<Connection>().Serial);
                 if (col.GetComponentInParent<Connection>().Val1 == null)
-                    col.GetComponentInParent<Connection>().Val1 = this.GetComponent<Nodes>();
+                    col.GetComponentInParent<Connection>().Val1 = this;
                 else if (col.GetComponentInParent<Connection>().Val2 == null)
-                    col.GetComponentInParent<Connection>().Val2 = this.GetComponent<Nodes>();
+                    col.GetComponentInParent<Connection>().Val2 = this;
             }
         }
     }
