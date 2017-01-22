@@ -10,13 +10,6 @@ public class UnitBehaviorTree : BehaviorTree
     // CONTENT -- A lot of data is Dummy - You need to assign the correct data to the correct objects (eg Health in Enemy instead of DamageDealt)
     //------------------------------------------------------------------
     //General Data
-    //public List<GameObject> _enemies = new List<GameObject>();
-    //private UnityEngine.AI.NavMeshAgent _agent;
-    //private SelectableObject _selectableObj;
-
-    //Flocking Behavior
-    //private Vector3? _clickTarget;
-
     //RoadData
     public Connection PathToFollow;
     private int _currentWayPointId = 0;
@@ -219,12 +212,10 @@ public class UnitBehaviorTree : BehaviorTree
         _laneWidth = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth;
         if (transform.GetChild(0).localPosition.x > (_laneWidth* (Lane + 1) - _laneWidth*0.5))
         {
-            foreach (Transform child in transform)
-            {
-                Vector3 nl = child.localPosition;
-                nl.x -= LaneChangeSpeed*Time.deltaTime;
-                child.localPosition = nl;
-            }
+            Transform child = transform.GetChild(0);
+            Vector3 nl = child.localPosition;
+            nl.x -= LaneChangeSpeed*Time.deltaTime;
+            child.localPosition = nl;
             return BehaviorState.Running;
         }
         Lane--;
@@ -243,12 +234,10 @@ public class UnitBehaviorTree : BehaviorTree
         _laneWidth = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth;
         if (transform.GetChild(0).localPosition.x < (_laneWidth * (Lane +1) - _laneWidth * 0.5))
         {
-            foreach (Transform child in transform)
-            {
-                Vector3 nl = child.localPosition;
-                nl.x += LaneChangeSpeed * Time.deltaTime;
-                child.localPosition = nl;
-            }
+            Transform child = transform.GetChild(0);
+            Vector3 nl = child.localPosition;
+            nl.x += LaneChangeSpeed * Time.deltaTime;
+            child.localPosition = nl;
             return BehaviorState.Running;
         }
         Lane++;
@@ -270,6 +259,7 @@ public class UnitBehaviorTree : BehaviorTree
         RoadNodeIndex++;
         PathNodeIndex++;
         MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles.Add(this.GetComponent<Car>());
+        IsOnIntersection = false;
         return BehaviorState.Success;
     }
     //public BehaviorState GoToClick()
