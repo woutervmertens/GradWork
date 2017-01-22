@@ -35,4 +35,47 @@ public class Vehicle: MonoBehaviour
         }
         return false;
     }
+
+    public bool CheckLeftLane()
+    {
+        switch (VT)
+        {
+            case VehicleType.Car:
+                return transform.GetChild(0).GetComponent<Car>().CheckLeft();
+                break;
+            case VehicleType.Truck:
+                return transform.GetChild(0).GetComponent<Truck>().CheckLeft();
+                break;
+            case VehicleType.Van:
+                return transform.GetChild(0).GetComponent<Van>().CheckLeft();
+                break;
+            case VehicleType.Bike:
+                return transform.GetChild(0).GetComponent<Bike>().CheckLeft();
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
+    public bool CheckRightLane()
+    {
+        switch (VT)
+        {
+            case VehicleType.Car:
+                return transform.GetChild(0).GetComponent<Car>().CheckRight();
+                break;
+            case VehicleType.Truck:
+                return transform.GetChild(0).GetComponent<Truck>().CheckRight();
+                break;
+            case VehicleType.Van:
+                return transform.GetChild(0).GetComponent<Van>().CheckRight();
+                break;
+            case VehicleType.Bike:
+                return transform.GetChild(0).GetComponent<Bike>().CheckRight();
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
 }

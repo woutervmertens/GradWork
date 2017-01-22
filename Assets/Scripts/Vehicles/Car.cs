@@ -11,5 +11,15 @@ public class Car : Vehicle {
         Vector3 fwd = Vector3.forward;
         return Physics.Raycast(transform.position, fwd, lenght);
     }
+
+    public bool CheckLeft()
+    {
+        return false;
+    }
+
+    public bool CheckRight()
+    {
+        return false;
+    }
     
 }

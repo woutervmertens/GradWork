@@ -207,15 +207,51 @@ public class UnitBehaviorTree : BehaviorTree
         return false;
     }
 
-    public bool CheckChangeLane()
+    public bool CheckLeftLane()
     {
-        //run lanecheck in child
+        if (Lane > 0) return GetComponent<Vehicle>().CheckLeftLane();
         return false;
     }
 
-    public BehaviorState ChangeLane()
+    public BehaviorState ChangeLaneLeft()
     {
         //move child to lane
+        _laneWidth = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth;
+        if (transform.GetChild(0).localPosition.x > (_laneWidth* (Lane + 1) - _laneWidth*0.5))
+        {
+            foreach (Transform child in transform)
+            {
+                Vector3 nl = child.localPosition;
+                nl.x -= LaneChangeSpeed*Time.deltaTime;
+                child.localPosition = nl;
+            }
+            return BehaviorState.Running;
+        }
+        Lane--;
+        return BehaviorState.Success;
+    }
+
+    public bool CheckRightLane()
+    {
+        if(Lane < MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).NrOfLanes)
+            return GetComponent<Vehicle>().CheckRightLane();
+        return false;
+    }
+
+    public BehaviorState ChangeLaneRight()
+    {
+        _laneWidth = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth;
+        if (transform.GetChild(0).localPosition.x < (_laneWidth * (Lane +1) - _laneWidth * 0.5))
+        {
+            foreach (Transform child in transform)
+            {
+                Vector3 nl = child.localPosition;
+                nl.x += LaneChangeSpeed * Time.deltaTime;
+                child.localPosition = nl;
+            }
+            return BehaviorState.Running;
+        }
+        Lane++;
         return BehaviorState.Success;
     }
 
