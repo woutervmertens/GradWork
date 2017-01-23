@@ -24,7 +24,7 @@ public class MainManager : MonoBehaviour
     public int MaxVehicles = 1;
     public float MaxDeltaTime = 0.1f;
 
-    private bool _isEditMode = false;
+    public bool _isEditMode = false;
 
     private ArrayList nodeList = new ArrayList();
     public ArrayList NodeList
@@ -69,6 +69,7 @@ public class MainManager : MonoBehaviour
             Destroy(veh.gameObject);
         }
         Vehicles.Clear();
+        if (spawners.Count == 0) return;
         foreach (var s in spawners)
         {
             s.ClearSpawn();
@@ -113,6 +114,7 @@ public class MainManager : MonoBehaviour
 
     public SpawnerNode GetRandomSpawner(SpawnerNode n)
     {
+        if (spawners.Count < 2) return null;
         SpawnerNode r;
         do
         {
@@ -124,11 +126,11 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        if (_isEditMode)
+        if (_isEditMode && spawners.Count > 0)
         {
             while (VehiclesNr < MaxVehicles && Time.deltaTime < MaxDeltaTime)
             {
-                int rand = Random.Range(0, spawners.Count);
+                int rand = Random.Range(0, spawners.Count-1);
                 spawners[rand].AddVehicle();
                 Debug.Log("Vehicle added");
             }

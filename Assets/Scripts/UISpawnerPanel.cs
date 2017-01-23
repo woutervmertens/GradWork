@@ -101,19 +101,19 @@ public class UISpawnerPanel : MonoBehaviour
 
     public void CarPerc(int v)
     {
-        _carPerc = v;
+        _carPerc = (int)CarSlider.value;
     }
     public void JeepPerc(int v)
     {
-        _jeepPerc = v;
+        _jeepPerc = (int)JeepSlider.value;
     }
     public void BikePerc(int v)
     {
-        _bikePerc = v;
+        _bikePerc = (int)BikeSlider.value;
     }
     public void TruckPerc(int v)
     {
-        _truckPerc = v;
+        _truckPerc = (int)TruckSlider.value;
     }
 
     public void RateChange(string s)

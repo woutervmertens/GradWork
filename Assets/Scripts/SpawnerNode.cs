@@ -21,10 +21,10 @@ public class SpawnerNode : Nodes {
     public bool SpawnBike = false;
     public bool SpawnTruck = false;
 
-    public int CarSpawnPerc;
-    public int JeepSpawnPerc;
-    public int BikeSpawnPerc;
-    public int TruckSpawnPerc;
+    public int CarSpawnPerc = 1;
+    public int JeepSpawnPerc = 1;
+    public int BikeSpawnPerc = 1;
+    public int TruckSpawnPerc = 1;
 
     public float GeneralSpawnRate;
 
@@ -42,8 +42,9 @@ public class SpawnerNode : Nodes {
 	// Update is called once per frame
 	void Update ()
 	{
-	    _timeCounter += Time.deltaTime + Random.Range(0,Time.deltaTime);
-	    if(SpawnCar)totalPerc += CarSpawnPerc;
+	    if (!MainManager.Main._isEditMode) return;
+	    _timeCounter += Time.deltaTime;// + Random.Range(0,Time.deltaTime)
+        if (SpawnCar)totalPerc += CarSpawnPerc;
         if (SpawnJeep) totalPerc += JeepSpawnPerc;
         if (SpawnBike) totalPerc +=BikeSpawnPerc;
         if (SpawnTruck) totalPerc += TruckSpawnPerc;
