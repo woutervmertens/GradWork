@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class Bike : Vehicle {
 
-    VehicleType VT = VehicleType.Bike;
     private bool _isOnIntersection = false;
+
+    void Start()
+    {
+        VT = VehicleType.Bike;
+    }
 
     void Update()
     {

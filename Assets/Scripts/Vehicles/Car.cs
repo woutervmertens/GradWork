@@ -5,8 +5,12 @@ using System.Xml.Schema;
 
 public class Car : Vehicle {
     // Use this for initialization
-    VehicleType VT = VehicleType.Car;
     private bool _isOnIntersection = false;
+
+    void Start()
+    {
+        VT = VehicleType.Car;
+    }
 
     void Update()
     {

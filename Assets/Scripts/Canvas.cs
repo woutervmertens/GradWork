@@ -15,7 +15,8 @@ public class Canvas : MonoBehaviour
 	    float fps = 1/Time.deltaTime;
 	    int fpsInt = (int)fps;
 	    txtFps.text = "FPS: " + fpsInt.ToString();
-	    int _actualVehNr = MainManager.Main.VehiclesNr;
+	    int _actualVehNr = 0;
+        if(MainManager.Main != null) _actualVehNr = MainManager.Main.VehiclesNr;
 	    if (_actualVehNr != _vehNr)
 	    {
             _vehNr = _actualVehNr;
