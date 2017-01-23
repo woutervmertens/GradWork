@@ -19,7 +19,7 @@ public class MainManager : MonoBehaviour
 {
 
     public static MainManager Main;
-    public double VehiclesNr { get; set; }
+    public int VehiclesNr { get { return Vehicles.Count; } }
 
     private ArrayList nodeList = new ArrayList();
     public ArrayList NodeList
