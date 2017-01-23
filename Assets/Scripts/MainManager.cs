@@ -28,7 +28,7 @@ public class MainManager : MonoBehaviour
     }
 
     public List<Vehicle> Vehicles = new List<Vehicle>();
-    private List<SpawnerNode> spawners;
+    private List<SpawnerNode> spawners = new List<SpawnerNode>();
 
     private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
 

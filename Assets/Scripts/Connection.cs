@@ -22,6 +22,7 @@ public class Connection : MonoBehaviour
     void Start()
     {
         Serial = MainManager.Main.GetConnectionCount() + 1;
+        MainManager.Main.AddConnection(this, Serial);
     }
 
     public void Add(List<Transform> l)

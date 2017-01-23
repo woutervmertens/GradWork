@@ -156,7 +156,6 @@ public class ModeSelect : MonoBehaviour
     private void AddRoad()
     {
         _lastRoadParent.GetComponent<Connection>().Draw();
-
         _isDrawingRoad = false;
     }
 
