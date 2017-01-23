@@ -78,4 +78,26 @@ public class Vehicle: MonoBehaviour
         }
         return false;
     }
+
+    public float GetVehicleLength()
+    {
+        switch (VT)
+        {
+            case VehicleType.Car:
+                return transform.GetChild(0).GetComponent<Car>().GetLength();
+                break;
+            case VehicleType.Truck:
+                return transform.GetChild(0).GetComponent<Truck>().GetLength();
+                break;
+            case VehicleType.Van:
+                return transform.GetChild(0).GetComponent<Van>().GetLength();
+                break;
+            case VehicleType.Bike:
+                return transform.GetChild(0).GetComponent<Bike>().GetLength();
+                break;
+            default:
+                return 0;
+        }
+        return 0;
+    }
 }

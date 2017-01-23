@@ -202,7 +202,21 @@ public class UnitBehaviorTree : BehaviorTree
 
     public bool CheckLeftLane()
     {
-        if (Lane > 0) return GetComponent<Vehicle>().CheckLeftLane();
+        if (Lane > 0)
+        {
+            Connection con = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
+            float vehLength = GetComponent<Vehicle>().GetVehicleLength();
+            float landWidth = con.LaneWidth;
+            float dist = Mathf.Sqrt((vehLength * vehLength) + (landWidth * landWidth));
+            int nrNBors = 0;
+            foreach (Vehicle neighbour in con.Vehicles)
+            {
+                if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
+                    nrNBors++;
+            }
+            if(nrNBors > 0) return GetComponent<Vehicle>().CheckLeftLane();
+            return true;
+        }
         return false;
     }
 
@@ -224,8 +238,21 @@ public class UnitBehaviorTree : BehaviorTree
 
     public bool CheckRightLane()
     {
-        if(Lane < MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).NrOfLanes)
-            return GetComponent<Vehicle>().CheckRightLane();
+        if (Lane < MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).NrOfLanes)
+        {
+            Connection con = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
+            float vehLength = GetComponent<Vehicle>().GetVehicleLength();
+            float landWidth = con.LaneWidth;
+            float dist = Mathf.Sqrt((vehLength * vehLength) + (landWidth * landWidth));
+            int nrNBors = 0;
+            foreach (Vehicle neighbour in con.Vehicles)
+            {
+                if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
+                    nrNBors++;
+            }
+            if (nrNBors > 0) return GetComponent<Vehicle>().CheckLeftLane();
+            return true;
+        }
         return false;
     }
 

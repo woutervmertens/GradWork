@@ -20,4 +20,9 @@ public class Truck : Vehicle {
     {
         return false;
     }
+
+    public float GetLength()
+    {
+        return transform.localScale.z;
+    }
 }

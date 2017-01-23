@@ -20,4 +20,9 @@ public class Bike : Vehicle {
     {
         return false;
     }
+
+    public float GetLength()
+    {
+        return transform.localScale.z;
+    }
 }

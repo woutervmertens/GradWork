@@ -46,18 +46,22 @@ public class SpawnerNode : Nodes {
 	        _timeCounter = 0;
 
 	    }
-	}
+        foreach (int con in Connections)
+        {
+            foreach (Vehicle veh in MainManager.Main.GetCon(con).Vehicles)
+            {
+                if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x &&
+                    veh.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
+                {
+                    Destroy(veh.gameObject);
+                }
+            }
+        }
+    }
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.transform.parent.GetType() == typeof(Vehicle))
-        {
-            if (col.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
-            {
-                Destroy(col.transform.parent.gameObject);
-            }
-        }
-        else if (col.transform.GetComponentInParent<Connection>() != null)
+        if (col.transform.GetComponentInParent<Connection>() != null)
         {
             bool alreadyExists = false;
             foreach (var con in Connections)

@@ -26,6 +26,18 @@ public class IntersectionNode : Nodes
 	        if (OpenConnectionIndex > Connections.Count) OpenConnectionIndex = 0;
 	    }
 
+	    foreach (int con in Connections)
+	    {
+	        foreach (Vehicle veh in MainManager.Main.GetCon(con).Vehicles)
+	        {
+	            if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x && !Vehicles.ContainsKey(veh))
+	            {
+                    Vehicles.Add(veh, veh.GetComponent<UnitBehaviorTree>().NextConnection);
+                    veh.transform.parent.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
+                }
+	        }
+	    }
+
 	}
 
     void OnTriggerEnter(Collider col)
@@ -50,11 +62,6 @@ public class IntersectionNode : Nodes
                 else if(tr.GetComponent<Connection>().Val2 == null)
                     tr.GetComponent<Connection>().Val2 = this;
             }
-        }
-        else if(tr.GetComponent<Vehicle>() != null && !Vehicles.ContainsKey(tr.GetComponent<Vehicle>()))
-        {
-            Vehicles.Add(tr.GetComponent<Vehicle>(),tr.GetComponent<UnitBehaviorTree>().NextConnection);
-            col.transform.parent.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
         }
     }
 }
