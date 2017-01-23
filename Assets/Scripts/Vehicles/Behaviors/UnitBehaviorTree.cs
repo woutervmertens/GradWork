@@ -193,6 +193,7 @@ public class UnitBehaviorTree : BehaviorTree
     }
     public bool CheckHitDetection()//if true -> avoid
     {
+        if (IsOnIntersection) return false;
         foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
         {
             if(neighbour == this.GetComponent<Vehicle>()) continue;

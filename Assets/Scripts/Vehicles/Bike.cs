@@ -5,7 +5,16 @@ using UnityEngine;
 public class Bike : Vehicle {
 
     VehicleType VT = VehicleType.Bike;
+    private bool _isOnIntersection = false;
 
+    void Update()
+    {
+        if (_isOnIntersection != GetComponent<UnitBehaviorTree>().IsOnIntersection)
+        {
+            _isOnIntersection = GetComponent<UnitBehaviorTree>().IsOnIntersection;
+            GetComponent<BoxCollider>().enabled = !_isOnIntersection;
+        }
+    }
     public bool CheckHit(float lenght)
     {
         Vector3 fwd = Vector3.forward;

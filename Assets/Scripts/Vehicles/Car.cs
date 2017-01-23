@@ -6,7 +6,16 @@ using System.Xml.Schema;
 public class Car : Vehicle {
     // Use this for initialization
     VehicleType VT = VehicleType.Car;
+    private bool _isOnIntersection = false;
 
+    void Update()
+    {
+        if (_isOnIntersection != GetComponent<UnitBehaviorTree>().IsOnIntersection)
+        {
+            _isOnIntersection = GetComponent<UnitBehaviorTree>().IsOnIntersection;
+            GetComponent<BoxCollider>().enabled = !_isOnIntersection;
+        }
+    }
     public bool CheckHit(float lenght)
     {
         Vector3 fwd = Vector3.forward;

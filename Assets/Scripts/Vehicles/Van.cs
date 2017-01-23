@@ -5,6 +5,16 @@ using UnityEngine;
 public class Van : Vehicle {
 
     VehicleType VT = VehicleType.Van;
+    private bool _isOnIntersection = false;
+
+    void Update()
+    {
+        if (_isOnIntersection != GetComponent<UnitBehaviorTree>().IsOnIntersection)
+        {
+            _isOnIntersection = GetComponent<UnitBehaviorTree>().IsOnIntersection;
+            GetComponent<BoxCollider>().enabled = !_isOnIntersection;
+        }
+    }
 
     public bool CheckHit(float lenght)
     {
