@@ -202,6 +202,7 @@ public class ModeSelect : MonoBehaviour
             if(node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
             BtnToggleMode.GetComponentInChildren<Text>().text = "Create";
             mode = MODE.EDIT;
+            MainManager.Main.ChangeMode(true);
             BtnIntersection.enabled = false;
             BtnConnection.enabled = false;
             BtnSpawner.enabled = false;
@@ -211,6 +212,7 @@ public class ModeSelect : MonoBehaviour
         {
             BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
             mode = MODE.CREATE;
+            MainManager.Main.ChangeMode(false);
             BtnIntersection.enabled = true;
             BtnConnection.enabled = true;
             BtnSpawner.enabled = false;

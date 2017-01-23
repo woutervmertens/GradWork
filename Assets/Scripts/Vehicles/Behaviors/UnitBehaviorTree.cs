@@ -552,7 +552,13 @@ public class UnitBehaviorTree : BehaviorTree
         //_clickTarget = new Vector3(-50,0,20);
 
         //Get Attributes
-
+        Speed = GetComponent<Vehicle>().Speed;
+        _accelSpeed = GetComponent<Vehicle>().AccelSpeed;
+        _breakSpeed = GetComponent<Vehicle>().BreakSpeed;
+        _bufferLength = GetComponent<Vehicle>().BufferLength;
+        _length = GetComponent<Vehicle>().Lenght;
+        _width = GetComponent<Vehicle>().Width;
+        LaneChangeSpeed = GetComponent<Vehicle>().LaneChangeSpeed;
 
         //------------------------------------------------------------------
         // BEHAVIOUR TREES
@@ -609,7 +615,7 @@ public class UnitBehaviorTree : BehaviorTree
         //};
         //Sequence combinedSequence = new Sequence(combinedBehavior.ToArray());
 
-        List<BehaviorComponent> trafficBehavior = new List<BehaviorComponent>()
+        List <BehaviorComponent> trafficBehavior = new List<BehaviorComponent>()
         {
             new BehaviorAction(CheckStartEndNodes),
             new BehaviorAction(PathFinding),

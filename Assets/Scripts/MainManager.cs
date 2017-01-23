@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.WSA;
 using Random = UnityEngine.Random;
 
 public class DuoNodes
@@ -20,6 +21,10 @@ public class MainManager : MonoBehaviour
 
     public static MainManager Main;
     public int VehiclesNr { get { return Vehicles.Count; } }
+    public int MaxVehicles = 1;
+    public float MaxDeltaTime = 0.1f;
+
+    private bool _isEditMode = false;
 
     private ArrayList nodeList = new ArrayList();
     public ArrayList NodeList
@@ -48,6 +53,25 @@ public class MainManager : MonoBehaviour
         else if (Main != this)
         {
             Destroy(gameObject);
+        }
+    }
+
+    public void ChangeMode(bool isEdit)
+    {
+        _isEditMode = isEdit;
+        if (!isEdit) DeleteVehicles();
+    }
+
+    private void DeleteVehicles()
+    {
+        foreach (var veh in Vehicles)
+        {
+            Destroy(veh.gameObject);
+        }
+        Vehicles.Clear();
+        foreach (var s in spawners)
+        {
+            s.ClearSpawn();
         }
     }
 
@@ -96,5 +120,18 @@ public class MainManager : MonoBehaviour
             r = spawners[rand];
         } while (r == n);
         return r;
+    }
+
+    void Update()
+    {
+        if (_isEditMode)
+        {
+            while (VehiclesNr < MaxVehicles && Time.deltaTime < MaxDeltaTime)
+            {
+                int rand = Random.Range(0, spawners.Count);
+                spawners[rand].AddVehicle();
+                Debug.Log("Vehicle added");
+            }
+        }
     }
 }

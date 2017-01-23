@@ -118,6 +118,10 @@ public class SpawnerNode : Nodes {
         }
     }
 
+    public void ClearSpawn()
+    {
+        VehiclesToSpawn.Clear();
+    }
     private void Spawn(GameObject v)
     {
         int conNr = Random.Range(0, Connections.Count);
