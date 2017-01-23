@@ -49,7 +49,7 @@ public class SpawnerNode : Nodes {
         if (SpawnBike) totalPerc +=BikeSpawnPerc;
         if (SpawnTruck) totalPerc += TruckSpawnPerc;
 	    totalPerc = CarSpawnPerc*(SpawnCar ? 1 : 0) + JeepSpawnPerc* (SpawnJeep ? 1 : 0) + BikeSpawnPerc* (SpawnBike ? 1 : 0) + TruckSpawnPerc* (SpawnTruck ? 1 : 0);
-	    if (GeneralSpawnRate <= _timeCounter && VehiclesToSpawn.Count != 0)
+	    if (GeneralSpawnRate <= _timeCounter && VehiclesToSpawn.Count != 0 && Connections.Count > 0)
 	    {
 	        _timeCounter = 0;
             Spawn(VehiclesToSpawn.First.Value);
@@ -130,6 +130,7 @@ public class SpawnerNode : Nodes {
 
         GameObject g = Instantiate(v, ConnectionPos[conNr],
             Quaternion.FromToRotation(transform.position, ConnectionPos[conNr]));
+        MainManager.Main.Vehicles.Add(g.GetComponent<Vehicle>());
         g.GetComponent<UnitBehaviorTree>().SetStartAndEnd(this,MainManager.Main.GetRandomSpawner(this));
         g.GetComponent<UnitBehaviorTree>().Lane = LaneNr;
     }

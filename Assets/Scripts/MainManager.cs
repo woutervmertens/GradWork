@@ -21,6 +21,7 @@ public class MainManager : MonoBehaviour
 
     public static MainManager Main;
     public int VehiclesNr { get { return Vehicles.Count; } }
+    private int _vehiclesRequested = 0;
     public int MaxVehicles = 1;
     public float MaxDeltaTime = 0.1f;
 
@@ -128,11 +129,12 @@ public class MainManager : MonoBehaviour
     {
         if (_isEditMode && spawners.Count > 0)
         {
-            while (VehiclesNr < MaxVehicles && Time.deltaTime < MaxDeltaTime)
+            while (_vehiclesRequested < MaxVehicles && Time.deltaTime < MaxDeltaTime)
             {
                 int rand = Random.Range(0, spawners.Count-1);
                 spawners[rand].AddVehicle();
                 Debug.Log("Vehicle added");
+                _vehiclesRequested++;
             }
         }
     }
