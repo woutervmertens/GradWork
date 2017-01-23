@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum VehicleType
 {
@@ -36,42 +37,42 @@ public class Vehicle: MonoBehaviour
         return false;
     }
 
-    public bool CheckLeftLane()
+    public bool CheckLeftLane(List<Transform> n, float lw)
     {
         switch (VT)
         {
             case VehicleType.Car:
-                return transform.GetChild(0).GetComponent<Car>().CheckLeft();
+                return transform.GetChild(0).GetComponent<Car>().CheckLeft(n,lw);
                 break;
             case VehicleType.Truck:
-                return transform.GetChild(0).GetComponent<Truck>().CheckLeft();
+                return transform.GetChild(0).GetComponent<Truck>().CheckLeft(n,lw);
                 break;
             case VehicleType.Van:
-                return transform.GetChild(0).GetComponent<Van>().CheckLeft();
+                return transform.GetChild(0).GetComponent<Van>().CheckLeft(n,lw);
                 break;
             case VehicleType.Bike:
-                return transform.GetChild(0).GetComponent<Bike>().CheckLeft();
+                return transform.GetChild(0).GetComponent<Bike>().CheckLeft(n,lw);
                 break;
             default:
                 return false;
         }
         return false;
     }
-    public bool CheckRightLane()
+    public bool CheckRightLane(List<Transform> n, float lw)
     {
         switch (VT)
         {
             case VehicleType.Car:
-                return transform.GetChild(0).GetComponent<Car>().CheckRight();
+                return transform.GetChild(0).GetComponent<Car>().CheckRight(n, lw);
                 break;
             case VehicleType.Truck:
-                return transform.GetChild(0).GetComponent<Truck>().CheckRight();
+                return transform.GetChild(0).GetComponent<Truck>().CheckRight(n, lw);
                 break;
             case VehicleType.Van:
-                return transform.GetChild(0).GetComponent<Van>().CheckRight();
+                return transform.GetChild(0).GetComponent<Van>().CheckRight(n, lw);
                 break;
             case VehicleType.Bike:
-                return transform.GetChild(0).GetComponent<Bike>().CheckRight();
+                return transform.GetChild(0).GetComponent<Bike>().CheckRight(n, lw);
                 break;
             default:
                 return false;

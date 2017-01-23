@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml.Schema;
 
 public class Car : Vehicle {
@@ -13,15 +14,26 @@ public class Car : Vehicle {
         return Physics.Raycast(transform.position, fwd, lenght, layerCast);
     }
 
-    public bool CheckLeft()
+    public bool CheckLeft(List<Transform> n, float lw)
     {
-
-        return false;
+        Vector3 leftVector3 = transform.TransformVector(Vector3.left * lw);
+        
+        foreach (Transform _n in n)
+        {
+            if (Vector3.Distance(_n.position, transform.position + leftVector3) < transform.localScale.z) return false;
+        }
+        return true;
     }
 
-    public bool CheckRight()
+    public bool CheckRight(List<Transform> n, float lw)
     {
-        return false;
+        Vector3 rightVector3 = transform.TransformVector(Vector3.right * lw);
+
+        foreach (Transform _n in n)
+        {
+            if (Vector3.Distance(_n.position, transform.position + rightVector3) < transform.localScale.z) return false;
+        }
+        return true;
     }
 
     public float GetLength()

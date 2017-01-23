@@ -206,15 +206,15 @@ public class UnitBehaviorTree : BehaviorTree
         {
             Connection con = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
             float vehLength = GetComponent<Vehicle>().GetVehicleLength();
-            float landWidth = con.LaneWidth;
-            float dist = Mathf.Sqrt((vehLength * vehLength) + (landWidth * landWidth));
-            int nrNBors = 0;
+            float laneWidth = con.LaneWidth;
+            float dist = Mathf.Sqrt((vehLength * vehLength) + (laneWidth * laneWidth));
+            List<Transform> nrNBors = new List<Transform>();
             foreach (Vehicle neighbour in con.Vehicles)
             {
                 if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
-                    nrNBors++;
+                    nrNBors.Add(neighbour.transform);
             }
-            if(nrNBors > 0) return GetComponent<Vehicle>().CheckLeftLane();
+            if(nrNBors.Count > 0) return GetComponent<Vehicle>().CheckLeftLane(nrNBors, laneWidth);
             return true;
         }
         return false;
@@ -242,15 +242,15 @@ public class UnitBehaviorTree : BehaviorTree
         {
             Connection con = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
             float vehLength = GetComponent<Vehicle>().GetVehicleLength();
-            float landWidth = con.LaneWidth;
-            float dist = Mathf.Sqrt((vehLength * vehLength) + (landWidth * landWidth));
-            int nrNBors = 0;
+            float laneWidth = con.LaneWidth;
+            float dist = Mathf.Sqrt((vehLength * vehLength) + (laneWidth * laneWidth));
+            List<Transform> nrNBors = new List<Transform>();
             foreach (Vehicle neighbour in con.Vehicles)
             {
                 if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
-                    nrNBors++;
+                    nrNBors.Add(neighbour.transform);
             }
-            if (nrNBors > 0) return GetComponent<Vehicle>().CheckLeftLane();
+            if (nrNBors.Count > 0) return GetComponent<Vehicle>().CheckLeftLane(nrNBors, laneWidth);
             return true;
         }
         return false;
