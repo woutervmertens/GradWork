@@ -8,29 +8,29 @@ public class UIIntersectionPanel : MonoBehaviour
 
     private IntersectionNode _selected;
     private float _lightSwitchRate;
-    private float _speedLimit;
+    //private float _speedLimit;
 
     public InputField SwitchIn;
-    public InputField SpeedIn;
+    //public InputField SpeedIn;
 
     void Start()
     {
         _selected = MainManager.Main.LastSelectedGameObject.GetComponent<IntersectionNode>();
         _lightSwitchRate = _selected.LightSwitchingRate;
-        _speedLimit = _selected.SpeedLimit;
+        //_speedLimit = _selected.SpeedLimit;
     }
 
     public void Show()
     {
         Start();
         SwitchIn.text = _lightSwitchRate.ToString();
-        SpeedIn.text = _speedLimit.ToString();
+        //SpeedIn.text = _speedLimit.ToString();
     }
 
     public void Close()
     {
         _selected.LightSwitchingRate = _lightSwitchRate;
-        _selected.SpeedLimit = _speedLimit;
+        //_selected.SpeedLimit = _speedLimit;
         transform.parent.gameObject.SetActive(false);
     }
 
@@ -41,12 +41,12 @@ public class UIIntersectionPanel : MonoBehaviour
         if (b > 0) _lightSwitchRate = b;
     }
 
-    public void ChangeSpeedLimit(string i)
-    {
-        i = SpeedIn.text;
-        float b = StripNonFloats(i);
-        if (b > 0) _speedLimit = b;
-    }
+    //public void ChangeSpeedLimit(string i)
+    //{
+    //    i = SpeedIn.text;
+    //    float b = StripNonFloats(i);
+    //    if (b > 0) _speedLimit = b;
+    //}
 
     private float StripNonFloats(string i)
     {

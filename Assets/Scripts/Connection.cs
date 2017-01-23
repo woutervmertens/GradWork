@@ -59,9 +59,12 @@ public class Connection : MonoBehaviour
     public void Draw()
     {
         GetComponent<LineRenderer>().numPositions = transform.childCount;
+        Vector3 pos = new Vector3();
         for (int i = 0; i < transform.childCount; i++)
         {
-            GetComponent<LineRenderer>().SetPosition(i, transform.GetChild(i).position);
+            pos = transform.GetChild(i).position;
+            pos.y += 0.1f;
+            GetComponent<LineRenderer>().SetPosition(i, pos);
             //can't stop linerenderer billboarding: check out https://github.com/geniikw/drawLine
         }
     }

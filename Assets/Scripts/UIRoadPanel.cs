@@ -60,6 +60,7 @@ public class UIRoadPanel : MonoBehaviour
     }
 
     //One way streets?
+    //No!
 
     private float StripNonFloats(string i)
     {

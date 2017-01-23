@@ -34,9 +34,11 @@ public class IntersectionNode : Nodes
 	            {
                     Vehicles.Add(veh, veh.GetComponent<UnitBehaviorTree>().NextConnection);
                     veh.transform.parent.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
-                }
+	                veh.transform.position = transform.position;
+	            }
 	        }
 	    }
+        //DO THE THING JULIEE
 
 	}
 
