@@ -15,6 +15,16 @@ public class Vehicle: MonoBehaviour
 {
     public VehicleType VT;
 
+    //Attributes
+    public float Speed;
+    public float Width;
+    public float Lenght;
+    public float LaneChangeSpeed;
+    public float BreakSpeed;
+    public float AccelSpeed;
+    public float BufferLength;
+    public int Lane;
+
     public bool RayTest(float length)
     {
         switch (VT)

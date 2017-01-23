@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class DuoNodes
 {
@@ -26,13 +27,16 @@ public class MainManager : MonoBehaviour
         get { return nodeList; }
     }
 
-    public List<Vehicle> Vehicles = new List<Vehicle>(); 
+    public List<Vehicle> Vehicles = new List<Vehicle>();
+    private List<SpawnerNode> spawners;
 
     private Dictionary<int,Connection> conDic = new Dictionary<int, Connection>();
 
     private int connectionCount = 0;
 
     public GameObject LastSelectedGameObject;
+
+    public float GeneralSpawnrate = 5;
 
     void Awake()
     {
@@ -63,9 +67,9 @@ public class MainManager : MonoBehaviour
         conDic.Remove(n);
     }
 
-    public void RemoveNode<T>(T node)
+    public void AddSpawner(SpawnerNode s)
     {
-        
+        spawners.Add(s);
     }
 
     public Connection GetCon(int n)
@@ -81,5 +85,16 @@ public class MainManager : MonoBehaviour
     public int GetNodeCount()
     {
         return connectionCount;
+    }
+
+    public SpawnerNode GetRandomSpawner(SpawnerNode n)
+    {
+        SpawnerNode r;
+        do
+        {
+            int rand = Random.Range(0, spawners.Count);
+            r = spawners[rand];
+        } while (r == n);
+        return r;
     }
 }

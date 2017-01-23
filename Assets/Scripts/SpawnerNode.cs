@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using Random = UnityEngine.Random;
 
 public class SpawnerNode : Nodes {
 
     public List<int> Connections = new List<int>();
+    private List<Vector3> ConnectionPos = new List<Vector3>();
+    private LinkedList<GameObject> VehiclesToSpawn = new LinkedList<GameObject>(); 
     //List of spawnables
     public GameObject CarPrefab;
     public GameObject TruckPrefab;
@@ -25,26 +29,30 @@ public class SpawnerNode : Nodes {
     public float GeneralSpawnRate;
 
     private float _timeCounter = 0;
+    private int totalPerc = 0;
 
 
     // Use this for initialization
     void Start () {
 	    MainManager.Main.AddNode(this);
-	}
+        MainManager.Main.AddSpawner(this);
+        GeneralSpawnRate = MainManager.Main.GeneralSpawnrate;
+    }
 	
 	// Update is called once per frame
 	void Update ()
 	{
 	    _timeCounter += Time.deltaTime + Random.Range(0,Time.deltaTime);
-	    int totalPerc = 0;
 	    if(SpawnCar)totalPerc += CarSpawnPerc;
         if (SpawnJeep) totalPerc += JeepSpawnPerc;
         if (SpawnBike) totalPerc +=BikeSpawnPerc;
         if (SpawnTruck) totalPerc += TruckSpawnPerc;
-	    if (GeneralSpawnRate <= _timeCounter)
+	    totalPerc = CarSpawnPerc*(SpawnCar ? 1 : 0) + JeepSpawnPerc* (SpawnJeep ? 1 : 0) + BikeSpawnPerc* (SpawnBike ? 1 : 0) + TruckSpawnPerc* (SpawnTruck ? 1 : 0);
+	    if (GeneralSpawnRate <= _timeCounter && VehiclesToSpawn.Count != 0)
 	    {
 	        _timeCounter = 0;
-
+            Spawn(VehiclesToSpawn.First.Value);
+            VehiclesToSpawn.RemoveFirst();
 	    }
         foreach (int con in Connections)
         {
@@ -75,11 +83,49 @@ public class SpawnerNode : Nodes {
             if (!alreadyExists)
             {
                 Connections.Add(col.gameObject.transform.parent.GetComponent<Connection>().Serial);
+                ConnectionPos.Add(col.gameObject.transform.position);
                 if (col.GetComponentInParent<Connection>().Val1 == null)
                     col.GetComponentInParent<Connection>().Val1 = this;
                 else if (col.GetComponentInParent<Connection>().Val2 == null)
                     col.GetComponentInParent<Connection>().Val2 = this;
             }
         }
+    }
+
+    public void AddVehicle()
+    {
+        float perc = Random.Range(0, totalPerc);
+        float tempperc = CarSpawnPerc*(SpawnCar ? 1 : 0);
+        if (perc < tempperc) { VehiclesToSpawn.AddFirst(CarPrefab);
+            return;
+        }
+        tempperc += JeepSpawnPerc*(SpawnJeep ? 1 : 0);
+        if (perc < tempperc)
+        {
+            VehiclesToSpawn.AddFirst(JeepPrefab);
+            return;
+        }
+        tempperc += TruckSpawnPerc*(SpawnTruck ? 1 : 0);
+        if (perc < tempperc)
+        {
+            VehiclesToSpawn.AddFirst(TruckPrefab);
+            return;
+        }
+        tempperc += BikeSpawnPerc * (SpawnBike ? 1 : 0);
+        if (perc < tempperc)
+        {
+            VehiclesToSpawn.AddFirst(BikePrefab);
+        }
+    }
+
+    private void Spawn(GameObject v)
+    {
+        int conNr = Random.Range(0, Connections.Count);
+        int LaneNr = Random.Range(1, MainManager.Main.GetCon(Connections[conNr]).NrOfLanes);
+
+        GameObject g = Instantiate(v, ConnectionPos[conNr],
+            Quaternion.FromToRotation(transform.position, ConnectionPos[conNr]));
+        g.GetComponent<UnitBehaviorTree>().SetStartAndEnd(this,MainManager.Main.GetRandomSpawner(this));
+        g.GetComponent<UnitBehaviorTree>().Lane = LaneNr;
     }
 }

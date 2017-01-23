@@ -34,6 +34,7 @@ public class UnitBehaviorTree : BehaviorTree
     public float LaneChangeSpeed;
     public float _breakSpeed;
     public float _bufferLength;
+    private float _accelSpeed;
 
     //PathData
     private LinkedList<Nodes> PathFound = new LinkedList<Nodes>();
@@ -58,6 +59,11 @@ public class UnitBehaviorTree : BehaviorTree
     // AI BEHAVIOURS
     //------------------------------------------------------------------
 
+    public BehaviorState CheckStartEndNodes()
+    {
+        if (startNode != null && endNode != null) return BehaviorState.Success;
+        return BehaviorState.Running;
+    }
     public BehaviorState FollowRoad()//Run parallel to hit detection on child
     {
         if (_currentWayPointId > PathToFollow.nodes.Count - 1)
@@ -271,6 +277,15 @@ public class UnitBehaviorTree : BehaviorTree
         return BehaviorState.Success;
     }
 
+    public BehaviorState SpeedUp()
+    {
+        if (Speed < (MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).MaxSpeed)*((100-(5*(Lane-1)))/100))
+        {
+            Speed += _accelSpeed*Time.deltaTime;
+            return BehaviorState.Running;
+        }
+        return BehaviorState.Success;
+    }
     public BehaviorState SlowDown()
     {
         //slow down untill ray is false
@@ -518,6 +533,12 @@ public class UnitBehaviorTree : BehaviorTree
     public Nodes GetTargetNode()
     {
         return _endNodes;
+    }
+
+    public void SetStartAndEnd(SpawnerNode start, SpawnerNode end)
+    {
+        startNode = start;
+        endNode = end;
     }
     void Start ()
     {
