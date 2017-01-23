@@ -92,7 +92,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public BehaviorState PathFinding()//Run once, if failed pick different endnode
     {
-        if(Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
+        if(Path.Count > 0 && Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
         //Clear
         Path.Clear();
 

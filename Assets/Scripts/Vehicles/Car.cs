@@ -14,6 +14,7 @@ public class Car : Vehicle {
 
     void Update()
     {
+        if (GetComponent<UnitBehaviorTree>() == null) return;
         if (_isOnIntersection != GetComponent<UnitBehaviorTree>().IsOnIntersection)
         {
             _isOnIntersection = GetComponent<UnitBehaviorTree>().IsOnIntersection;
