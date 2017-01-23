@@ -92,6 +92,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public BehaviorState PathFinding()//Run once, if failed pick different endnode
     {
+        if(Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
         //Clear
         Path.Clear();
 
@@ -209,7 +210,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public bool CheckLeftLane()
     {
-        if (Lane > 0)
+        if (Lane > 1)
         {
             Connection con = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
             float vehLength = GetComponent<Vehicle>().GetVehicleLength();
@@ -556,59 +557,88 @@ public class UnitBehaviorTree : BehaviorTree
         //------------------------------------------------------------------
         // BEHAVIOUR TREES
         //------------------------------------------------------------------
-        List<BehaviorComponent> goToBehaviours = new List<BehaviorComponent>
-        {
-           //new BehaviorAction(GoToClick) 
-        };
-        PartialSequence goToSequence = new PartialSequence(goToBehaviours.ToArray());
+        //List<BehaviorComponent> goToBehaviours = new List<BehaviorComponent>
+        //{
+        //   //new BehaviorAction(GoToClick) 
+        //};
+        //PartialSequence goToSequence = new PartialSequence(goToBehaviours.ToArray());
 
-        List<BehaviorComponent> guardBehaviors = new List<BehaviorComponent>
+        //List<BehaviorComponent> guardBehaviors = new List<BehaviorComponent>
+        //{
+        //    //new BehaviorAction(ResetNavMeshContent),
+        //    new Selector(new List<BehaviorComponent>
+        //    {
+        //        new Sequence(new List<BehaviorComponent>
+        //        {
+        //            //new BehaviorConditional(FindClosestEnemyInRange),
+        //            //new BehaviorAction(GoToTarget),
+        //            //new BehaviorAction(AttackEnemy)
+        //        }.ToArray()),
+        //        new BehaviorAction(Idle)
+        //    }.ToArray())
+        //};
+        //Sequence guardSequence = new Sequence(guardBehaviors.ToArray());
+
+        ////FLOCKING
+        //List<BehaviorComponent> flockingBehavior = new List<BehaviorComponent>()
+        //{
+        //    //new BehaviorAction(ResetNavMeshContent),
+        //    new Selector(new List<BehaviorComponent>
+        //    {
+        //        //new BehaviorAction(ReceivedClickTarget),
+        //        //new BehaviorAction(FlockToTarget)
+        //    }.ToArray())
+        //};
+        //Sequence flockSequence = new Sequence(flockingBehavior.ToArray());
+
+        ////COMBINED
+        //List<BehaviorComponent> combinedBehavior = new List<BehaviorComponent>()
+        //{
+        //    //new BehaviorAction(ResetNavMeshContent),
+        //    new Selector(new List<BehaviorComponent>
+        //    {
+        //        new Sequence(new List<BehaviorComponent>
+        //        {
+        //            //new BehaviorConditional(FindClosestEnemyInRange),
+        //            //new BehaviorAction(AttackEnemy)
+        //        }.ToArray()),
+        //        //new BehaviorAction(ReceivedClickTarget),
+        //        //new BehaviorAction(FlockToTarget),
+        //        new BehaviorAction(Idle)
+        //    }.ToArray())
+        //};
+        //Sequence combinedSequence = new Sequence(combinedBehavior.ToArray());
+
+        List<BehaviorComponent> trafficBehavior = new List<BehaviorComponent>()
         {
-            //new BehaviorAction(ResetNavMeshContent),
-            new Selector(new List<BehaviorComponent>
+            new BehaviorAction(CheckStartEndNodes),
+            new BehaviorAction(PathFinding),
+            new Sequence(new List<BehaviorComponent>
             {
-                new Sequence(new List<BehaviorComponent>
+                new BehaviorAction(Intersection),
+                new Parallel(new List<BehaviorComponent>
                 {
-                    //new BehaviorConditional(FindClosestEnemyInRange),
-                    //new BehaviorAction(GoToTarget),
-                    //new BehaviorAction(AttackEnemy)
-                }.ToArray()),
-                new BehaviorAction(Idle)
+                    new BehaviorAction(FollowRoad),
+                    new BehaviorAction(SpeedUp),
+                    new Selector(new List<BehaviorComponent>
+                    {
+                        new Sequence(new List<BehaviorComponent>
+                        {
+                            new BehaviorConditional(CheckHitDetection),
+                            new BehaviorAction(ChangeLaneLeft)
+                        }.ToArray()),
+                        new BehaviorAction(SlowDown)
+                    }.ToArray()),
+                    new Sequence(new List<BehaviorComponent>
+                    {
+                        new BehaviorConditional(CheckRightLane),
+                        new BehaviorAction(ChangeLaneRight)
+                    }.ToArray())
+                }.ToArray(),5)
             }.ToArray())
         };
-        Sequence guardSequence = new Sequence(guardBehaviors.ToArray());
-
-        //FLOCKING
-        List<BehaviorComponent> flockingBehavior = new List<BehaviorComponent>()
-        {
-            //new BehaviorAction(ResetNavMeshContent),
-            new Selector(new List<BehaviorComponent>
-            {
-                //new BehaviorAction(ReceivedClickTarget),
-                //new BehaviorAction(FlockToTarget)
-            }.ToArray())
-        };
-        Sequence flockSequence = new Sequence(flockingBehavior.ToArray());
-
-        //COMBINED
-        List<BehaviorComponent> combinedBehavior = new List<BehaviorComponent>()
-        {
-            //new BehaviorAction(ResetNavMeshContent),
-            new Selector(new List<BehaviorComponent>
-            {
-                new Sequence(new List<BehaviorComponent>
-                {
-                    //new BehaviorConditional(FindClosestEnemyInRange),
-                    //new BehaviorAction(AttackEnemy)
-                }.ToArray()),
-                //new BehaviorAction(ReceivedClickTarget),
-                //new BehaviorAction(FlockToTarget),
-                new BehaviorAction(Idle)
-            }.ToArray())
-        };
-        Sequence combinedSequence = new Sequence(combinedBehavior.ToArray());
-
+        Sequence trafficSequence = new Sequence(trafficBehavior.ToArray());
         //Set default
-        SetDefaultComposite(combinedSequence);
+        SetDefaultComposite(trafficSequence);
     }
 }

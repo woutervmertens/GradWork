@@ -75,6 +75,55 @@ namespace Assets.Scripts.Behaviors
         }
     }
 
+    public class Parallel : BehaviorComponent
+    {
+        //Our children
+        protected List<BehaviorComponent> ChildrenBehaviours;
+        private int _neededToSucceed = 0;
+        private int _nFailed = 0;
+        private int _nSucceeded = 0;
+        //CONSTRUCTOR
+        public Parallel(BehaviorComponent[] childrenBehaviours, int neededToSucceed)
+        {
+            ChildrenBehaviours = new List<BehaviorComponent>(childrenBehaviours);
+            _neededToSucceed = neededToSucceed;
+        }
+        //METHODS
+        public override BehaviorState Execute()
+        {
+            _nFailed = 0;
+            _nSucceeded = 0;
+            //Perform AND like behavior
+            foreach (var child in ChildrenBehaviours)
+            {
+                CurrentState = child.Execute();
+                switch (CurrentState)
+                {
+                    case BehaviorState.Failure:
+                    {
+                        _nFailed++;
+                        continue;
+                    }
+                    case BehaviorState.Success:
+                        _nSucceeded++;
+                        continue;
+                    case BehaviorState.Running:
+                        continue;
+                    default:
+                        continue;
+                }
+            }
+            if(_nSucceeded >= _neededToSucceed)
+                return CurrentState = BehaviorState.Success;
+            else if(_nFailed >= _neededToSucceed)
+                return CurrentState = BehaviorState.Failure;
+            else
+            {
+                return CurrentState = BehaviorState.Running;
+            }
+        }
+    }
+
     //PARTIAL SEQUENCE (parallel untill all completed)
     public class PartialSequence : BehaviorComponent
     {
