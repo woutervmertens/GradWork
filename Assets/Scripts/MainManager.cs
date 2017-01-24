@@ -114,6 +114,17 @@ public class MainManager : MonoBehaviour
         return connectionCount;
     }
 
+    public void CleanOutVehicleList()
+    {
+        List<Vehicle> tempList = new List<Vehicle>();
+        foreach (var veh in Vehicles)
+        {
+            if(veh != null) tempList.Add(veh);
+        }
+        Vehicles = tempList;
+        _vehiclesRequested = Vehicles.Count;
+    }
+
     public SpawnerNode GetRandomSpawner(SpawnerNode n)
     {
         if (spawners.Count < 2) return null;
@@ -132,11 +143,13 @@ public class MainManager : MonoBehaviour
         {
             while (_vehiclesRequested < MaxVehicles && Time.deltaTime < MaxDeltaTime)
             {
-                int rand = Random.Range(0, spawners.Count-1);
+                int rand = Random.Range(0, spawners.Count);
                 spawners[rand].AddVehicle();
                 Debug.Log("Vehicle added");
                 _vehiclesRequested++;
             }
         }
+        if(_vehiclesRequested >= MaxVehicles)
+            CleanOutVehicleList();
     }
 }
