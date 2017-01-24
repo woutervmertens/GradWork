@@ -39,7 +39,7 @@ public class UnitBehaviorTree : BehaviorTree
     //PathData
     private LinkedList<Nodes> PathFound = new LinkedList<Nodes>();
     public List<Nodes> Path = new List<Nodes>();
-    private int PathNodeIndex = 1;
+    public int PathNodeIndex = 1;
     private List<int> RoadPath = new List<int>();
     private int RoadNodeIndex = 0;
     private SpawnerNode startNode;
