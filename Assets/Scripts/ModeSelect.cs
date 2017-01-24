@@ -63,7 +63,7 @@ public class ModeSelect : MonoBehaviour
 	            var screenRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 	            RaycastHit hitInfo;
                 int layerCast = 1 << 8;
-                if (Physics.Raycast(screenRay, out hitInfo, layerCast))
+                if (Physics.Raycast(screenRay, out hitInfo,Mathf.Infinity, layerCast))
 	            {
 	                switch (node)
 	                {
