@@ -36,7 +36,7 @@
 //        {
 //            if (col.GetType() == typeof(Vehicle))
 //            {
-//                if (col.gameObject.GetComponent<Vehicle>().GetTargetNode() == this.GetComponent<Node>())
+//                if (col.gameObject.GetComponent<Vehicle>().GetStartNode() == this.GetComponent<Node>())
 //                {
 //                    Destroy(col.gameObject);
 //                }
