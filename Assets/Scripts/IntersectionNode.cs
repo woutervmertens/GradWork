@@ -31,15 +31,20 @@ public class IntersectionNode : Nodes
             _releasedIndex = 0;
             foreach (var rel in releaseAbleVehicles)
 	        {
-	            if(rel != null && Vector3.Distance(rel.transform.position, transform.position) < transform.localScale.x) Vehicles.Add(rel,OpenConnectionIndex);
+	            if (rel != null && Vector3.Distance(rel.transform.position, transform.position) < transform.localScale.x)
+	            {
+	                if (Vehicles.ContainsKey(rel)) Vehicles[rel] = OpenConnectionIndex;
+	                else Vehicles.Add(rel,OpenConnectionIndex);
+	            }
 	        }
             releaseAbleVehicles.Clear();
 	        OpenConnectionIndex++;
 	        _lightCounter = 0;
-	        if (OpenConnectionIndex > Connections.Count) OpenConnectionIndex = 0;
+	        if (OpenConnectionIndex >= Connections.Count) OpenConnectionIndex = 0;
             
 	        foreach (var veh in Vehicles)
 	        {
+	            if (veh.Value == null) continue;
 	            if (veh.Value == Connections[OpenConnectionIndex])
 	            {
 	                releaseAbleVehicles.Add(veh.Key);

@@ -62,7 +62,8 @@ public class SpawnerNode : Nodes {
             {
                 if (veh == null) continue;
                 if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x + 0.2 &&
-                    veh.GetComponent<UnitBehaviorTree>().GetStartNode() != this)
+                    (veh.GetComponent<UnitBehaviorTree>().GetStartNode() != this ||
+                    veh.GetComponent<UnitBehaviorTree>().IsNextNextNodeThisone(this)))
                 {
                     MainManager.Main.GetCon(con).Vehicles.Remove(veh);
                     Destroy(veh.gameObject);

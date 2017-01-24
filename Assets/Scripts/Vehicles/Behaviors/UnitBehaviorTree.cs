@@ -38,7 +38,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     //PathData
     private LinkedList<Nodes> PathFound = new LinkedList<Nodes>();
-    private List<Nodes> Path = new List<Nodes>();
+    public List<Nodes> Path = new List<Nodes>();
     private int PathNodeIndex = 1;
     private List<int> RoadPath = new List<int>();
     private int RoadNodeIndex = 0;
@@ -324,6 +324,19 @@ public class UnitBehaviorTree : BehaviorTree
     public Nodes GetStartNode()
     {
         return _startNodes;
+    }
+
+    public bool IsNextNextNodeThisone(Nodes n)
+    {
+        if (Path.Count < PathNodeIndex + 2)
+        {
+            return false;
+        }
+        if (Path[PathNodeIndex + 1] == n || Path[PathNodeIndex + 2] == n)
+        {
+            return true;
+        }
+        return false;
     }
 
     public void SetStartAndEnd(SpawnerNode start, SpawnerNode end)
