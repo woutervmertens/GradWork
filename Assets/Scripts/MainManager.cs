@@ -25,7 +25,8 @@ public class MainManager : MonoBehaviour
     public int MaxVehicles = 1;
     public float MaxDeltaTime = 0.1f;
 
-    public bool _isEditMode = false;
+    private bool _isEditMode = false;
+    public bool IsSimMode = false;
 
     private ArrayList nodeList = new ArrayList();
     public ArrayList NodeList
@@ -139,7 +140,7 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        if (_isEditMode && spawners.Count > 0)
+        if (IsSimMode && spawners.Count > 0)
         {
             while (_vehiclesRequested < MaxVehicles && Time.deltaTime < MaxDeltaTime)
             {

@@ -336,7 +336,7 @@ public class UnitBehaviorTree : BehaviorTree
         {
             return false;
         }
-        if (Path[PathNodeIndex + 1] == n || Path[PathNodeIndex + 2] == n)
+        if (Path[PathNodeIndex + 2] == n)
         {
             return true;
         }

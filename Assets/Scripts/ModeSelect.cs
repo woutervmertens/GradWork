@@ -35,6 +35,14 @@ public class ModeSelect : MonoBehaviour
     public Button BtnSpawner;
     public Button BtnIntersection;
     public Button BtnConnection;
+    public Button BtnToggleSim;
+    public Button BtnMainPanel;
+
+    public Canvas EditCanvas;
+    public Canvas CreateCanvas;
+    public Canvas SimStopCanvas;
+    public Canvas SimCanvas;
+    public Canvas MainPanelCanvas;
 
     private MODE mode = MODE.CREATE;
     public MODE Mode { get { return mode; } }
@@ -90,12 +98,12 @@ public class ModeSelect : MonoBehaviour
 	                                Instantiate(ConnectionParentPrefab, hitInfo.point, Quaternion.identity) as GameObject;
 	                            c.transform.parent = this.transform;
 	                            _lastRoadParent = c;
-	                            c.GetComponent<Connection>().Add(hitInfo.point);
+	                            c.GetComponent<Connection>().Add(hitInfo.point + new Vector3(0, 0.5f, 0));
 	                            _isDrawingRoad = true;
 	                        }
 	                        else
 	                        {
-	                            _lastRoadParent.GetComponent<Connection>().Add(hitInfo.point);
+	                            _lastRoadParent.GetComponent<Connection>().Add(hitInfo.point + new Vector3(0, 0.5f, 0));
 	                        }
 	                        break;
 	                    default:
@@ -199,6 +207,11 @@ public class ModeSelect : MonoBehaviour
     {
         if (mode == MODE.CREATE)
         {
+            EditCanvas.enabled = true;
+            MainManager.Main.IsSimMode = false;
+            SimCanvas.enabled = false;
+            SimStopCanvas.enabled = true;
+            CreateCanvas.enabled = false;
             if(node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
             BtnToggleMode.GetComponentInChildren<Text>().text = "Create";
             mode = MODE.EDIT;
@@ -210,6 +223,8 @@ public class ModeSelect : MonoBehaviour
         }
         else
         {
+            EditCanvas.enabled = false;
+            CreateCanvas.enabled = true;
             BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
             mode = MODE.CREATE;
             MainManager.Main.ChangeMode(false);
@@ -246,5 +261,20 @@ public class ModeSelect : MonoBehaviour
         BtnConnection.enabled = false;
         BtnSpawner.enabled = true;
         node = NODE.CONNECTION;
+    }
+
+    public void BtnSimClick()
+    {
+        MainManager.Main.IsSimMode = !MainManager.Main.IsSimMode;
+        SimCanvas.enabled = MainManager.Main.IsSimMode;
+        SimStopCanvas.enabled = !MainManager.Main.IsSimMode;
+        BtnToggleSim.GetComponentInChildren<Text>().text = (MainManager.Main.IsSimMode)
+            ? "Stop Simulation"
+            : "Stop Simulation";
+    }
+
+    public void BtnMainPanelClick()
+    {
+        MainPanelCanvas.enabled = !MainPanelCanvas.enabled;
     }
 }

@@ -43,7 +43,7 @@ public class SpawnerNode : Nodes {
 	// Update is called once per frame
 	void Update ()
 	{
-	    if (!MainManager.Main._isEditMode) return;
+	    if (!MainManager.Main.IsSimMode) return;
 	    _timeCounter += Time.deltaTime;// + Random.Range(0,Time.deltaTime)
         if (SpawnCar)totalPerc += CarSpawnPerc;
         if (SpawnJeep) totalPerc += JeepSpawnPerc;
