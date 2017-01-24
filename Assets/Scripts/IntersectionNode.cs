@@ -13,7 +13,8 @@ public class IntersectionNode : Nodes
     // Use this for initialization
     void Start () {
 	    MainManager.Main.AddNode(this);
-	}
+        NodeType = Type.Intersection;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -30,10 +31,11 @@ public class IntersectionNode : Nodes
 	    {
 	        foreach (Vehicle veh in MainManager.Main.GetCon(con).Vehicles)
 	        {
+	            if (veh == null) continue;
 	            if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x && !Vehicles.ContainsKey(veh))
 	            {
                     Vehicles.Add(veh, veh.GetComponent<UnitBehaviorTree>().NextConnection);
-                    veh.transform.parent.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
+                    veh.GetComponent<UnitBehaviorTree>().IsOnIntersection = true;
 	                veh.transform.position = transform.position;
 	            }
 	        }

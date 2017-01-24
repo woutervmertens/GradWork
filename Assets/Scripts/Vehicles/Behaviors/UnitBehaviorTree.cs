@@ -126,10 +126,8 @@ public class UnitBehaviorTree : BehaviorTree
 
             //retrieve the chosen nodes adjacent nodes
             List<Nodes> adj = new List<Nodes>();
-            List<int> adjNrs = (currNodes.NodeType == Type.Intersection)
-                ? currNodes.GetComponent<IntersectionNode>().Connections
-                : currNodes.GetComponent<SpawnerNode>().Connections;
-            foreach (var i in adjNrs)
+            List<int> adjNrs = currNodes.GetConnections();
+            foreach (int i in adjNrs)
             {
                 adj.Add((MainManager.Main.GetCon(i).Val1 == currNodes) ? MainManager.Main.GetCon(i).Val2 : MainManager.Main.GetCon(i).Val1);
             }
@@ -199,7 +197,7 @@ public class UnitBehaviorTree : BehaviorTree
         if (IsOnIntersection) return false;
         foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
         {
-            if(neighbour == this.GetComponent<Vehicle>()) continue;
+            if(neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
             if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed) 
                 && (neighbour.GetComponent<UnitBehaviorTree>().Lane == Lane))
             {

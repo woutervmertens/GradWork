@@ -37,6 +37,7 @@ public class SpawnerNode : Nodes {
 	    MainManager.Main.AddNode(this);
         MainManager.Main.AddSpawner(this);
         GeneralSpawnRate = MainManager.Main.GeneralSpawnrate;
+        NodeType = Type.Spawner;
     }
 	
 	// Update is called once per frame
@@ -59,6 +60,7 @@ public class SpawnerNode : Nodes {
         {
             foreach (Vehicle veh in MainManager.Main.GetCon(con).Vehicles)
             {
+                if (veh == null) continue;
                 if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x + 0.2 &&
                     veh.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
                 {

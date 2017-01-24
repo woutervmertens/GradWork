@@ -11,7 +11,7 @@ public enum Type
 
 public class Nodes : MonoBehaviour {
 
-	public Type NodeType = Type.Spawner;
+	public Type NodeType;
 
     public Nodes Parent { get; set; }
 
@@ -22,13 +22,6 @@ public class Nodes : MonoBehaviour {
 
     public List<int> GetConnections()
     {
-        if (NodeType == Type.Spawner)
-        {
-            return GetComponent<SpawnerNode>().Connections;
-        }
-        else
-        {
-            return GetComponent<IntersectionNode>().Connections;
-        }
+        return (NodeType == Type.Spawner)? GetComponent<SpawnerNode>().Connections: GetComponent<IntersectionNode>().Connections;
     }
 }

@@ -46,15 +46,16 @@ public class MainManager : MonoBehaviour
 
     void Awake()
     {
-        if (Main == null)
-        {
-            DontDestroyOnLoad(gameObject);
-            Main = this;
-        }
-        else if (Main != this)
-        {
-            Destroy(gameObject);
-        }
+        Main = this;
+        //if (Main == null)
+        //{
+        //    DontDestroyOnLoad(gameObject);
+        //    Main = this;
+        //}
+        //else if (Main != this)
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     public void ChangeMode(bool isEdit)
@@ -105,7 +106,7 @@ public class MainManager : MonoBehaviour
 
     public int GetConnectionCount()
     {
-        return conDic.Count;
+        return conDic.Count - 1;
     }
 
     public int GetNodeCount()
