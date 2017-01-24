@@ -160,9 +160,11 @@ public class UnitBehaviorTree : BehaviorTree
         //reconstruct path
         PathFound.AddFirst(_endNodes);
         PathFound.AddFirst(currNodes);
+        List<Nodes> parentList = new List<Nodes>();
         Nodes nextNodes = currNodes.Parent;
-        while (nextNodes != null)
+        while (nextNodes != null && !parentList.Contains(nextNodes)) //endless loop nextNodes doesn't run out of parents
         {
+            parentList.Add(nextNodes);
             PathFound.AddFirst(nextNodes);
             nextNodes = nextNodes.Parent;
         }
