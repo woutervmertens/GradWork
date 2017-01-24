@@ -270,11 +270,13 @@ public class ModeSelect : MonoBehaviour
         SimStopCanvas.enabled = !MainManager.Main.IsSimMode;
         BtnToggleSim.GetComponentInChildren<Text>().text = (MainManager.Main.IsSimMode)
             ? "Stop Simulation"
-            : "Stop Simulation";
+            : "Start Simulation";
     }
 
     public void BtnMainPanelClick()
     {
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.enabled);
         MainPanelCanvas.enabled = !MainPanelCanvas.enabled;
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.enabled);
     }
 }

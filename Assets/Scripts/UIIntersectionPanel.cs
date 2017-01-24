@@ -24,6 +24,7 @@ public class UIIntersectionPanel : MonoBehaviour
     {
         Start();
         SwitchIn.text = _lightSwitchRate.ToString();
+        SwitchIn.placeholder.GetComponent<Text>().text = _lightSwitchRate.ToString();
         //SpeedIn.text = _speedLimit.ToString();
     }
 

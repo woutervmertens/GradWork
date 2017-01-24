@@ -54,6 +54,7 @@ public class UISpawnerPanel : MonoBehaviour
         TruckSlider.value = _truckPerc;
 
         RateIn.text = _generalSpawnRate.ToString();
+        RateIn.placeholder.GetComponent<Text>().text = _generalSpawnRate.ToString();
     }
 
     public void Close()

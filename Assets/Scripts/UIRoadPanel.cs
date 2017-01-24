@@ -36,6 +36,9 @@ public class UIRoadPanel : MonoBehaviour
         LanesIn.text = NrOfLanes.ToString();
         WidthIn.text = LaneWidth.ToString();
         SpeedIn.text = MaxSpeed.ToString();
+        LanesIn.placeholder.GetComponent<Text>().text = NrOfLanes.ToString();
+        WidthIn.placeholder.GetComponent<Text>().text = LaneWidth.ToString();
+        SpeedIn.placeholder.GetComponent<Text>().text = MaxSpeed.ToString();
     }
 
     public void ChangeLaneWidth(string i)
