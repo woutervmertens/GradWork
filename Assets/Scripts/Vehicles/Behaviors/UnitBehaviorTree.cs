@@ -95,6 +95,8 @@ public class UnitBehaviorTree : BehaviorTree
         if(Path.Count > 0 && Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count-1] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
         //Clear
         Path.Clear();
+        PathNodeIndex = 1;
+        RoadNodeIndex = 0;
 
         //Temp cont
         LinkedList<Nodes> openList = new LinkedList<Nodes>();
@@ -221,6 +223,7 @@ public class UnitBehaviorTree : BehaviorTree
             List<Transform> nrNBors = new List<Transform>();
             foreach (Vehicle neighbour in con.Vehicles)
             {
+                if (neighbour == null) continue;
                 if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
                     nrNBors.Add(neighbour.transform);
             }
@@ -257,6 +260,7 @@ public class UnitBehaviorTree : BehaviorTree
             List<Transform> nrNBors = new List<Transform>();
             foreach (Vehicle neighbour in con.Vehicles)
             {
+                if (neighbour == null) continue;
                 if (dist + _bufferLength > Vector3.Distance(transform.position, neighbour.transform.position))
                     nrNBors.Add(neighbour.transform);
             }
