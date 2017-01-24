@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 
 public class IntersectionNode : Nodes
 {
@@ -61,13 +62,20 @@ public class IntersectionNode : Nodes
 	        }
 	    }
         //DO THE THING JULIEE
-	    if (_releaseTimer > _releaseRate)
+	    if (_releaseTimer > _releaseRate && _releasedIndex < releaseAbleVehicles.Count)
 	    {
+	        if (releaseAbleVehicles[_releasedIndex] == null) return;
 	        releaseAbleVehicles[_releasedIndex].GetComponent<UnitBehaviorTree>().IsOnIntersection = false;
 	        _releaseTimer = 0;
 	        _releasedIndex++;
 	    }
     }
+
+    public override float GetFScore(SpawnerNode endNode)
+    {
+        return Vector3.Distance(transform.position, endNode.transform.position) + Vehicles.Count;
+    }
+
     void OnTriggerEnter(Collider col)
     {
         Transform tr = col.transform.parent;

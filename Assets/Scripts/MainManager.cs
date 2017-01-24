@@ -149,7 +149,7 @@ public class MainManager : MonoBehaviour
                 _vehiclesRequested++;
             }
         }
-        if(_vehiclesRequested >= MaxVehicles)
+        if(_vehiclesRequested >= MaxVehicles && VehiclesNr >= MaxVehicles)
             CleanOutVehicleList();
     }
 }

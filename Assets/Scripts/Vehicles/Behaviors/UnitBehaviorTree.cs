@@ -114,10 +114,10 @@ public class UnitBehaviorTree : BehaviorTree
             float lowestFScore = float.MaxValue;
             for (var n = openList.First; n != null; n = n.Next)
             {
-                if (n.Value.GetFScore() < lowestFScore)
+                if (n.Value.GetFScore(endNode) < lowestFScore)
                 {
                     currNodes = n.Value;
-                    lowestFScore = n.Value.GetFScore();
+                    lowestFScore = n.Value.GetFScore(endNode);
                 }
             }
             //Pop current off the open list and push it to the closed

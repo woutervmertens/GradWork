@@ -72,6 +72,12 @@ public class SpawnerNode : Nodes {
         }
     }
 
+    public override float GetFScore(SpawnerNode endNode)
+    {
+        if (endNode == this) return 0;
+        return (float.MaxValue/3)*2;
+    }
+
     void OnTriggerEnter(Collider col)
     {
         if (col.transform.GetComponentInParent<Connection>() != null)

@@ -15,7 +15,7 @@ public class Nodes : MonoBehaviour {
 
     public Nodes Parent { get; set; }
 
-    public float GetFScore()
+    public virtual float GetFScore(SpawnerNode endNode)
     {
         return 1;
     }
