@@ -59,10 +59,12 @@ public class SpawnerNode : Nodes {
         {
             foreach (Vehicle veh in MainManager.Main.GetCon(con).Vehicles)
             {
-                if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x &&
-                    veh.transform.parent.gameObject.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
+                if (Vector3.Distance(veh.transform.position, transform.position) < transform.localScale.x + 0.2 &&
+                    veh.GetComponent<UnitBehaviorTree>().GetTargetNode() == this)
                 {
+                    MainManager.Main.GetCon(con).Vehicles.Remove(veh);
                     Destroy(veh.gameObject);
+                    break;
                 }
             }
         }
@@ -130,6 +132,7 @@ public class SpawnerNode : Nodes {
 
         GameObject g = Instantiate(v, ConnectionPos[conNr],
             Quaternion.FromToRotation(transform.position, ConnectionPos[conNr]));
+        g.transform.parent = MainManager.Main.transform;
         MainManager.Main.Vehicles.Add(g.GetComponent<Vehicle>());
         g.GetComponent<UnitBehaviorTree>().SetStartAndEnd(this,MainManager.Main.GetRandomSpawner(this));
         g.GetComponent<UnitBehaviorTree>().Lane = LaneNr;

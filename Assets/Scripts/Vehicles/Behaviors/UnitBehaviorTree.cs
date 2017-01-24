@@ -92,7 +92,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public BehaviorState PathFinding()//Run once, if failed pick different endnode
     {
-        if(Path.Count > 0 && Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
+        if(Path.Count > 0 && Path[0] == startNode.GetComponent<Nodes>() && Path[Path.Count-1] == endNode.GetComponent<Nodes>()) return BehaviorState.Success;
         //Clear
         Path.Clear();
 
@@ -112,12 +112,12 @@ public class UnitBehaviorTree : BehaviorTree
             ++_failCheck;
             //Get node with lowest F
             float lowestFScore = float.MaxValue;
-            foreach (var n in openList)
+            for (var n = openList.First; n != null; n = n.Next)
             {
-                if (n.GetComponent<Connection>().GetFScore() < lowestFScore)
+                if (n.Value.GetFScore() < lowestFScore)
                 {
-                    currNodes = n;
-                    lowestFScore = n.GetComponent<Connection>().GetFScore();
+                    currNodes = n.Value;
+                    lowestFScore = n.Value.GetFScore();
                 }
             }
             //Pop current off the open list and push it to the closed
@@ -149,7 +149,7 @@ public class UnitBehaviorTree : BehaviorTree
                 else
                 {
                     //if node not in open list, compute score and add it
-                    if (!adj.Contains(nodese))
+                    if (!openList.Contains(nodese))
                     {
                         nodese.Parent = currNodes;
 
@@ -174,9 +174,9 @@ public class UnitBehaviorTree : BehaviorTree
 
     private void GetRoadPath()
     {
-        foreach (var p in Path)//Convert to List
+        for (var p = PathFound.First; p != null; p = p.Next)//Convert to List
         {
-            Path.Add(p);
+            Path.Add(p.Value);
         }
         for (int i = 0; i < Path.Count; i++)
         {
@@ -190,6 +190,8 @@ public class UnitBehaviorTree : BehaviorTree
                 }
             }
         }
+        PathToFollow = MainManager.Main.GetCon(RoadPath[0]);
+        PathToFollow.Vehicles.Add(this.GetComponent<Vehicle>());
         NextConnection = RoadPath[1];
     }
     public bool CheckHitDetection()//if true -> avoid
@@ -299,8 +301,10 @@ public class UnitBehaviorTree : BehaviorTree
     public BehaviorState Intersection()
     {
         if(IsOnIntersection) return BehaviorState.Running;
+        if (Path[PathNodeIndex].GetComponent<IntersectionNode>() == null) return BehaviorState.Success;
         Path[PathNodeIndex].GetComponent<IntersectionNode>().Vehicles.Remove(this.GetComponent<Vehicle>());
         RoadNodeIndex++;
+        PathToFollow = MainManager.Main.GetCon(RoadPath[RoadNodeIndex]);
         PathNodeIndex++;
         MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles.Add(this.GetComponent<Car>());
         IsOnIntersection = false;
@@ -552,13 +556,13 @@ public class UnitBehaviorTree : BehaviorTree
         //_clickTarget = new Vector3(-50,0,20);
 
         //Get Attributes
-        Speed = GetComponent<Vehicle>().Speed;
-        _accelSpeed = GetComponent<Vehicle>().AccelSpeed;
-        _breakSpeed = GetComponent<Vehicle>().BreakSpeed;
-        _bufferLength = GetComponent<Vehicle>().BufferLength;
-        _length = GetComponent<Vehicle>().Lenght;
-        _width = GetComponent<Vehicle>().Width;
-        LaneChangeSpeed = GetComponent<Vehicle>().LaneChangeSpeed;
+        Speed = transform.GetChild(0).GetComponent<Vehicle>().Speed;
+        _accelSpeed = transform.GetChild(0).GetComponent<Vehicle>().AccelSpeed;
+        _breakSpeed = transform.GetChild(0).GetComponent<Vehicle>().BreakSpeed;
+        _bufferLength = transform.GetChild(0).GetComponent<Vehicle>().BufferLength;
+        _length = transform.GetChild(0).GetComponent<Vehicle>().Lenght;
+        _width = transform.GetChild(0).GetComponent<Vehicle>().Width;
+        LaneChangeSpeed = transform.GetChild(0).GetComponent<Vehicle>().LaneChangeSpeed;
 
         //------------------------------------------------------------------
         // BEHAVIOUR TREES

@@ -15,6 +15,11 @@ public class Nodes : MonoBehaviour {
 
     public Nodes Parent { get; set; }
 
+    public float GetFScore()
+    {
+        return 1;
+    }
+
     public List<int> GetConnections()
     {
         if (NodeType == Type.Spawner)
