@@ -30,6 +30,11 @@ public class ModeSelect : MonoBehaviour
     private GameObject selectedObject = null;
 
     public RectTransform EditBoxesParent;
+    public RectTransform EditCanvas;
+    public RectTransform CreateCanvas;
+    public RectTransform SimStopCanvas;
+    public RectTransform SimCanvas;
+    public RectTransform MainPanelCanvas;
 
     public Button BtnToggleMode;
     public Button BtnSpawner;
@@ -38,11 +43,7 @@ public class ModeSelect : MonoBehaviour
     public Button BtnToggleSim;
     public Button BtnMainPanel;
 
-    public Canvas EditCanvas;
-    public Canvas CreateCanvas;
-    public Canvas SimStopCanvas;
-    public Canvas SimCanvas;
-    public Canvas MainPanelCanvas;
+    
 
     private MODE mode = MODE.CREATE;
     public MODE Mode { get { return mode; } }
@@ -207,11 +208,11 @@ public class ModeSelect : MonoBehaviour
     {
         if (mode == MODE.CREATE)
         {
-            EditCanvas.enabled = true;
+            EditCanvas.gameObject.SetActive(true);
             MainManager.Main.IsSimMode = false;
-            SimCanvas.enabled = false;
-            SimStopCanvas.enabled = true;
-            CreateCanvas.enabled = false;
+            SimCanvas.gameObject.SetActive(false);
+            SimStopCanvas.gameObject.SetActive(true);
+            CreateCanvas.gameObject.SetActive(false);
             if(node == NODE.CONNECTION && Connection.Count > 1) AddRoad();
             BtnToggleMode.GetComponentInChildren<Text>().text = "Create";
             mode = MODE.EDIT;
@@ -223,8 +224,8 @@ public class ModeSelect : MonoBehaviour
         }
         else
         {
-            EditCanvas.enabled = false;
-            CreateCanvas.enabled = true;
+            EditCanvas.gameObject.SetActive(false);
+            CreateCanvas.gameObject.SetActive(true);
             BtnToggleMode.GetComponentInChildren<Text>().text = "Edit";
             mode = MODE.CREATE;
             MainManager.Main.ChangeMode(false);
@@ -266,8 +267,8 @@ public class ModeSelect : MonoBehaviour
     public void BtnSimClick()
     {
         MainManager.Main.IsSimMode = !MainManager.Main.IsSimMode;
-        SimCanvas.enabled = MainManager.Main.IsSimMode;
-        SimStopCanvas.enabled = !MainManager.Main.IsSimMode;
+        SimCanvas.gameObject.SetActive(MainManager.Main.IsSimMode);
+        SimStopCanvas.gameObject.SetActive(!MainManager.Main.IsSimMode);
         BtnToggleSim.GetComponentInChildren<Text>().text = (MainManager.Main.IsSimMode)
             ? "Stop Simulation"
             : "Start Simulation";
@@ -275,8 +276,8 @@ public class ModeSelect : MonoBehaviour
 
     public void BtnMainPanelClick()
     {
-        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.enabled);
-        MainPanelCanvas.enabled = !MainPanelCanvas.enabled;
-        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.enabled);
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.gameObject.activeInHierarchy);
+        MainPanelCanvas.gameObject.SetActive(!MainPanelCanvas.gameObject.activeInHierarchy);
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.gameObject.activeInHierarchy);
     }
 }
