@@ -135,15 +135,16 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        int _vehiclesRequested = VehiclesNr;
+        int vehiclesRequested = 0;
+        int maxRequestedVeh = MaxVehicles - VehiclesNr;
         if (IsSimMode && spawners.Count > 1 && Time.deltaTime < MaxDeltaTime)
         {
-            while (_vehiclesRequested < MaxVehicles)
+            while (vehiclesRequested < maxRequestedVeh)
             {
                 int rand = Random.Range(0, spawners.Count);
                 spawners[rand].AddVehicle();
                 Debug.Log("Vehicle added");
-                _vehiclesRequested++;
+                vehiclesRequested++;
             }
         }
     }

@@ -400,7 +400,11 @@ public class UnitBehaviorTree : BehaviorTree
                         new Sequence(new List<BehaviorComponent>
                         {
                             new BehaviorConditional(CheckHitDetection),
-                            new BehaviorAction(ChangeLaneLeft)
+                            new Sequence(new List<BehaviorComponent>
+                            {
+                                new BehaviorConditional(CheckLeftLane),
+                                new BehaviorAction(ChangeLaneLeft)
+                            }.ToArray()),
                         }.ToArray()),
                         new BehaviorAction(SlowDown)
                     }.ToArray()),

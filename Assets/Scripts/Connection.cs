@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-public class Connection : Nodes
+public class Connection : Behaviour
 {
     public GameObject ConnectionNodePrefab;
     public int NrOfLanes = 1;
@@ -23,7 +23,6 @@ public class Connection : Nodes
     {
         Serial = MainManager.Main.GetConnectionCount() + 1;
         MainManager.Main.AddConnection(this, Serial);
-        NodeType = Type.Connection;
     }
 
     public void Add(List<Transform> l)
