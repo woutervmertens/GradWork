@@ -200,15 +200,23 @@ public class UnitBehaviorTree : BehaviorTree
     }
     public bool CheckHitDetection()//if true -> avoid
     {
+        return checkCloseByNeighbours(0);
+    }
+
+    private bool checkCloseByNeighbours(float buffer)
+    {
         if (IsOnIntersection) return false;
         foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
         {
-            if(neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
-            if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed) 
+            if (neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
+            if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed)
                 && (neighbour.GetComponent<UnitBehaviorTree>().Lane == Lane))
             {
                 _neighbourDistance = Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position));
-                return GetComponent<Vehicle>().RayTest(_detectionLength * Speed);
+                Vector3 fwdPos = transform.TransformPoint(Vector3.forward * (_detectionLength * Speed));
+                float distFromHereToNB = Vector3.Distance(transform.position, neighbour.transform.position);
+                float distFromFwdPosToNB = Vector3.Distance(fwdPos, neighbour.transform.position);
+                return (distFromHereToNB < distFromFwdPosToNB && distFromFwdPosToNB < (_detectionLength * Speed) && Speed > neighbour.Speed);//NB is between this and fwdPos and is slower
             }
         }
         return false;
@@ -300,7 +308,7 @@ public class UnitBehaviorTree : BehaviorTree
     {
         //slow down untill ray is false
         Speed -= (_breakSpeed*(_detectionLength*Speed - _neighbourDistance)*Time.deltaTime);
-        if(GetComponent<Vehicle>().RayTest((_detectionLength * Speed) + _bufferLength)) return BehaviorState.Running;
+        if(checkCloseByNeighbours(_bufferLength)) return BehaviorState.Running;
         return BehaviorState.Success;
     }
 

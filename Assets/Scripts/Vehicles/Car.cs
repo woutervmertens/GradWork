@@ -21,12 +21,6 @@ public class Car : Vehicle {
             GetComponent<BoxCollider>().enabled = !_isOnIntersection;
         }
     }
-    public bool CheckHit(float lenght)
-    {
-        Vector3 fwd = Vector3.forward;
-        int layerCast = 1 << 9;
-        return Physics.Raycast(transform.position, fwd, lenght, layerCast);
-    }
 
     public bool CheckLeft(List<Transform> n, float lw)
     {

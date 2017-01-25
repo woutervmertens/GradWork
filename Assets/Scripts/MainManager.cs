@@ -72,9 +72,10 @@ public class MainManager : MonoBehaviour
 
     private void DeleteVehicles()
     {
-        foreach (var veh in Vehicles)
+        int vhNr = VehiclesNr;//nr of loops can't change when count changes
+        for (int i = 0; i < vhNr; i++)
         {
-            veh.Destroy();
+            Vehicles[i].Destroy();
         }
         Vehicles.Clear();
         if (spawners.Count == 0) return;
@@ -135,7 +136,7 @@ public class MainManager : MonoBehaviour
     void Update()
     {
         int _vehiclesRequested = VehiclesNr;
-        if (IsSimMode && spawners.Count > 2 && Time.deltaTime < MaxDeltaTime)
+        if (IsSimMode && spawners.Count > 1 && Time.deltaTime < MaxDeltaTime)
         {
             while (_vehiclesRequested < MaxVehicles)
             {

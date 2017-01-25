@@ -19,11 +19,7 @@ public class Truck : Vehicle {
             GetComponent<BoxCollider>().enabled = !_isOnIntersection;
         }
     }
-    public bool CheckHit(float lenght)
-    {
-        Vector3 fwd = Vector3.forward;
-        return Physics.Raycast(transform.position, fwd, lenght);
-    }
+
     public bool CheckLeft(List<Transform> n, float lw)
     {
         Vector3 leftVector3 = transform.TransformVector(Vector3.left * lw);
