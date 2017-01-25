@@ -2,7 +2,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.WSA;
 using Random = UnityEngine.Random;
 
 public class DuoNodes
@@ -75,6 +74,7 @@ public class MainManager : MonoBehaviour
         int vhNr = VehiclesNr;//nr of loops can't change when count changes
         for (int i = 0; i < vhNr; i++)
         {
+            if (Vehicles[i] == null) continue;
             Vehicles[i].Destroy();
         }
         Vehicles.Clear();
