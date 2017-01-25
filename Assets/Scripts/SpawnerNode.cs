@@ -9,7 +9,7 @@ public class SpawnerNode : Nodes {
 
     public List<int> Connections = new List<int>();
     private List<Vector3> ConnectionPos = new List<Vector3>();
-    private LinkedList<GameObject> VehiclesToSpawn = new LinkedList<GameObject>(); 
+    public LinkedList<GameObject> VehiclesToSpawn = new LinkedList<GameObject>(); 
     //List of spawnables
     public GameObject CarPrefab;
     public GameObject TruckPrefab;
@@ -49,6 +49,7 @@ public class SpawnerNode : Nodes {
         if (SpawnJeep) totalPerc += JeepSpawnPerc;
         if (SpawnBike) totalPerc +=BikeSpawnPerc;
         if (SpawnTruck) totalPerc += TruckSpawnPerc;
+        //Calculate total %
 	    totalPerc = CarSpawnPerc*(SpawnCar ? 1 : 0) + JeepSpawnPerc* (SpawnJeep ? 1 : 0) + BikeSpawnPerc* (SpawnBike ? 1 : 0) + TruckSpawnPerc* (SpawnTruck ? 1 : 0);
 	    if (GeneralSpawnRate <= _timeCounter && VehiclesToSpawn.Count != 0 && Connections.Count > 0)
 	    {
@@ -67,7 +68,7 @@ public class SpawnerNode : Nodes {
                     veh.GetComponent<UnitBehaviorTree>().IsNextNextNodeThisone(this))
                 {
                     MainManager.Main.GetCon(con).Vehicles.Remove(veh);
-                    Destroy(veh.gameObject);
+                    veh.Destroy();
                     break;
                 }}
             }

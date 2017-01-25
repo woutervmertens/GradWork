@@ -11,7 +11,7 @@ public class IntersectionNode : Nodes
     public float SpeedLimit;
     public List<int> Connections = new List<int>();
     public Dictionary<Vehicle, int> Vehicles = new Dictionary<Vehicle, int>();
-    private List<Vehicle> releaseAbleVehicles = new List<Vehicle>();
+    public List<Vehicle> releaseAbleVehicles = new List<Vehicle>();
     private int _releasedIndex = 0;
     private float _releaseTimer = 0;
     private float _releaseRate = 0.5f;

@@ -75,7 +75,7 @@ public class MainManager : MonoBehaviour
     {
         foreach (var veh in Vehicles)
         {
-            Destroy(veh.gameObject);
+            veh.Destroy();
         }
         Vehicles.Clear();
         if (spawners.Count == 0) return;
@@ -146,9 +146,9 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
-        if (IsSimMode && spawners.Count > 0)
+        if (IsSimMode && spawners.Count > 2 && Time.deltaTime < MaxDeltaTime)
         {
-            while (_vehiclesRequested < MaxVehicles && Time.deltaTime < MaxDeltaTime)
+            while (_vehiclesRequested < MaxVehicles)
             {
                 int rand = Random.Range(0, spawners.Count);
                 spawners[rand].AddVehicle();

@@ -117,4 +117,31 @@ public class Vehicle: MonoBehaviour
         }
         return 0;
     }
+
+    public void Destroy()
+    {
+        while (MainManager.Main.Vehicles.Contains(this))
+        {
+            MainManager.Main.Vehicles.Remove(this);
+        }
+        foreach (Nodes node in MainManager.Main.NodeList)
+        {
+            switch (node.NodeType)
+            {
+                case Type.Connection:
+                    if (node.GetComponent<Connection>().Vehicles.Contains(this)) node.GetComponent<Connection>().Vehicles.Remove(this);
+                    break;
+                case Type.Spawner:
+                    if (node.GetComponent<SpawnerNode>().VehiclesToSpawn.Contains(this.gameObject)) node.GetComponent<SpawnerNode>().VehiclesToSpawn.Remove(this.gameObject);
+                    break;
+                case Type.Intersection:
+                    if (node.GetComponent<IntersectionNode>().Vehicles.ContainsKey(this)) node.GetComponent<IntersectionNode>().Vehicles.Remove(this);
+                    if (node.GetComponent<IntersectionNode>().releaseAbleVehicles.Contains(this)) node.GetComponent<IntersectionNode>().releaseAbleVehicles.Remove(this);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        Destroy(this.gameObject);
+    }
 }
