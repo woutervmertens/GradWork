@@ -144,6 +144,7 @@ public class UnitBehaviorTree : BehaviorTree
             //else go over all the elements
             foreach (var nodese in adj)
             {
+                if (nodese == null) continue;
                 //if node is in closed, ignore it
                 if (closedList.Contains(nodese)) { }
                 else
@@ -312,6 +313,7 @@ public class UnitBehaviorTree : BehaviorTree
         PathNodeIndex++;
         MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles.Add(this.GetComponent<Car>());
         IsOnIntersection = false;
+        SetToLane();
         return BehaviorState.Success;
     }
 
@@ -328,6 +330,11 @@ public class UnitBehaviorTree : BehaviorTree
     public Nodes GetStartNode()
     {
         return _startNodes;
+    }
+
+    public void SetToLane()
+    {
+        GetComponent<Vehicle>().SetToLane(MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth);
     }
 
     public bool IsNextNextNodeThisone(Nodes n)

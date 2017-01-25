@@ -72,6 +72,7 @@ public class IntersectionNode : Nodes
 	        if (releaseAbleVehicles[_releasedIndex] == null) return;
 	        releaseAbleVehicles[_releasedIndex].GetComponent<UnitBehaviorTree>().IsOnIntersection = false;
             MainManager.Main.GetCon(Connections[OpenConnectionIndex]).Vehicles.Add(releaseAbleVehicles[_releasedIndex]);
+            releaseAbleVehicles[_releasedIndex].GetComponent<UnitBehaviorTree>().SetToLane();
 	        _releaseTimer = 0;
 	        _releasedIndex++;
 	    }

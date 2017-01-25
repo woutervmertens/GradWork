@@ -87,6 +87,7 @@ public class SpawnerNode : Nodes {
             bool alreadyExists = false;
             foreach (var con in Connections)
             {
+                if (con == null) continue;
                 if (con == col.gameObject.GetComponent<Connection>().Serial)
                 {
                     alreadyExists = true;
@@ -146,5 +147,6 @@ public class SpawnerNode : Nodes {
         MainManager.Main.Vehicles.Add(g.GetComponent<Vehicle>());
         g.GetComponent<UnitBehaviorTree>().SetStartAndEnd(this,MainManager.Main.GetRandomSpawner(this));
         g.GetComponent<UnitBehaviorTree>().Lane = LaneNr;
+        g.GetComponent<UnitBehaviorTree>().SetToLane();
     }
 }

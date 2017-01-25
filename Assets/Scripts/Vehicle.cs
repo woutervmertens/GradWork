@@ -47,6 +47,12 @@ public class Vehicle: MonoBehaviour
         return false;
     }
 
+    public void SetToLane(float _laneWidth)
+    {
+        Vector3 l = Vector3.right * (_laneWidth*(Lane + 1) - (_laneWidth*0.5f));
+        transform.GetChild(0).localPosition = l;
+    }
+
     public bool CheckLeftLane(List<Transform> n, float lw)
     {
         switch (VT)

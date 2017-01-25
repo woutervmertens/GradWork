@@ -209,7 +209,7 @@ public class ModeSelect : MonoBehaviour
         if (mode == MODE.CREATE)
         {
             EditCanvas.gameObject.SetActive(true);
-            MainManager.Main.IsSimMode = false;
+            MainManager.Main.SetSim(false);
             SimCanvas.gameObject.SetActive(false);
             SimStopCanvas.gameObject.SetActive(true);
             CreateCanvas.gameObject.SetActive(false);
@@ -266,7 +266,7 @@ public class ModeSelect : MonoBehaviour
 
     public void BtnSimClick()
     {
-        MainManager.Main.IsSimMode = !MainManager.Main.IsSimMode;
+        MainManager.Main.SetSim(!MainManager.Main.IsSimMode);
         SimCanvas.gameObject.SetActive(MainManager.Main.IsSimMode);
         SimStopCanvas.gameObject.SetActive(!MainManager.Main.IsSimMode);
         BtnToggleSim.GetComponentInChildren<Text>().text = (MainManager.Main.IsSimMode)
@@ -276,8 +276,8 @@ public class ModeSelect : MonoBehaviour
 
     public void BtnMainPanelClick()
     {
-        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.gameObject.activeInHierarchy);
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(!MainPanelCanvas.gameObject.activeInHierarchy);
         MainPanelCanvas.gameObject.SetActive(!MainPanelCanvas.gameObject.activeInHierarchy);
-        MainPanelCanvas.GetComponent<MainPanelScript>().Show(MainPanelCanvas.gameObject.activeInHierarchy);
+        MainPanelCanvas.GetComponent<MainPanelScript>().Show(!MainPanelCanvas.gameObject.activeInHierarchy);
     }
 }

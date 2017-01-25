@@ -65,6 +65,12 @@ public class MainManager : MonoBehaviour
         if (!isEdit) DeleteVehicles();
     }
 
+    public void SetSim(bool b)
+    {
+        IsSimMode = b;
+        if(!b) DeleteVehicles();
+    }
+
     private void DeleteVehicles()
     {
         foreach (var veh in Vehicles)
