@@ -343,6 +343,7 @@ public class UnitBehaviorTree : BehaviorTree
 
     public void SetToLane()
     {
+        GetComponent<Vehicle>().Lane = Random.Range(0, MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).NrOfLanes + 1);
         GetComponent<Vehicle>().SetToLane(MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).LaneWidth);
     }
 

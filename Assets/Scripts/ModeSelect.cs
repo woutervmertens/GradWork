@@ -148,14 +148,13 @@ public class ModeSelect : MonoBehaviour
                         OpenUIBoxPos(1);
 	                }
 	                else if(hitInfo.collider.gameObject.GetComponent<ConnectionNodeScript>() != null)
-	                    //dunno about connections yet
 	                {
                         Debug.Log("ConnectionNodePrefab selected");
                         MainManager.Main.LastSelectedGameObject = hitInfo.collider.transform.parent.gameObject;
                         CloseAllUIBoxes();
                         OpenUIBoxPos(2);
 	                }
-	            }
+                }
 	        }
 	    }
 
