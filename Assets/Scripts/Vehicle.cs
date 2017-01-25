@@ -124,8 +124,9 @@ public class Vehicle: MonoBehaviour
         {
             MainManager.Main.Vehicles.Remove(this);
         }
-        foreach (Nodes node in MainManager.Main.NodeList)
+        foreach (var nodes in MainManager.Main.NodeList)
         {
+            Nodes node = nodes as Nodes;
             switch (node.NodeType)
             {
                 case Type.Connection:
@@ -141,6 +142,10 @@ public class Vehicle: MonoBehaviour
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+        for (int i = 0; i < MainManager.Main.GetConnectionCount()+1; i++)
+        {
+            if (MainManager.Main.GetCon(i).Vehicles.Contains(this)) MainManager.Main.GetCon(i).Vehicles.Remove(this);
         }
         Destroy(this.gameObject);
     }

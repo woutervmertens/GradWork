@@ -21,7 +21,6 @@ public class MainManager : MonoBehaviour
 
     public static MainManager Main;
     public int VehiclesNr { get { return Vehicles.Count; } }
-    private int _vehiclesRequested = 0;
     public int MaxVehicles = 1;
     public float MaxDeltaTime = 0.1f;
 
@@ -121,17 +120,6 @@ public class MainManager : MonoBehaviour
         return connectionCount;
     }
 
-    public void CleanOutVehicleList()
-    {
-        List<Vehicle> tempList = new List<Vehicle>();
-        foreach (var veh in Vehicles)
-        {
-            if(veh != null) tempList.Add(veh);
-        }
-        Vehicles = tempList;
-        _vehiclesRequested = Vehicles.Count;
-    }
-
     public SpawnerNode GetRandomSpawner(SpawnerNode n)
     {
         if (spawners.Count < 2) return null;
@@ -146,6 +134,7 @@ public class MainManager : MonoBehaviour
 
     void Update()
     {
+        int _vehiclesRequested = VehiclesNr;
         if (IsSimMode && spawners.Count > 2 && Time.deltaTime < MaxDeltaTime)
         {
             while (_vehiclesRequested < MaxVehicles)
@@ -156,7 +145,5 @@ public class MainManager : MonoBehaviour
                 _vehiclesRequested++;
             }
         }
-        if(_vehiclesRequested >= MaxVehicles && VehiclesNr >= MaxVehicles)
-            CleanOutVehicleList();
     }
 }

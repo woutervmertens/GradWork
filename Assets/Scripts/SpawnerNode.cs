@@ -148,6 +148,5 @@ public class SpawnerNode : Nodes {
         MainManager.Main.Vehicles.Add(g.GetComponent<Vehicle>());
         g.GetComponent<UnitBehaviorTree>().SetStartAndEnd(this,MainManager.Main.GetRandomSpawner(this));
         g.GetComponent<UnitBehaviorTree>().Lane = LaneNr;
-        g.GetComponent<UnitBehaviorTree>().SetToLane();
     }
 }

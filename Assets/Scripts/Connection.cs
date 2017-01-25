@@ -3,14 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-public class Connection : MonoBehaviour
+public class Connection : Nodes
 {
     public GameObject ConnectionNodePrefab;
     public int NrOfLanes = 1;
     public float MaxSpeed = 50;
     public float LaneWidth = 1;
-    private float _cleanClock = 0;
-    private float _cleanCounter = 0;
 
     public int Serial;
 
@@ -25,27 +23,9 @@ public class Connection : MonoBehaviour
     {
         Serial = MainManager.Main.GetConnectionCount() + 1;
         MainManager.Main.AddConnection(this, Serial);
-        _cleanClock = Random.Range(45.0f, 60.0f);
+        NodeType = Type.Connection;
     }
 
-    void Update()
-    {
-        _cleanCounter += Time.deltaTime;
-        if (_cleanClock < _cleanCounter)
-        {
-            CleanOutVehicleList();
-            _cleanCounter = 0;
-        }
-    }
-    public void CleanOutVehicleList()
-    {
-        List<Vehicle> tempList = new List<Vehicle>();
-        foreach (var veh in Vehicles)
-        {
-            if (veh != null) tempList.Add(veh);
-        }
-        Vehicles = tempList;
-    }
     public void Add(List<Transform> l)
     {
         nodes = l;//work on this later

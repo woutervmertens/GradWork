@@ -172,6 +172,7 @@ public class UnitBehaviorTree : BehaviorTree
             nextNodes = nextNodes.Parent;
         }
         GetRoadPath();
+        SetToLane();
         return BehaviorState.Success;
     }
 
