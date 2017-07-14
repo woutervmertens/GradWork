@@ -59,7 +59,7 @@ public class Connection : MonoBehaviour
 
     public void Draw()
     {
-        GetComponent<LineRenderer>().numPositions = transform.childCount;
+        GetComponent<LineRenderer>().positionCount = transform.childCount;
         Vector3 pos = new Vector3();
         for (int i = 0; i < transform.childCount; i++)
         {
