@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GSD;
 
 /*
     Copyright (c) 2017 Sloan Kelly
@@ -29,7 +30,9 @@ using UnityEngine;
 /// </summary>
 class RoadMaker : InfrastructureBehaviour
 {
-    public Material roadMaterial;
+    public Material RoadMaterial;
+
+    public GSDRoadSystem RoadSystem;
 
     /// <summary>
     /// Create the roads.
@@ -46,9 +49,11 @@ class RoadMaker : InfrastructureBehaviour
         // Iterate through the roads and build each one
         foreach (var way in map.ways.FindAll((w) => { return w.IsRoad; }))
         {
-            CreateObject(way, roadMaterial, way.Name);
+            CreateObject(way, RoadMaterial, way.Name);
             yield return null;
         }
+
+        
     }
 
     protected override void OnObjectCreated(OsmWay way, Vector3 origin, List<Vector3> vectors, List<Vector3> normals, List<Vector2> uvs, List<int> indices)

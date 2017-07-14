@@ -73,6 +73,14 @@ class OsmWay : BaseOsm
     /// </summary>
     public int Lanes { get; private set; }
 
+    public bool IsOneWay { get; private set; }
+
+    public int MaxSpeed { get; private set; }
+
+    public bool IsBridge { get; private set; }
+
+    public bool IsJunction { get; private set; }
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -83,6 +91,10 @@ class OsmWay : BaseOsm
         Height = 3.0f; // Default height for structures is 1 story (approx. 3m)
         Lanes = 1;      // Number of lanes either side of the divide 
         Name = "";
+        IsOneWay = false;
+        MaxSpeed = 50;
+        IsBridge = false;
+
 
         // Get the data from the attributes
         ID = GetAttribute<ulong>("id", node.Attributes);
@@ -129,6 +141,26 @@ class OsmWay : BaseOsm
             else if (key == "name")
             {
                 Name = GetAttribute<string>("v", t.Attributes);
+            }
+            else if (key == "oneway")
+            {
+                IsOneWay = true;
+            }
+            else if (key == "route")
+            {
+                IsRoad = false;
+            }
+            else if (key == "maxspeed")
+            {
+                MaxSpeed = GetAttribute<int>("v", t.Attributes);
+            }
+            else if (key == "bridge")
+            {
+                IsBridge = true;
+            }
+            else if (key == "junction")
+            {
+                IsJunction = true;
             }
         }
     }
