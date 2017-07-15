@@ -27,7 +27,7 @@ namespace GSD.Roads{
 	   		return Mathf.Abs(a - b) < tolerance;
 	    }
 		
-		public static GSDSplineN CreateNode(GSDRoad RS, bool bSpecialEndNode = false, Vector3 vSpecialLoc = default(Vector3), bool bInterNode = false){
+		public static GSDSplineN CreateNode(GSDRoad RS, bool bSpecialEndNode = false, Vector3 vSpecialLoc = default(Vector3), bool bInterNode = false, bool bCustomPos = false, Vector3 vCustomPos = default(Vector3)){
 			Object[] tWorldNodeCount = GameObject.FindObjectsOfType(typeof(GSDSplineN));
 			GameObject tNodeObj = new GameObject("Node" + tWorldNodeCount.Length.ToString());
 			if(!bInterNode){
@@ -38,7 +38,12 @@ namespace GSD.Roads{
 			if(bSpecialEndNode){
 				tNode.bSpecialEndNode = true;
 				tNodeObj.transform.position = vSpecialLoc;
-			}else{
+			}
+            else if (bCustomPos)
+			{
+			    tNodeObj.transform.position = vCustomPos;
+			}
+            else {
 				tNodeObj.transform.position = RS.Editor_MousePos;
 				//This helps prevent double clicks:
 				int mCount = RS.GSDSpline.GetNodeCount();

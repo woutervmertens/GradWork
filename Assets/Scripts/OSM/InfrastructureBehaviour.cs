@@ -75,6 +75,7 @@ abstract class InfrastructureBehaviour : MonoBehaviour
         go.transform.SetParent(GameObject.Find("Map").transform);
         Vector3 localOrigin = GetCentre(way);
         go.transform.position = localOrigin - map.bounds.Centre;
+        way.LocalPos = go.transform.position;
 
         // Add the mesh filter and renderer components to the object
         MeshFilter mf = go.AddComponent<MeshFilter>();

@@ -69,6 +69,7 @@ class MapReader : MonoBehaviour
 
     void Update()
     {
+        if (ways == null) return;
         foreach (OsmWay w in ways)
         {
             if (w.Visible)

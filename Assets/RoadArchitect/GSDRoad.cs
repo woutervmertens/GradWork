@@ -1269,7 +1269,7 @@ public class GSDRoad : MonoBehaviour{
 	void Start(){
 		#if UNITY_EDITOR
 			if(Application.isPlaying){
-				CleanRunTime();
+				//CleanRunTime();
 			}
 		#else
 			this.enabled = false;

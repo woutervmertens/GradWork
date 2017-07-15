@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
+using UnityEngine;
 
 /*
     Copyright (c) 2017 Sloan Kelly
@@ -81,6 +82,8 @@ class OsmWay : BaseOsm
 
     public bool IsJunction { get; private set; }
 
+    public Vector3 LocalPos { get; set; }
+
     /// <summary>
     /// Constructor.
     /// </summary>
@@ -94,6 +97,7 @@ class OsmWay : BaseOsm
         IsOneWay = false;
         MaxSpeed = 50;
         IsBridge = false;
+        LocalPos = default(Vector3);
 
 
         // Get the data from the attributes
