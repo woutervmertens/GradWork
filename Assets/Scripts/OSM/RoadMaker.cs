@@ -33,7 +33,7 @@ class RoadMaker : InfrastructureBehaviour
 {
     public Material RoadMaterial;
 
-    public GSDRoadSystem RoadSystem;
+    public GSDRoadSystem RoadSystem; 
 
     /// <summary>
     /// Create the roads.
@@ -57,10 +57,28 @@ class RoadMaker : InfrastructureBehaviour
         
     }
 
+    void Create()
+    {
+        // Iterate through the roads and build each one
+        foreach (var way in map.ways.FindAll((w) => { return w.IsRoad; }))
+        {
+            CreateObject(way, RoadMaterial, way.Name);
+        }
+    }
+
+    void Update()
+    {
+        if (ready != map.IsReady)
+        {
+            ready = map.IsReady;
+            if(ready) Create();
+        }
+    }
+
     protected override void OnObjectCreated(OsmWay way, Vector3 origin, List<Vector3> vectors, List<Vector3> normals, List<Vector2> uvs, List<int> indices)
     {
-        GameObject rdObject = RoadSystem.AddRoad();
-        GSDRoad road = rdObject.GetComponent<GSDRoad>();
+        //GameObject rdObject = RoadSystem.AddRoad();
+        //GSDRoad road = rdObject.GetComponent<GSDRoad>();
 
         for (int i = 1; i < way.NodeIDs.Count; i++)
         {
@@ -70,8 +88,8 @@ class RoadMaker : InfrastructureBehaviour
             Vector3 s1 = p1 - origin;
             Vector3 s2 = p2 - origin;
 
-            GSDConstruction.CreateNode(road, false, default(Vector3), false, true,s1 + way.LocalPos);
-            GSDConstruction.CreateNode(road, false, default(Vector3), false, true, s2 + way.LocalPos);
+            //GSDConstruction.CreateNode(road, false, default(Vector3), false, true, s1 + way.LocalPos);
+            //GSDConstruction.CreateNode(road, false, default(Vector3), false, true, s2 + way.LocalPos);
 
             Vector3 diff = (s2 - s1).normalized;
 
@@ -117,6 +135,13 @@ class RoadMaker : InfrastructureBehaviour
             indices.Add(idx4);
             indices.Add(idx2);
         }
+
+        //foreach (var n in way.NodeIDs)
+        //{
+        //    OsmNode p1 = map.nodes[n];
+        //    Vector3 s1 = p1 - origin;
+        //    GSDConstruction.CreateNode(road, false, default(Vector3), false, true, s1 + way.LocalPos);
+        //}
         //road.UpdateRoad();
     }
 }

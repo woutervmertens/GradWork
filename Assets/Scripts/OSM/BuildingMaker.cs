@@ -50,6 +50,26 @@ class BuildingMaker : InfrastructureBehaviour
             CreateObject(way, building, "Building");
             yield return null;
         }
+
+    }
+
+    void Create()
+    {
+        // Iterate through all the buildings in the 'ways' list
+        foreach (var way in map.ways.FindAll((w) => { return w.IsBuilding && w.NodeIDs.Count > 1; }))
+        {
+            // Create the object
+            CreateObject(way, building, "Building");
+        }
+    }
+
+    void Update()
+    {
+        if (ready != map.IsReady)
+        {
+            ready = map.IsReady;
+            if(ready)Create();
+        }
     }
 
     /// <summary>

@@ -34,6 +34,8 @@ abstract class InfrastructureBehaviour : MonoBehaviour
     /// </summary>
     protected MapReader map;
 
+    protected bool ready;
+
     /// <summary>
     /// Awaken this instance!!!
     /// </summary>

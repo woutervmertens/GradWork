@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
+using UnityEditor;
 using UnityEngine;
 
 /*
@@ -24,6 +25,7 @@ using UnityEngine;
     SOFTWARE.
 */
 
+[ExecuteInEditMode]
 class MapReader : MonoBehaviour
 {
     [HideInInspector]
@@ -42,9 +44,25 @@ class MapReader : MonoBehaviour
 
     public bool IsReady { get; private set; }
 
-    // Use this for initialization
-    void Start()
+    public void Clear()
     {
+        Debug.Log("Clearing");
+        if(nodes != null) nodes.Clear();
+        nodes = null;
+        if(ways != null) ways.Clear();
+        ways = null;
+        bounds = null;
+
+        var children = new List<GameObject>();
+        foreach (Transform child in transform) children.Add(child.gameObject);
+        children.ForEach(child => DestroyImmediate(child));
+
+        IsReady = false;
+    }
+
+    public void Generate()
+    {
+        Debug.Log("Generating");
         nodes = new Dictionary<ulong, OsmNode>();
         ways = new List<OsmWay>();
 
