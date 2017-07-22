@@ -31,5 +31,6 @@ public class TestFollow : MonoBehaviour
 
 	    float posAlongSpline = timer/spline.distance;
 	    transform.position = spline.GetSplineValue((posAlongSpline*speed)%1);
+	    transform.LookAt(spline.GetSplineValue((posAlongSpline * speed + 0.01f) % 1));
 	}
 }
