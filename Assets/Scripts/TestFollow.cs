@@ -17,6 +17,10 @@ public class TestFollow : MonoBehaviour
     void Start()
     {
         spline = road.GSDSpline;
+        foreach (var node in spline.mNodes)
+        {
+            Debug.Log(node.tName + " time: " + node.tTime);
+        }
     }
     
 	// Update is called once per frame
