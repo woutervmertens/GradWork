@@ -83,6 +83,8 @@ class MapReader : MonoBehaviour
         groundPlane.transform.localScale = new Vector3((maxx - minx) / 2, 1, (maxy - miny) / 2);
 
         IsReady = true;
+
+
     }
 
     void Update()
@@ -103,7 +105,7 @@ class MapReader : MonoBehaviour
                     Vector3 v1 = p1 - bounds.Centre;
                     Vector3 v2 = p2 - bounds.Centre;
 
-                    Debug.DrawLine(v1, v2, c);
+                    Debug.DrawLine(v1, v2, c, 0.0f,true);
                 }
             }
         }

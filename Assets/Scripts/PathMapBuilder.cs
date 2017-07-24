@@ -14,6 +14,11 @@ public class PathMapBuilder : MonoBehaviour {
         {
             Nodes = new List<GSDSplineN>();
         }
+
+        public float GetLength()
+        {
+            return Mathf.Abs(Nodes[0].tDist - Nodes[1].tDist);
+        }
     }
 
     private List<Vector3> Intersections = new List<Vector3>();
