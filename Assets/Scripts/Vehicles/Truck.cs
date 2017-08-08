@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Vehicles.Behaviors;
 using UnityEngine;
 
 public class Truck : Vehicle {

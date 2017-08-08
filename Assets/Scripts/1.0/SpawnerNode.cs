@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using Assets.Scripts.Vehicles.Behaviors;
 using Random = UnityEngine.Random;
 
 public class SpawnerNode : Nodes {
