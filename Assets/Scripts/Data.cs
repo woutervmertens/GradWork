@@ -17,12 +17,12 @@ namespace Assets.Scripts
 
     }
 
-    public class Road
-    {
-        public IntersectionPoint StartIntersectionPoint;
-        public IntersectionPoint EndIntersectionPoint;
-        public float Length;
-    }
+    //public class Road
+    //{
+    //    public IntersectionPoint StartIntersectionPoint;
+    //    public IntersectionPoint EndIntersectionPoint;
+    //    public float Length;
+    //}
 
     public class VehicleData
     {

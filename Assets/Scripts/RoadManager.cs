@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Connection = PathMapBuilder.Connection;
+using IntersectionPoint = PathMapBuilder.IntersectionPoint;
 
 public class RoadManager : MonoBehaviour {
-    public static List<Road> Roads = new List<Road>();
+    public static List<Connection> Roads = new List<Connection>();
     public static List<IntersectionPoint> IntersectionPoints = new List<IntersectionPoint>();
 
     public static List<Vehicle> Vehicles = new List<Vehicle>();
@@ -41,21 +43,21 @@ public class RoadManager : MonoBehaviour {
             List<DijkstraSingleConnectionData> connectedIntersectionPoints = new List<DijkstraSingleConnectionData>();
 
             //Find all connected Intersections and save distance data
-            foreach (Road road in current.Roads)
+            foreach (Connection road in current.Roads)
             {
-                if (Unchecked.Contains(road.StartIntersectionPoint))
+                if (Unchecked.Contains(road.StartEndPoint[0]))
                 {
                     connectedIntersectionPoints.Add(new DijkstraSingleConnectionData
                     {
-                        Distance = road.Length, TargetIntersectionNode = road.StartIntersectionPoint
+                        Distance = road.GetLength(), TargetIntersectionNode = road.StartEndPoint[0]
                     });
                 }
-                if (Unchecked.Contains(road.EndIntersectionPoint))
+                if (Unchecked.Contains(road.StartEndPoint[1]))
                 {
                     connectedIntersectionPoints.Add(new DijkstraSingleConnectionData
                     {
-                        Distance = road.Length,
-                        TargetIntersectionNode = road.EndIntersectionPoint
+                        Distance = road.GetLength(),
+                        TargetIntersectionNode = road.StartEndPoint[1]
                     });
                 }
             }
@@ -75,10 +77,10 @@ public class RoadManager : MonoBehaviour {
             }
 
             //find next point to be checked
-            IntersectionPoint nextIntersectionPoint = current;
+            PathMapBuilder.IntersectionPoint nextIntersectionPoint = current;
             float distance = float.MaxValue;
 
-            List<IntersectionPoint> ignoreIntersectionPoints = Checked;
+            List<PathMapBuilder.IntersectionPoint> ignoreIntersectionPoints = Checked;
             foreach (var dijkstraTableData in dijkstraTable.Table)
             {
                 if (ignoreIntersectionPoints.Contains(dijkstraTableData.Key))
@@ -95,13 +97,13 @@ public class RoadManager : MonoBehaviour {
         return dijkstraTable;
     }
 
-    public static List<IntersectionPoint> CalculateRoute(DijkstraTable table, IntersectionPoint start,
-        IntersectionPoint end)
+    public static List<PathMapBuilder.IntersectionPoint> CalculateRoute(DijkstraTable table, PathMapBuilder.IntersectionPoint start,
+        PathMapBuilder.IntersectionPoint end)
     {
-        List<IntersectionPoint> path = new List<IntersectionPoint>();
+        List<PathMapBuilder.IntersectionPoint> path = new List<PathMapBuilder.IntersectionPoint>();
         path.Add(end);
 
-        IntersectionPoint current = end;
+        PathMapBuilder.IntersectionPoint current = end;
         while (current != start)
         {
             current = table.Table[current].PrevIntersectionNode;
@@ -122,7 +124,7 @@ public class RoadManager : MonoBehaviour {
         }
     }
 
-    public static void AddRoad(Road road)
+    public static void AddRoad(Connection road)
     {
         if (!Roads.Contains(road))
         {
@@ -130,7 +132,7 @@ public class RoadManager : MonoBehaviour {
         }
     }
 
-    public static void AddIntersection(IntersectionPoint intersectionPoint)
+    public static void AddIntersection(PathMapBuilder.IntersectionPoint intersectionPoint)
     {
         if (!IntersectionPoints.Contains(intersectionPoint))
         {

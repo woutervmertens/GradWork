@@ -1,82 +1,74 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class PathMapBuilder : MonoBehaviour {
 
 
-    class Connection
+    public class Connection
     {
         public GSDSplineC Spline { get; set; }
         public List<GSDSplineN> Nodes { get; set; }
+        public List<IntersectionPoint> StartEndPoint { get; set; }
 
         public Connection()
         {
             Nodes = new List<GSDSplineN>();
+            StartEndPoint = new List<IntersectionPoint>();
         }
 
         public float GetLength()
         {
             return Mathf.Abs(Nodes[0].tDist - Nodes[1].tDist);
         }
+
+        
     }
 
-    private List<Vector3> Intersections = new List<Vector3>();
-    private List<GSDRoadIntersection> IntTest = new List<GSDRoadIntersection>();
+    public class IntersectionPoint
+    {
+        public GSDSplineN Node1 { get; set; }
+        public GSDSplineN Node2 { get; set; }
+        public List<Connection> Roads { get; set; }
+        public bool bIsSpawner { get; set; }
+        public DijkstraTable DijkstraTable { get; set; }
+        public GSDRoadIntersection IntGSD { get; set; }
+
+        public IntersectionPoint()
+        {
+            Roads = new List<Connection>();
+        }
+    }
+
+    //private List<Vector3> Intersections = new List<Vector3>();
+    private List<IntersectionPoint> Intersections = new List<IntersectionPoint>();
     private List<Connection> Connections = new List<Connection>();
 
     public GameObject RoadNetwork;
+    private RoadManager roadManager;
 
     public bool Show = false;
     public float DrawDetail = 0.1f;
 
-	// Use this for initialization
-	void Start () {
-	    foreach (Transform child in RoadNetwork.transform)
-	    {
-	        var tempCon = new Connection();
-            //Ignore intersections
-	        if (!child.GetComponent<GSDRoad>())
-	        {
-	            foreach (Transform inter in child.transform)
-	            {
-	                var i = inter.GetComponent<GSDRoadIntersection>();
-                    IntTest.Add(i);
-	            }
-                continue;
-	        }
-	        var road = child.GetChild(0);
-	        var spline = road.gameObject.GetComponent<GSDSplineC>();
-	        foreach (var node in spline.mNodes)
-	        {
-	            if (node.bIsEndPoint)
-	            {
-	                tempCon.Nodes.Add(node);
-	            }
-	            if (node.bIsIntersection)
-	            {
-	                tempCon.Nodes.Add(node);
-                    Intersections.Add(node.pos);
-	            }
-                if (tempCon.Nodes.Count > 1)
-	            {
-	                tempCon.Spline = spline;
-                    Connections.Add(tempCon);
-                    tempCon = new Connection();
-                    if(!node.bIsEndPoint)tempCon.Nodes.Add(node);
-	            }
-	        }
-	    }
+    public bool AutoGenerate = false;
 
-	    Debug.Log("Intersections: " + Intersections.Count);
-        //Remove Intersection duplicates
-        HashSet<Vector3> hash = new HashSet<Vector3>();
-	    foreach (var pos in Intersections)
-	    {
-	        hash.Add(pos);
-	    }
-	    Intersections = new List<Vector3>(hash);
-        Debug.Log("Intersections no dups: " + Intersections.Count);
+	// Use this for initialization
+	void Start ()
+	{
+	    if(AutoGenerate) Generate();
+        Debug.Log("Intersections: " + Intersections.Count);
+	    //Debug.Log("Intersections: " + Intersections.Count);
+        
+     //   //Remove Intersection duplicates
+     //   HashSet<Vector3> hash = new HashSet<Vector3>();
+	    //foreach (var pos in Intersections)
+	    //{
+	    //    hash.Add(pos);
+	    //}
+	    //Intersections = new List<Vector3>(hash);
+     //   Debug.Log("Intersections no dups: " + Intersections.Count);
         Debug.Log("Connections: " + Connections.Count);
 	}
 
@@ -111,16 +103,16 @@ public class PathMapBuilder : MonoBehaviour {
         }
 
         //Intersections
-        foreach (var i in IntTest)
+        foreach (var i in Intersections)
         {
             float detail = DrawDetail;
             float prevDetail = 0.0f;
-            Vector3 control = i.Node1.pos;
+            Vector3 control = i.IntGSD.Node1.pos;
 
-            firstPoint = i.Node1.GSDSpline.GetSplineValue(i.Node1.tTime - DrawDetail*2);
-            firstPointAlt = i.Node1.GSDSpline.GetSplineValue(i.Node1.tTime + DrawDetail * 2);
-            secondPoint = i.Node2.GSDSpline.GetSplineValue(i.Node2.tTime - DrawDetail*2);
-            secondPointAlt = i.Node2.GSDSpline.GetSplineValue(i.Node2.tTime + DrawDetail * 2);
+            firstPoint = i.IntGSD.Node1.GSDSpline.GetSplineValue(i.IntGSD.Node1.tTime - DrawDetail*2);
+            firstPointAlt = i.IntGSD.Node1.GSDSpline.GetSplineValue(i.IntGSD.Node1.tTime + DrawDetail * 2);
+            secondPoint = i.IntGSD.Node2.GSDSpline.GetSplineValue(i.IntGSD.Node2.tTime - DrawDetail*2);
+            secondPointAlt = i.IntGSD.Node2.GSDSpline.GetSplineValue(i.IntGSD.Node2.tTime + DrawDetail * 2);
             while (detail < 1)
             {
                 Debug.DrawLine(CalculateSplinePoint(prevDetail, firstPoint, secondPoint, control), CalculateSplinePoint(detail, firstPoint, secondPoint, control), c, Time.deltaTime);
@@ -129,6 +121,65 @@ public class PathMapBuilder : MonoBehaviour {
                 Debug.DrawLine(CalculateSplinePoint(prevDetail, firstPointAlt, secondPointAlt, control), CalculateSplinePoint(detail, firstPointAlt, secondPointAlt, control), c, Time.deltaTime);
                 prevDetail = detail;
                 detail += DrawDetail;
+            }
+        }
+    }
+
+    public void Generate()
+    {
+        roadManager = GetComponent<RoadManager>();
+        foreach (Transform child in RoadNetwork.transform)
+        {
+            var tempCon = new Connection();
+            //Ignore intersections
+            if (!child.GetComponent<GSDRoad>())
+            {
+                foreach (Transform inter in child.transform)
+                {
+                    var i = new IntersectionPoint();
+                    i.IntGSD = inter.GetComponent<GSDRoadIntersection>();
+                    i.Node1 = i.IntGSD.Node1;
+                    i.Node2 = i.IntGSD.Node2;
+                    Intersections.Add(i);
+                }
+                continue;
+            }
+            var road = child.GetChild(0);
+            var spline = road.gameObject.GetComponent<GSDSplineC>();
+            foreach (var node in spline.mNodes)
+            {
+                if (node.bIsEndPoint)
+                {
+                    tempCon.Nodes.Add(node);
+                }
+                if (node.bIsIntersection)
+                {
+                    tempCon.Nodes.Add(node);
+                    //Intersections.Add(node.pos);
+                }
+                if (tempCon.Nodes.Count > 1)
+                {
+                    tempCon.Spline = spline;
+                    Connections.Add(tempCon);
+                    tempCon = new Connection();
+                    if (!node.bIsEndPoint) tempCon.Nodes.Add(node);
+                }
+            }
+        }
+
+        //Link Intersections and connections
+        foreach (var connection in Connections)
+        {
+            foreach (var intersection in Intersections)
+            {
+                if (intersection.Node1 == connection.Nodes[0]
+                    || intersection.Node1 == connection.Nodes[1]
+                    || intersection.Node2 == connection.Nodes[0]
+                    || intersection.Node2 == connection.Nodes[1])
+                {
+                    connection.StartEndPoint.Add(intersection);
+                    intersection.Roads.Add(connection);
+                }
             }
         }
     }

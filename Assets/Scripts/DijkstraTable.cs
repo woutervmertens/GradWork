@@ -4,21 +4,21 @@ using UnityEngine;
 
 public struct DijkstraSingleConnectionData
 {
-    public IntersectionPoint TargetIntersectionNode;
+    public PathMapBuilder.IntersectionPoint TargetIntersectionNode;
     public float Distance;
 }
 
 public class DijkstraTableData
 {
     public float Distance;
-    public IntersectionPoint PrevIntersectionNode;
+    public PathMapBuilder.IntersectionPoint PrevIntersectionNode;
 }
 
 public class DijkstraTable : MonoBehaviour {
 
-	public Dictionary<IntersectionPoint, DijkstraTableData> Table = new Dictionary<IntersectionPoint, DijkstraTableData>();
+	public Dictionary<PathMapBuilder.IntersectionPoint, DijkstraTableData> Table = new Dictionary<PathMapBuilder.IntersectionPoint, DijkstraTableData>();
 
-    public void Fill(List<IntersectionPoint> list, IntersectionPoint start)
+    public void Fill(List<PathMapBuilder.IntersectionPoint> list, PathMapBuilder.IntersectionPoint start)
     {
         foreach (var intersectionNode in list)
         {
