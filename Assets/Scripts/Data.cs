@@ -17,6 +17,13 @@ namespace Assets.Scripts
 
     }
 
+    public class Road
+    {
+        public IntersectionPoint StartIntersectionPoint;
+        public IntersectionPoint EndIntersectionPoint;
+        public float Length;
+    }
+
     public class VehicleData
     {
         public float MaxSpeed { get; private set; }
@@ -35,7 +42,7 @@ namespace Assets.Scripts
         public bool IsIntersection { get; private set; }
     }
 
-    public class PathNodes
+    public class PathData
     {
         public Node StartNode { get; private set; }
         public float StartF { get; private set; }

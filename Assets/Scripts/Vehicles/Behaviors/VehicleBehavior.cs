@@ -14,7 +14,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         public int CurrentLane = 0;
 
         //PathData
-        private LinkedList<PathNodes> _path = new LinkedList<PathNodes>();
+        private LinkedList<PathData> _path = new LinkedList<PathData>();
         private float _currentSplinePos;
         public int PathNodeIndex = 0;
         private Node _startNode, _endNode;
