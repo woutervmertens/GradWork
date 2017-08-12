@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using Assets.Scripts;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class PathMapBuilder : MonoBehaviour {
         public GSDSplineC Spline { get; set; }
         public List<GSDSplineN> Nodes { get; set; }
         public List<IntersectionPoint> StartEndPoint { get; set; }
+        private float startF = -5, endF = -5;
+        
 
         public Connection()
         {
@@ -24,6 +27,27 @@ public class PathMapBuilder : MonoBehaviour {
             return Mathf.Abs(Nodes[0].tDist - Nodes[1].tDist);
         }
 
+        public float GetStartF()
+        {
+            if (startF > -1) return startF;
+            if (StartEndPoint[0].Node1 == Nodes[0] || StartEndPoint[0].Node2 == Nodes[0]) startF = Nodes[0].tDist;
+            else
+            {
+                startF = Nodes[Nodes.Count - 1].tDist;
+            }
+            return startF;
+        }
+
+        public float GetEndF()
+        {
+            if (endF > -1) return startF;
+            if (StartEndPoint[1].Node1 == Nodes[0] || StartEndPoint[1].Node2 == Nodes[0]) endF = Nodes[0].tDist;
+            else
+            {
+                endF = Nodes[Nodes.Count - 1].tDist;
+            }
+            return endF;
+        }
         
     }
 
@@ -52,7 +76,7 @@ public class PathMapBuilder : MonoBehaviour {
     public bool Show = false;
     public float DrawDetail = 0.1f;
 
-    public bool AutoGenerate = false;
+    public bool AutoGenerate = true;
 
 	// Use this for initialization
 	void Start ()
