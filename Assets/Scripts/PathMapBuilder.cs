@@ -71,7 +71,6 @@ public class PathMapBuilder : MonoBehaviour {
     private List<Connection> Connections = new List<Connection>();
 
     public GameObject RoadNetwork;
-    private RoadManager roadManager;
 
     public bool Show = false;
     public float DrawDetail = 0.1f;
@@ -151,7 +150,6 @@ public class PathMapBuilder : MonoBehaviour {
 
     public void Generate()
     {
-        roadManager = GetComponent<RoadManager>();
         foreach (Transform child in RoadNetwork.transform)
         {
             var tempCon = new Connection();
@@ -206,6 +204,16 @@ public class PathMapBuilder : MonoBehaviour {
                 }
             }
         }
+
+        foreach (var i in Intersections)
+        {
+            RoadManager.AddIntersection(i);
+        }
+        foreach (var c in Connections)
+        {
+            RoadManager.AddRoad(c);
+        }
+        RoadManager.CalculateDijkstraTables();
     }
 
     private Vector3 CalculateSplinePoint(float t, Vector3 startpoint, Vector3 endpoint, Vector3 control)
