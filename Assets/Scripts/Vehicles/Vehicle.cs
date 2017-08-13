@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vehicle : MonoBehaviour {
-
+public class Vehicle : MonoBehaviour
+{
+    private List<PathMapBuilder.PathObject> Path;
 	// Use this for initialization
 	void Start () {
 		
