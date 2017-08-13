@@ -60,16 +60,17 @@ public class PathMapBuilder : MonoBehaviour {
         public DijkstraTable DijkstraTable { get; set; }
         public GSDRoadIntersection IntGSD { get; set; }
 
-        public IntersectionPoint()
+        public IntersectionPoint(bool bSpawner = false)
         {
             Roads = new List<Connection>();
-            bIsSpawner = false;
+            bIsSpawner = bSpawner;
         }
     }
 
     //private List<Vector3> Intersections = new List<Vector3>();
     private List<IntersectionPoint> Intersections = new List<IntersectionPoint>();
     private List<Connection> Connections = new List<Connection>();
+    private List<IntersectionPoint> SpawnPoints = new List<IntersectionPoint>();
 
     public GameObject RoadNetwork;
 
@@ -94,6 +95,7 @@ public class PathMapBuilder : MonoBehaviour {
 	    //Intersections = new List<Vector3>(hash);
      //   Debug.Log("Intersections no dups: " + Intersections.Count);
         Debug.Log("Connections: " + Connections.Count);
+        Debug.Log("SpawnPoints: " + SpawnPoints.Count);
 	}
 
     void Update()
@@ -179,10 +181,9 @@ public class PathMapBuilder : MonoBehaviour {
                 if (node.bIsEndPoint)
                 {
                     tempCon.Nodes.Add(node);
-                    var i = new IntersectionPoint();
-                    i.Node1 = i.Node2 = node;
-                    i.bIsSpawner = true;
-                    Intersections.Add(i);
+                    var s = new IntersectionPoint();
+                    s.Node1 = node;
+                    SpawnPoints.Add(s);
                 }
                 if (node.bIsIntersection)
                 {
@@ -202,15 +203,25 @@ public class PathMapBuilder : MonoBehaviour {
         //Link Intersections and connections
         foreach (var connection in Connections)
         {
+          int c = connection.Nodes.Count - 1;
             foreach (var intersection in Intersections)
             {
                 if (intersection.Node1 == connection.Nodes[0]
-                    || intersection.Node1 == connection.Nodes[1]
+                    || intersection.Node1 == connection.Nodes[c]
                     || intersection.Node2 == connection.Nodes[0]
-                    || intersection.Node2 == connection.Nodes[1])
+                    || intersection.Node2 == connection.Nodes[c])
                 {
                     connection.StartEndPoint.Add(intersection);
                     intersection.Roads.Add(connection);
+                }
+            }
+            foreach (var spawnpoint in SpawnPoints)
+            {
+                if (spawnpoint.Node1 == connection.Nodes[0]
+                    || spawnpoint.Node1 == connection.Nodes[c])
+                {
+                    spawnpoint.Roads.Add(connection);
+                    connection.StartEndPoint.Add(spawnpoint);
                 }
             }
         }
@@ -224,6 +235,9 @@ public class PathMapBuilder : MonoBehaviour {
             RoadManager.AddRoad(c);
         }
         RoadManager.CalculateDijkstraTables();
+        Debug.Log("Intersections: " + Intersections.Count);
+        Debug.Log("Connections: " + Connections.Count);
+        Debug.Log("SpawnPoints: " + SpawnPoints.Count);
     }
 
     private Vector3 CalculateSplinePoint(float t, Vector3 startpoint, Vector3 endpoint, Vector3 control)

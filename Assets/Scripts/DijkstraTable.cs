@@ -20,9 +20,9 @@ public class DijkstraTable : MonoBehaviour {
 
     public void Fill(List<PathMapBuilder.IntersectionPoint> list, PathMapBuilder.IntersectionPoint start)
     {
-        foreach (var intersectionNode in list)
+        foreach (var node in list)
         {
-            Table.Add(intersectionNode, new DijkstraTableData() {Distance = float.MaxValue, PrevIntersectionNode = null});
+            Table.Add(node, new DijkstraTableData() {Distance = float.MaxValue, PrevIntersectionNode = null});
         }
 
         Table[start].Distance = 0;
