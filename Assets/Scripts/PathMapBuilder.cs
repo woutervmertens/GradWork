@@ -181,7 +181,7 @@ public class PathMapBuilder : MonoBehaviour {
                 if (node.bIsEndPoint)
                 {
                     tempCon.Nodes.Add(node);
-                    var s = new IntersectionPoint();
+                    var s = new IntersectionPoint(true);
                     s.Node1 = node;
                     SpawnPoints.Add(s);
                 }
