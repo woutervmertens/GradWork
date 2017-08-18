@@ -1,10 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 public class Vehicle : MonoBehaviour
 {
-    private List<PathMapBuilder.PathObject> Path;
+    public PathMapBuilder.IntersectionPoint StartIntersectionPoint;
+
+    public PathMapBuilder.IntersectionPoint EndIntersectionPoint;
+    public List<PathMapBuilder.IntersectionPoint> Route = new List<PathMapBuilder.IntersectionPoint>();
+    public List<PathData> Path = new List<PathData>();
+
+    public void ConvertRouteToPath()
+    {
+        
+    }
 	// Use this for initialization
 	void Start () {
 		

@@ -9,7 +9,7 @@ using IntersectionPoint = PathMapBuilder.IntersectionPoint;
 public class RoadManager : MonoBehaviour {
     public static List<Connection> Roads = new List<Connection>();
     public static List<IntersectionPoint> IntersectionPoints = new List<IntersectionPoint>();
-
+    public static List<IntersectionPoint> Spawners = new List<IntersectionPoint>();
     public static List<Vehicle> Vehicles = new List<Vehicle>();
 
     public static IntersectionPoint GetRandomOtherIntersectionPoint(IntersectionPoint current)
@@ -139,6 +139,7 @@ public class RoadManager : MonoBehaviour {
         if (!IntersectionPoints.Contains(intersectionPoint))
         {
             IntersectionPoints.Add(intersectionPoint);
+            if(intersectionPoint.bIsSpawner) Spawners.Add(intersectionPoint);
         }
     }
 

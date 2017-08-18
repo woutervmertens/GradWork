@@ -65,6 +65,21 @@ public class PathMapBuilder : MonoBehaviour {
             Roads = new List<Connection>();
             bIsSpawner = bSpawner;
         }
+
+        public void SpawnVehicle()
+        {
+            if (!bIsSpawner) return;
+            if (DijkstraTable.Table.Count == 0) DijkstraTable = RoadManager.CalculatePathTable(this);
+
+            Connection selectedRoad = Roads[0];
+            GameObject vehicleObject = Instantiate(Resources.Load("Car") as GameObject);
+            Vehicle veh = vehicleObject.GetComponent<Vehicle>();
+
+            veh.StartIntersectionPoint = this;
+            veh.EndIntersectionPoint = RoadManager.GetRandomOtherIntersectionPoint(this);
+            veh.Route = RoadManager.CalculateRoute(DijkstraTable, veh.StartIntersectionPoint, veh.EndIntersectionPoint);
+            veh.ConvertRouteToPath();
+        }
     }
 
     //private List<Vector3> Intersections = new List<Vector3>();
