@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using UnityEditor.MemoryProfiler;
 using UnityEngine;
+using Connection = PathMapBuilder.Connection;
 
 public class Vehicle : MonoBehaviour
 {
     public PathMapBuilder.IntersectionPoint StartIntersectionPoint;
-
     public PathMapBuilder.IntersectionPoint EndIntersectionPoint;
     public List<PathMapBuilder.IntersectionPoint> Route = new List<PathMapBuilder.IntersectionPoint>();
     public List<PathData> Path = new List<PathData>();
+    public GSDRoad TestRoad;
+    public bool bUseTestRoad = true;
 
     public void ConvertRouteToPath()
     {
@@ -27,7 +30,7 @@ public class Vehicle : MonoBehaviour
             startNode.IsIntersection = !Route[j].bIsSpawner;
             path.EndNode = endNode;
 
-            PathMapBuilder.Connection con = null;
+            Connection con = null;
             foreach (var road in Route[j-1].Roads)
             {
                 if (road.StartEndPoint.Contains(Route[j]))
@@ -60,13 +63,34 @@ public class Vehicle : MonoBehaviour
             Path.Add(path);
         }
     }
+
+    private void UseTestRoute()
+    {
+        int i = 0;
+        foreach (var node in TestRoad.GSDSpline.mNodes)
+        {
+            var inter =  new PathMapBuilder.IntersectionPoint();
+            inter.Node1 = node;
+            inter.bIsSpawner = node.bIsEndPoint;
+            if (i > 0)
+            {
+                var con = new Connection();
+                con.Nodes.Add(node);
+                con.Nodes.Add(TestRoad.GSDSpline.mNodes[i-1]);
+                con.Spline = TestRoad.GSDSpline;
+                con.StartEndPoint.Add(Route[i-1]);
+                con.StartEndPoint.Add(inter);
+                inter.Roads.Add(con);
+                Route[i-1].Roads.Add(con);
+            }
+            Route.Add(inter);
+            i++;
+        }
+        Debug.Log("Route set: " + Route.Count);
+        ConvertRouteToPath();
+    }
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		if(bUseTestRoad) UseTestRoute();
 	}
 }

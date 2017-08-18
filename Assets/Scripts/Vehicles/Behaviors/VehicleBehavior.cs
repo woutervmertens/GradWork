@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using Assets.Scripts.Behaviors;
 using UnityEngine;
 
@@ -10,17 +11,17 @@ namespace Assets.Scripts.Vehicles.Behaviors
         //------------
         //VehicleData
         public VehicleData Data;
+
+        private Vehicle _vehicle = new Vehicle();
         public float Speed;
         public int CurrentLane = 0;
 
         //PathData
-        private LinkedList<PathData> _path = new LinkedList<PathData>();
-        public PathMapBuilder.IntersectionPoint StartIntersectionPoint { get; set; }
-        public PathMapBuilder.IntersectionPoint EndIntersectionPoint { get; set; }
-        public List<PathMapBuilder.IntersectionPoint> Route;
-        public int TargetRouteIndex = 0;
+        private List<PathData> _path = new List<PathData>();
+        private PathData _currentPath;
+        private int _currentPathIndex = 0;
         private float _currentSplinePos;
-        public int PathNodeIndex = 0;
+        private float _timer = 0;
         private Node _startNode, _endNode;
 
         //BEHAVIORS
@@ -109,13 +110,43 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public bool CheckIntersectionCommingUp()
         {
+            if (_path[_currentPathIndex].EndNode.IsIntersection)
+            {
+                return true;
+            }
             return false;
         }
 
+        public bool NeedsPath()
+        {
+            if (_path.Count > 0) return false;
+            Debug.Log("Path needed!");
+            return true;
+        }
+
         //Actions
+        public BehaviorState GetPath()
+        {
+            Debug.Log("Getting the path.");
+            if (_vehicle.Route.Count > 0)
+            {
+                //_vehicle.ConvertRouteToPath();
+                _path = _vehicle.Path;
+                _currentPath = _path[0];
+                return BehaviorState.Success;
+            }
+            else
+            {
+                return BehaviorState.Running;
+            }
+        }
         public BehaviorState FollowRoad()
         {
-
+            Debug.Log("Following.");
+            _timer += Time.deltaTime;
+            _currentSplinePos = _timer / _currentPath.Spline.distance;
+            transform.position = _currentPath.Spline.GetSplineValue((_currentSplinePos * Speed) % 1);
+            transform.LookAt(_currentPath.Spline.GetSplineValue((_currentSplinePos * Speed + 0.01f) % 1));
             return BehaviorState.Running;
         }
 
@@ -156,10 +187,25 @@ namespace Assets.Scripts.Vehicles.Behaviors
         // Use this for initialization
         void Start () {
             //Get Attributes
+            _vehicle = GetComponent<Vehicle>();
 
             //Behavior Tree
-
+            List<BehaviorComponent> vehicleBehavior = new List<BehaviorComponent>()
+            {
+                new Selector(new List<BehaviorComponent>
+                {
+                    new Sequence(new List<BehaviorComponent>
+                    {
+                        new BehaviorConditional(NeedsPath),
+                        new BehaviorAction(GetPath)
+                    }.ToArray()),
+                    new BehaviorAction(FollowRoad)
+                }.ToArray())
+            };
+                
             //Set Default
+            Sequence vehicleSequence = new Sequence(vehicleBehavior.ToArray());
+            SetDefaultComposite(vehicleSequence);
         }
 	
     }
