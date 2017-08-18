@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using Assets.Scripts;
@@ -59,7 +60,7 @@ public class PathMapBuilder : MonoBehaviour {
         public List<Connection> Roads { get; set; }
         public bool bIsSpawner { get; set; }
         public DijkstraTable DijkstraTable { get; set; }
-        public GSDRoadIntersection IntGSD { get; set; }
+        public GSDRoadIntersection IntGSD { get; set; } 
 
         public IntersectionPoint(bool bSpawner = false)
         {
@@ -73,7 +74,7 @@ public class PathMapBuilder : MonoBehaviour {
             if (DijkstraTable.Table.Count == 0) DijkstraTable = RoadManager.CalculatePathTable(this);
 
             Connection selectedRoad = Roads[0];
-            GameObject vehicleObject = Instantiate(Resources.Load("Car") as GameObject);
+            GameObject vehicleObject = Instantiate(Resources.Load("TestVehiclePrefab") as GameObject);
             Vehicle veh = vehicleObject.GetComponent<Vehicle>();
 
             veh.StartIntersectionPoint = this;

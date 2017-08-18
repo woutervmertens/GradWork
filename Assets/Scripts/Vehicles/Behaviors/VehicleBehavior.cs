@@ -20,8 +20,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         private List<PathData> _path = new List<PathData>();
         private PathData _currentPath;
         private int _currentPathIndex = 0;
-        private float _currentSplinePos;
-        private float _timer = 0;
+        private float _currentSplinePos = 0;
         private Node _startNode, _endNode;
 
         //BEHAVIORS
@@ -124,15 +123,34 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return true;
         }
 
+        public bool IsCurrentPathFinished()
+        {
+            if ((_currentPath.Direction > 0 && _currentSplinePos >= _currentPath.EndF)
+                || (_currentPath.Direction < 0 && _currentSplinePos <= _currentPath.EndF))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsNextPathIndexEnd()
+        {
+            if (_currentPathIndex >= _path.Count)
+                return true;
+            return false;
+        }
+
         //Actions
         public BehaviorState GetPath()
         {
             Debug.Log("Getting the path.");
             if (_vehicle.Route.Count > 0)
             {
-                //_vehicle.ConvertRouteToPath();
+                if(_vehicle.Path.Count < 1) _vehicle.ConvertRouteToPath();
                 _path = _vehicle.Path;
                 _currentPath = _path[0];
+                _currentPathIndex = 0;
+                _currentSplinePos = _currentPath.StartF;
                 return BehaviorState.Success;
             }
             else
@@ -140,13 +158,28 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 return BehaviorState.Running;
             }
         }
+
+        public BehaviorState SwitchToNextPathPart()
+        {
+            _currentPathIndex++;
+            _currentPath = _path[_currentPathIndex];
+            _currentSplinePos = _path[_currentPathIndex].StartF;
+            return BehaviorState.Success;
+        }
+
+        public BehaviorState EndJourney()
+        {
+            //Destroy(this.gameObject);
+            return BehaviorState.Success;
+        }
+
         public BehaviorState FollowRoad()
         {
             Debug.Log("Following.");
-            _timer += Time.deltaTime;
-            _currentSplinePos = _timer / _currentPath.Spline.distance;
-            transform.position = _currentPath.Spline.GetSplineValue((_currentSplinePos * Speed) % 1);
-            transform.LookAt(_currentPath.Spline.GetSplineValue((_currentSplinePos * Speed + 0.01f) % 1));
+            _currentSplinePos += Time.deltaTime*_currentPath.Direction;
+            var normalizedSplinePos = _currentSplinePos / _currentPath.Spline.distance;
+            transform.position = _currentPath.Spline.GetSplineValue((normalizedSplinePos * Speed) % 1);
+            transform.LookAt(_currentPath.Spline.GetSplineValue((normalizedSplinePos * Speed + 0.01f) % 1)); //0.01f = lookat buffer
             return BehaviorState.Running;
         }
 

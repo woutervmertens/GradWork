@@ -20,7 +20,7 @@ public class RoadManager : MonoBehaviour {
     }
     public static IntersectionPoint GetRandomIntersectionPoint()
     {
-        return IntersectionPoints[Mathf.FloorToInt((Random.value * IntersectionPoints.Count))];
+        return Spawners[Mathf.FloorToInt((Random.value * Spawners.Count))];
     }
 
     public static DijkstraTable CalculatePathTable(IntersectionPoint start)
