@@ -13,8 +13,6 @@ namespace Assets.Scripts
         public List<Vehicle> NegVehicles { get; private set; }
         public float MaxSpeed { get; private set; }
         public int NrOfLanes { get; private set; }
-
-
     }
 
     //public class Road
@@ -38,18 +36,19 @@ namespace Assets.Scripts
 
     public class Node
     {
-        public Vector3 Pos { get; private set; }
-        public bool IsIntersection { get; private set; }
+        public Vector3 Pos { get; set; }
+        public bool IsIntersection { get; set; }
     }
 
     public class PathData
     {
-        public Node StartNode { get; private set; }
-        public float StartF { get; private set; }
-        public Node EndNode { get; private set; }
-        public float EndF { get; private set; }
-        public GSDSplineC Spline { get; private set; }
-        public RoadData RoadData { get; private set; }
-        public int Direction { get; private set; }
+        public Node StartNode { get; set; }
+        public float StartF { get; set; }
+        public Node EndNode { get; set; }
+        public float EndF { get; set; }
+        public GSDSplineC Spline { get; set; }
+        public RoadData RoadData { get; set; }
+        public float Length { get; set; }
+        public int Direction { get; set; }
     }
 }

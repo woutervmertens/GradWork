@@ -13,6 +13,7 @@ public class PathMapBuilder : MonoBehaviour {
         public GSDSplineC Spline { get; set; }
         public List<GSDSplineN> Nodes { get; set; }
         public List<IntersectionPoint> StartEndPoint { get; set; }
+        public RoadData RoadData { get; set; }
         private float startF = -5, endF = -5;
 
 
