@@ -15,6 +15,10 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         //PathData
         private LinkedList<PathData> _path = new LinkedList<PathData>();
+        public PathMapBuilder.IntersectionPoint StartIntersectionPoint { get; set; }
+        public PathMapBuilder.IntersectionPoint EndIntersectionPoint { get; set; }
+        public List<PathMapBuilder.IntersectionPoint> Route;
+        public int TargetRouteIndex = 0;
         private float _currentSplinePos;
         public int PathNodeIndex = 0;
         private Node _startNode, _endNode;

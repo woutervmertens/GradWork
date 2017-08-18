@@ -35,7 +35,9 @@ public class RoadManager : MonoBehaviour {
         while (Unchecked.Count > 0)
         {
             //Remove from unchecked
-            Unchecked.Remove(current);
+            var test = Unchecked.Remove(current);
+            if(!test)
+                Debug.LogError("List remove unsuccesfull!");
 
             //Add to checked
             Checked.Add(current);
@@ -83,7 +85,7 @@ public class RoadManager : MonoBehaviour {
             List<PathMapBuilder.IntersectionPoint> ignoreIntersectionPoints = Checked;
             foreach (var dijkstraTableData in dijkstraTable.Table)
             {
-                if (ignoreIntersectionPoints.Contains(dijkstraTableData.Key))
+                if (!ignoreIntersectionPoints.Contains(dijkstraTableData.Key))
                 {
                     if (dijkstraTableData.Value.Distance < distance)
                     {
