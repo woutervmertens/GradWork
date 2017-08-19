@@ -16,7 +16,7 @@ public class Vehicle : MonoBehaviour
 
     public void ConvertRouteToPath()
     {
-        for (int j = 1; j < Route.Count-1; j++)
+        for (int j = 1; j < Route.Count; j++)
         {
             PathData path = new PathData();
 

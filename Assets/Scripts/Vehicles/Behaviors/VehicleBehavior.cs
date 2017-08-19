@@ -21,6 +21,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         private PathData _currentPath;
         private int _currentPathIndex = 0;
         private float _currentSplinePos = 0;
+        private float _normalizedSplinePos = 0;
         private Node _startNode, _endNode;
 
         //BEHAVIORS
@@ -123,10 +124,22 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return true;
         }
 
+        public bool IsCloseToPathEnd()
+        {
+            if (_normalizedSplinePos < 0.000000000001) return false;
+            float endF = _currentPath.EndF / _currentPath.Spline.distance;
+            float currF = (_currentSplinePos / _currentPath.Spline.distance) % 1;
+            if (((_currentPath.Direction > 0 && currF >= endF - 0.05)
+                 || (_currentPath.Direction < 0 && currF <= endF + 0.05)) && Vector3.Distance(transform.position, _path[_currentPathIndex].EndNode.Pos) < 2.0f)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public bool IsCurrentPathFinished()
         {
-            if ((_currentPath.Direction > 0 && _currentSplinePos >= _currentPath.EndF)
-                || (_currentPath.Direction < 0 && _currentSplinePos <= _currentPath.EndF))
+            if (Vector3.Distance(transform.position, _path[_currentPathIndex].EndNode.Pos) < 2.0f)
             {
                 return true;
             }
@@ -135,8 +148,18 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public bool IsNextPathIndexEnd()
         {
-            if (_currentPathIndex >= _path.Count)
+            if (_currentPathIndex >= _path.Count-1)
                 return true;
+            return false;
+        }
+
+        public bool IsRouteEndReached()
+        {
+            var d = Vector3.Distance(transform.position, _path[_path.Count-1].EndNode.Pos);
+            if (d < 2.0f)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -164,22 +187,24 @@ namespace Assets.Scripts.Vehicles.Behaviors
             _currentPathIndex++;
             _currentPath = _path[_currentPathIndex];
             _currentSplinePos = _path[_currentPathIndex].StartF;
+            Debug.Log("Switching pathparts from: " + _path[_currentPathIndex-1].Spline.tRoad.name + " to " + _path[_currentPathIndex].Spline.tRoad.name);
             return BehaviorState.Success;
         }
 
         public BehaviorState EndJourney()
         {
-            //Destroy(this.gameObject);
+            RoadManager.NumberOfVehicles--;
+            Destroy(this.gameObject);
             return BehaviorState.Success;
         }
 
         public BehaviorState FollowRoad()
         {
-            Debug.Log("Following.");
-            _currentSplinePos += Time.deltaTime*_currentPath.Direction;
-            var normalizedSplinePos = _currentSplinePos / _currentPath.Spline.distance;
-            transform.position = _currentPath.Spline.GetSplineValue((normalizedSplinePos * Speed) % 1);
-            transform.LookAt(_currentPath.Spline.GetSplineValue((normalizedSplinePos * Speed + 0.01f) % 1)); //0.01f = lookat buffer
+            Debug.Log("Following : " + _currentPath.Direction);
+            _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
+             _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
+            transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
+            transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f))); //0.01f = lookat buffer
             return BehaviorState.Running;
         }
 
@@ -231,6 +256,24 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     {
                         new BehaviorConditional(NeedsPath),
                         new BehaviorAction(GetPath)
+                    }.ToArray()),
+                    new Sequence(new List<BehaviorComponent>
+                    {
+                        new BehaviorConditional(IsCloseToPathEnd), //if close to path end, check if route end or just part end
+                        new Selector(new List<BehaviorComponent>
+                        {
+                            new Sequence(new List<BehaviorComponent>
+                            {
+                                new BehaviorConditional(IsNextPathIndexEnd),
+                                new BehaviorConditional(IsRouteEndReached), 
+                                new BehaviorAction(EndJourney)
+                            }.ToArray()),
+                            new Sequence(new List<BehaviorComponent>
+                            {
+                                new BehaviorConditional(IsCurrentPathFinished),
+                                new BehaviorAction(SwitchToNextPathPart)
+                            }.ToArray())
+                        }.ToArray())
                     }.ToArray()),
                     new BehaviorAction(FollowRoad)
                 }.ToArray())

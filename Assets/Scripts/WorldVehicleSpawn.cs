@@ -7,15 +7,13 @@ public class WorldVehicleSpawn : MonoBehaviour
 
     public int MaxNumberOfVehicles = 1;
 
-    public int CurrentNumberOfVehicles = 0;
-
     public float SpawnSpeed = 0.5f;
 
     private float _spawnTimer = 0;
 	
 	// Update is called once per frame
 	void Update () {
-	    if (CurrentNumberOfVehicles < MaxNumberOfVehicles)
+	    if (RoadManager.NumberOfVehicles < MaxNumberOfVehicles)
 	    {
 	        _spawnTimer += Time.deltaTime;
 	        if (_spawnTimer > SpawnSpeed)
@@ -28,7 +26,7 @@ public class WorldVehicleSpawn : MonoBehaviour
 
     private void Spawn()
     {
-        CurrentNumberOfVehicles++;
+        RoadManager.NumberOfVehicles++;
         RoadManager.GetRandomIntersectionPoint().SpawnVehicle();
     }
 }

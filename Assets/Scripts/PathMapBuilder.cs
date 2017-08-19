@@ -78,8 +78,12 @@ public class PathMapBuilder : MonoBehaviour {
             Vehicle veh = vehicleObject.GetComponent<Vehicle>();
 
             veh.StartIntersectionPoint = this;
-            veh.EndIntersectionPoint = RoadManager.GetRandomOtherIntersectionPoint(this);
-            veh.Route = RoadManager.CalculateRoute(DijkstraTable, veh.StartIntersectionPoint, veh.EndIntersectionPoint);
+            while (veh.Route.Count <= 2)
+            {
+                veh.EndIntersectionPoint = RoadManager.GetRandomOtherIntersectionPoint(this);
+                veh.Route = RoadManager.CalculateRoute(DijkstraTable, veh.StartIntersectionPoint,
+                    veh.EndIntersectionPoint);
+            }
             veh.ConvertRouteToPath();
         }
     }
