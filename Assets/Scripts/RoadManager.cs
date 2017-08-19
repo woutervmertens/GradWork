@@ -14,6 +14,8 @@ public class RoadManager : MonoBehaviour {
 
     public static bool DebubMode = false;
 
+    public static Dictionary<VehicleType,VehicleData> VehicleDictionary = new Dictionary<VehicleType, VehicleData>();
+
     public static IntersectionPoint GetRandomOtherIntersectionPoint(IntersectionPoint current)
     {
         List<IntersectionPoint> others = new List<IntersectionPoint>(Spawners);

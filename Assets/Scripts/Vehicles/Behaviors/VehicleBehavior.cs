@@ -11,10 +11,11 @@ namespace Assets.Scripts.Vehicles.Behaviors
         //------------
         //VehicleData
         public VehicleData Data;
-
         private Vehicle _vehicle;
         public float Speed;
         public int CurrentLane = 0;
+        public VehicleType Type = VehicleType.Car;
+        public float WantedLane = 0;
 
         //PathData
         private List<PathData> _path = new List<PathData>();
@@ -164,6 +165,12 @@ namespace Assets.Scripts.Vehicles.Behaviors
         }
 
         //Actions
+        public BehaviorState SetUpModel()
+        {
+
+            return BehaviorState.Success;
+        }
+
         public BehaviorState GetPath()
         {
             if (RoadManager.DebubMode) Debug.Log("Getting the path.");
@@ -255,7 +262,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     new Sequence(new List<BehaviorComponent>
                     {
                         new BehaviorConditional(NeedsPath),
-                        new BehaviorAction(GetPath)
+                        new BehaviorAction(GetPath),
+                        new BehaviorAction(SetUpModel)
                     }.ToArray()),
                     new Sequence(new List<BehaviorComponent>
                     {

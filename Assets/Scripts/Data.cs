@@ -15,23 +15,24 @@ namespace Assets.Scripts
         public int NrOfLanes { get; private set; }
     }
 
-    //public class Road
-    //{
-    //    public IntersectionPoint StartIntersectionPoint;
-    //    public IntersectionPoint EndIntersectionPoint;
-    //    public float Length;
-    //}
+    public enum VehicleType
+    {
+        Car = 0,
+        Jeep,
+        Van
+    }
 
+    [System.Serializable]
     public class VehicleData
     {
-        public float MaxSpeed { get; private set; }
-        public float AccelerationSpeed { get; private set; }
-        public float BreakSpeed { get; private set; }
-        public float Length { get; private set; }
-        public float Width { get; private set; }
-        public float ChangeSpeed { get; private set; }
-        public float PreferredLane { get; private set; }
-        public float BufferLength { get; private set; }
+        public float MaxSpeed;
+        public float AccelerationSpeed;
+        public float BreakSpeed;
+        public float Length;
+        public float Width;
+        public float ChangeSpeed;
+        public float PreferredLane;
+        public float BufferLength;
     }
 
     public class Node
