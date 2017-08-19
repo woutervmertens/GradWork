@@ -42,7 +42,7 @@ public class PathMapBuilder : MonoBehaviour {
 
         public float GetEndF()
         {
-            if (endF > -1) return startF;
+            if (endF > -1) return endF;
             if (StartEndPoint[1].Node1 == Nodes[0] || StartEndPoint[1].Node2 == Nodes[0]) endF = Nodes[0].tDist;
             else
             {
