@@ -12,7 +12,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         //VehicleData
         public VehicleData Data;
 
-        private Vehicle _vehicle = new Vehicle();
+        private Vehicle _vehicle;
         public float Speed;
         public int CurrentLane = 0;
 
@@ -120,7 +120,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         public bool NeedsPath()
         {
             if (_path.Count > 0) return false;
-            Debug.Log("Path needed!");
+            if (RoadManager.DebubMode) Debug.Log("Path needed!");
             return true;
         }
 
@@ -166,7 +166,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         //Actions
         public BehaviorState GetPath()
         {
-            Debug.Log("Getting the path.");
+            if (RoadManager.DebubMode) Debug.Log("Getting the path.");
             if (_vehicle.Route.Count > 0)
             {
                 if(_vehicle.Path.Count < 1) _vehicle.ConvertRouteToPath();
@@ -187,7 +187,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             _currentPathIndex++;
             _currentPath = _path[_currentPathIndex];
             _currentSplinePos = _path[_currentPathIndex].StartF;
-            Debug.Log("Switching pathparts from: " + _path[_currentPathIndex-1].Spline.tRoad.name + " to " + _path[_currentPathIndex].Spline.tRoad.name);
+            if (RoadManager.DebubMode) Debug.Log("Switching pathparts from: " + _path[_currentPathIndex-1].Spline.tRoad.name + " to " + _path[_currentPathIndex].Spline.tRoad.name);
             return BehaviorState.Success;
         }
 
@@ -200,7 +200,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public BehaviorState FollowRoad()
         {
-            Debug.Log("Following : " + _currentPath.Direction);
+            if (RoadManager.DebubMode) Debug.Log("Following : " + _currentPath.Direction);
             _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
             transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
@@ -238,7 +238,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public BehaviorState Idle()
         {
-            Debug.Log("Idle...");
+            if (RoadManager.DebubMode) Debug.Log("Idle...");
             return BehaviorState.Running;
         }
 

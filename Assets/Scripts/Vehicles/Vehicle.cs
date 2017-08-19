@@ -39,7 +39,8 @@ public class Vehicle : MonoBehaviour
                     break;
                 }
             }
-            if(con == null) { Debug.LogError("ConvertRouteToPath: Connection not found!");
+            if(con == null) {
+                if (RoadManager.DebubMode) Debug.LogError("ConvertRouteToPath: Connection not found!");
                 return;
             }
 
@@ -86,7 +87,7 @@ public class Vehicle : MonoBehaviour
             Route.Add(inter);
             i++;
         }
-        Debug.Log("Route set: " + Route.Count);
+        if(RoadManager.DebubMode) Debug.Log("Route set: " + Route.Count);
         ConvertRouteToPath();
     }
 	// Use this for initialization

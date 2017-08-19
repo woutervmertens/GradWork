@@ -12,6 +12,8 @@ public class RoadManager : MonoBehaviour {
     public static List<IntersectionPoint> Spawners = new List<IntersectionPoint>();
     public static int NumberOfVehicles = 0;
 
+    public static bool DebubMode = false;
+
     public static IntersectionPoint GetRandomOtherIntersectionPoint(IntersectionPoint current)
     {
         List<IntersectionPoint> others = new List<IntersectionPoint>(Spawners);
@@ -31,12 +33,13 @@ public class RoadManager : MonoBehaviour {
         IntersectionPoint current = start;
 
         DijkstraTable dijkstraTable = new DijkstraTable();
+        
         dijkstraTable.Fill(IntersectionPoints, start);
         while (Unchecked.Count > 0)
         {
             //Remove from unchecked
             var test = Unchecked.Remove(current);
-            if(!test)
+            if(!test && DebubMode)
                 Debug.LogError("List remove unsuccesfull!");
 
             //Add to checked

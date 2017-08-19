@@ -104,19 +104,19 @@ public class PathMapBuilder : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-        Debug.Log("Intersections: " + Intersections.Count);
-	    //Debug.Log("Intersections: " + Intersections.Count);
+	    if (RoadManager.DebubMode) Debug.Log("Intersections: " + Intersections.Count);
+        //Debug.Log("Intersections: " + Intersections.Count);
 
-     //   //Remove Intersection duplicates
-     //   HashSet<Vector3> hash = new HashSet<Vector3>();
-	    //foreach (var pos in Intersections)
-	    //{
-	    //    hash.Add(pos);
-	    //}
-	    //Intersections = new List<Vector3>(hash);
-     //   Debug.Log("Intersections no dups: " + Intersections.Count);
-        Debug.Log("Connections: " + Connections.Count);
-        Debug.Log("SpawnPoints: " + SpawnPoints.Count);
+        //   //Remove Intersection duplicates
+        //   HashSet<Vector3> hash = new HashSet<Vector3>();
+        //foreach (var pos in Intersections)
+        //{
+        //    hash.Add(pos);
+        //}
+        //Intersections = new List<Vector3>(hash);
+        //   Debug.Log("Intersections no dups: " + Intersections.Count);
+	    if (RoadManager.DebubMode) Debug.Log("Connections: " + Connections.Count);
+	    if (RoadManager.DebubMode) Debug.Log("SpawnPoints: " + SpawnPoints.Count);
 	}
 
     void Update()
@@ -255,15 +255,15 @@ public class PathMapBuilder : MonoBehaviour {
         {
             RoadManager.AddIntersection(s);
         }
-        Debug.Log("RoadManager Intersections: " + RoadManager.IntersectionPoints.Count);
+        if (RoadManager.DebubMode) Debug.Log("RoadManager Intersections: " + RoadManager.IntersectionPoints.Count);
         foreach (var c in Connections)
         {
             RoadManager.AddRoad(c);
         }
         RoadManager.CalculateDijkstraTables();
-        Debug.Log("Intersections: " + Intersections.Count);
-        Debug.Log("Connections: " + Connections.Count);
-        Debug.Log("SpawnPoints: " + SpawnPoints.Count);
+        if (RoadManager.DebubMode) Debug.Log("Intersections: " + Intersections.Count);
+        if (RoadManager.DebubMode) Debug.Log("Connections: " + Connections.Count);
+        if (RoadManager.DebubMode) Debug.Log("SpawnPoints: " + SpawnPoints.Count);
     }
 
     private Vector3 CalculateSplinePoint(float t, Vector3 startpoint, Vector3 endpoint, Vector3 control)
