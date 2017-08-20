@@ -14,7 +14,7 @@ public class DijkstraTableData
     public PathMapBuilder.IntersectionPoint PrevIntersectionNode;
 }
 
-public class DijkstraTable : MonoBehaviour {
+public class DijkstraTable {
 
 	public Dictionary<PathMapBuilder.IntersectionPoint, DijkstraTableData> Table = new Dictionary<PathMapBuilder.IntersectionPoint, DijkstraTableData>();
 
