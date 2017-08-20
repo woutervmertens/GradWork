@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Assets.Scripts.Behaviors;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Vehicles.Behaviors
 {
@@ -15,6 +17,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         public float Speed;
         public int CurrentLane = 0;
         public VehicleType Type = VehicleType.Car;
+        private GameObject _vehicleChild;
         public float WantedLane = 0;
 
         //PathData
@@ -167,7 +170,21 @@ namespace Assets.Scripts.Vehicles.Behaviors
         //Actions
         public BehaviorState SetUpModel()
         {
-
+            if (Type == VehicleType.Car)
+            {
+                GameObject prefab = Resources.Load<GameObject>("Car").transform.GetChild(0).gameObject;
+                _vehicleChild.GetComponent<MeshFilter>().sharedMesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+            }
+            else if (Type == VehicleType.Jeep)
+            {
+                GameObject prefab = Resources.Load<GameObject>("Jeep").transform.GetChild(0).gameObject;
+                _vehicleChild.GetComponent<MeshFilter>().sharedMesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+            }
+            else if (Type == VehicleType.Van)
+            {
+                GameObject prefab = Resources.Load<GameObject>("Van").transform.GetChild(0).gameObject;
+                _vehicleChild.GetComponent<MeshFilter>().sharedMesh = prefab.GetComponent<MeshFilter>().sharedMesh;
+            }
             return BehaviorState.Success;
         }
 
@@ -253,6 +270,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
         void Start () {
             //Get Attributes
             _vehicle = GetComponent<Vehicle>();
+            _vehicleChild = transform.GetChild(0).gameObject;
+            Type = SelectType();
 
             //Behavior Tree
             List<BehaviorComponent> vehicleBehavior = new List<BehaviorComponent>()
@@ -290,6 +309,12 @@ namespace Assets.Scripts.Vehicles.Behaviors
             //Set Default
             Sequence vehicleSequence = new Sequence(vehicleBehavior.ToArray());
             SetDefaultComposite(vehicleSequence);
+        }
+
+        private VehicleType SelectType()
+        {
+            Array values = Enum.GetValues(typeof(VehicleType));
+            return (VehicleType)values.GetValue(new System.Random().Next(values.Length));
         }
 	
     }
