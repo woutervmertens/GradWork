@@ -20,21 +20,49 @@ namespace Assets.Scripts.Vehicles.Behaviors
         public VehicleType Type = VehicleType.Car;
         private GameObject _vehicleChild;
         public float WantedLane = 0;
+        private bool _isOnIntersection = false;
 
         //PathData
         private List<PathData> _path = new List<PathData>();
         private PathData _currentPath;
         private int _currentPathIndex = 0;
-        private float _currentSplinePos = 0;
+        public float _currentSplinePos = 0;
         private float _normalizedSplinePos = 0;
-        private Node _startNode, _endNode;
+        //private Node _startNode, _endNode;
 
         //BEHAVIORS
         //---------
         //Selectors
         public bool CheckHitDetection()
         {
-            return CheckCloseByNeighbours(0);
+            if (_isOnIntersection) return false;
+            if (_currentPath.Direction > 0)
+            {
+                foreach (var n in _currentPath.RoadData.PosVehicles)
+                {
+                    if (n == _vehicle) continue;
+                    var nF = n.GetFValue();
+                    if (nF > _currentSplinePos &&
+                        nF < Data.Length / 2 + Data.BufferLength) return true;
+                }
+            }
+            if (_currentPath.Direction < 0)
+            {
+                foreach (var n in _currentPath.RoadData.PosVehicles)
+                {
+                    if (n == _vehicle) continue;
+                    var nF = n.GetFValue();
+                    if (nF < _currentSplinePos &&
+                        nF > Data.Length / 2 + Data.BufferLength) return true;
+                }
+            }
+            return false;
+        }
+
+        public bool CheckSpeedLimitReached()
+        {
+            if (Speed < _currentPath.RoadData.MaxSpeed) return true;
+            return false;
         }
 
         public bool CheckLaneChangingNeed()
@@ -94,24 +122,24 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return false;
         }
 
-        private bool CheckCloseByNeighbours(float buffer)
-        {
-            //if (IsOnIntersection) return false;
-            //foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
-            //{
-            //    if (neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
-            //    if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed)
-            //        && (neighbour.GetComponent<UnitBehaviorTree>().Lane == CurrentLane))
-            //    {
-            //        _neighbourDistance = Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position));
-            //        Vector3 fwdPos = transform.TransformPoint(Vector3.forward * (_detectionLength * Speed));
-            //        float distFromHereToNB = Vector3.Distance(transform.position, neighbour.transform.position);
-            //        float distFromFwdPosToNB = Vector3.Distance(fwdPos, neighbour.transform.position);
-            //        return (distFromHereToNB < distFromFwdPosToNB && distFromFwdPosToNB < (_detectionLength * Speed) && Speed > neighbour.Speed);//NB is between this and fwdPos and is slower
-            //    }
-            //}
-            return false;
-        }
+        //private bool CheckCloseByNeighbours(float buffer)
+        //{
+        //    //if (IsOnIntersection) return false;
+        //    //foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
+        //    //{
+        //    //    if (neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
+        //    //    if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed)
+        //    //        && (neighbour.GetComponent<UnitBehaviorTree>().Lane == CurrentLane))
+        //    //    {
+        //    //        _neighbourDistance = Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position));
+        //    //        Vector3 fwdPos = transform.TransformPoint(Vector3.forward * (_detectionLength * Speed));
+        //    //        float distFromHereToNB = Vector3.Distance(transform.position, neighbour.transform.position);
+        //    //        float distFromFwdPosToNB = Vector3.Distance(fwdPos, neighbour.transform.position);
+        //    //        return (distFromHereToNB < distFromFwdPosToNB && distFromFwdPosToNB < (_detectionLength * Speed) && Speed > neighbour.Speed);//NB is between this and fwdPos and is slower
+        //    //    }
+        //    //}
+        //    return false;
+        //}
 
         public bool CheckIntersectionCommingUp()
         {

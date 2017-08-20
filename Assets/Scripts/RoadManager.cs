@@ -12,6 +12,9 @@ public class RoadManager : MonoBehaviour {
     public static List<IntersectionPoint> Spawners = new List<IntersectionPoint>();
     public static int NumberOfVehicles = 0;
 
+    public static float BaseMaxSpeed = 30;
+    public static float MaxSpeedAddedPerLane = 5;
+
     public static bool DebubMode = false;
 
     public static Dictionary<VehicleType,VehicleData> VehicleDictionary = new Dictionary<VehicleType, VehicleData>();

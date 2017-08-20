@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
+using Assets.Scripts.Vehicles.Behaviors;
 using UnityEditor.MemoryProfiler;
 using UnityEngine;
 using Connection = PathMapBuilder.Connection;
@@ -46,6 +47,8 @@ public class Vehicle : MonoBehaviour
 
             path.Spline = con.Spline;
             path.RoadData = con.RoadData;
+            path.RoadData.NrOfLanes = path.Spline.tRoad.opt_Lanes / 2;
+            path.RoadData.MaxSpeed = RoadManager.BaseMaxSpeed + RoadManager.MaxSpeedAddedPerLane * path.RoadData.NrOfLanes;
             if (con.StartEndPoint[0] == Route[j - 1])
             {
                 path.StartF = con.GetStartF();
@@ -63,6 +66,11 @@ public class Vehicle : MonoBehaviour
 
             Path.Add(path);
         }
+    }
+
+    public float GetFValue()
+    {
+        return GetComponent<VehicleBehavior>()._currentSplinePos;
     }
 
     private void UseTestRoute()

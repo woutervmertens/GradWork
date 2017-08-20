@@ -18,10 +18,16 @@ public class GeneralManager : MonoBehaviour
     public VehicleData JeepData;
 
     public VehicleData VanData;
+
+    public float BaseMaxRoadSpeed = 30;
+
+    public float RoadSpeedAddedPerLane = 5;
 	// Use this for initialization
 	void Start ()
 	{
 	    RoadManager.DebubMode = DebugMode;
+	    RoadManager.BaseMaxSpeed = BaseMaxRoadSpeed;
+	    RoadManager.MaxSpeedAddedPerLane = RoadSpeedAddedPerLane;
         if(RoadManager.VehicleDictionary.Count < 1) LoadInVehicleDictionary();
 	}
 
