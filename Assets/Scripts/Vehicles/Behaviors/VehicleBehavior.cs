@@ -204,6 +204,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 _currentPath = _path[0];
                 _currentPathIndex = 0;
                 _currentSplinePos = _currentPath.StartF;
+                if (_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Add(_vehicle);
+                else _currentPath.RoadData.NegVehicles.Add(_vehicle);
                 return BehaviorState.Success;
             }
             else
@@ -214,16 +216,31 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public BehaviorState SwitchToNextPathPart()
         {
+            //Change Index
             _currentPathIndex++;
+            //Get CurrentPath
             _currentPath = _path[_currentPathIndex];
+            //Get F Pos
             _currentSplinePos = _path[_currentPathIndex].StartF;
+
+            //Go out of previous vehicle list and into nextone
+            if (_path[_currentPathIndex - 1].Direction > 0)
+                _path[_currentPathIndex - 1].RoadData.PosVehicles.Remove(_vehicle);
+            else _path[_currentPathIndex - 1].RoadData.NegVehicles.Remove(_vehicle);
+            if(_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Add(_vehicle);
+            else _currentPath.RoadData.NegVehicles.Add(_vehicle);
+
             if (RoadManager.DebubMode) Debug.Log("Switching pathparts from: " + _path[_currentPathIndex-1].Spline.tRoad.name + " to " + _path[_currentPathIndex].Spline.tRoad.name);
             return BehaviorState.Success;
         }
 
         public BehaviorState EndJourney()
         {
+            //Remove from lists
             RoadManager.NumberOfVehicles--;
+            if (_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Remove(_vehicle);
+            else _currentPath.RoadData.NegVehicles.Remove(_vehicle);
+            //Destroy
             Destroy(this.gameObject);
             return BehaviorState.Success;
         }
