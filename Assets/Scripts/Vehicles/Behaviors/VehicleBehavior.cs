@@ -16,6 +16,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         private Vehicle _vehicle;
         public float Speed;
         public int CurrentLane = 0;
+        private float CurrentLanePos = 2.5f;
         public VehicleType Type = VehicleType.Car;
         private GameObject _vehicleChild;
         public float WantedLane = 0;
@@ -234,6 +235,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
             transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
             transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f*_currentPath.Direction))); //0.01f = lookat buffer
+            Vector3 localModelPos = new Vector3(CurrentLanePos, 0.5f, 0.0f);
+            _vehicleChild.transform.localPosition = localModelPos;
             return BehaviorState.Running;
         }
 
@@ -244,24 +247,44 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public BehaviorState SpeedUp()
         {
-            //if (Speed < (MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).MaxSpeed) * ((100 - (5 * (CurrentLane - 1))) / 100))
-            //{
-            //    Speed += Acceleration * Time.deltaTime;
-            //    return BehaviorState.Running;
-            //}
+            if (Speed < Data.MaxSpeed)
+            {
+                Speed += Data.AccelerationSpeed * Time.deltaTime;
+                return BehaviorState.Running;
+            }
             return BehaviorState.Success;
         }
 
         public BehaviorState SlowDown()
         {
-            //slow down untill ray is false
-            //Speed -= (Deceleration * (_detectionLength * Speed - _neighbourDistance) * Time.deltaTime);
-            if (CheckCloseByNeighbours(Data.BufferLength)) return BehaviorState.Running;
-            return BehaviorState.Success;
+            if (Speed <= 0)
+            {
+                Speed = 0;
+                return BehaviorState.Success;
+            }
+            Speed -= Data.BreakSpeed * Time.deltaTime;
+            return BehaviorState.Running;
         }
 
-        public BehaviorState ChangeLane()
+        public BehaviorState ChangeLaneRight()
         {
+            if (CurrentLanePos >= CurrentLane + 2.5f)
+            {
+                CurrentLanePos = CurrentLane + 2.5f;
+                return BehaviorState.Success;
+            }
+            CurrentLanePos += Data.ChangeSpeed * Time.deltaTime;
+            return BehaviorState.Running;
+        }
+
+        public BehaviorState ChangeLaneLeft()
+        {
+            if (CurrentLanePos <= CurrentLane + 2.5f)
+            {
+                CurrentLanePos = CurrentLane + 2.5f;
+                return BehaviorState.Success;
+            }
+            CurrentLanePos -= Data.ChangeSpeed * Time.deltaTime;
             return BehaviorState.Running;
         }
 
