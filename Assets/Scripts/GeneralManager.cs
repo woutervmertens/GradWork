@@ -13,15 +13,17 @@ public class GeneralManager : MonoBehaviour
 
     public Text Fps;
 
+    public float BaseMaxRoadSpeed = 30;
+
+    public float RoadSpeedAddedPerLane = 5;
+
     public VehicleData CarData;
 
     public VehicleData JeepData;
 
     public VehicleData VanData;
 
-    public float BaseMaxRoadSpeed = 30;
-
-    public float RoadSpeedAddedPerLane = 5;
+    
 	// Use this for initialization
 	void Start ()
 	{

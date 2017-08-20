@@ -43,17 +43,18 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF > _currentSplinePos &&
-                        nF < Data.Length / 2 + Data.BufferLength) return true;
+                        nF < _currentSplinePos + (Data.Length / 2 + Data.BufferLength)) return true;
                 }
             }
             if (_currentPath.Direction < 0)
             {
-                foreach (var n in _currentPath.RoadData.PosVehicles)
+                foreach (var n in _currentPath.RoadData.NegVehicles)
                 {
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF < _currentSplinePos &&
-                        nF > Data.Length / 2 + Data.BufferLength) return true;
+                        nF > _currentSplinePos - (Data.Length / 2 + Data.BufferLength))
+                        return true;
                 }
             }
             return false;
@@ -275,6 +276,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public BehaviorState FollowRoad()
         {
+            if(_currentPath == null) return BehaviorState.Failure;
             if (RoadManager.DebubMode) Debug.Log("Following : " + _currentPath.Direction);
             _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
@@ -295,7 +297,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             if (Speed < Data.MaxSpeed)
             {
                 Speed += Data.AccelerationSpeed * Time.deltaTime;
-                return BehaviorState.Running;
+                return BehaviorState.Success;
             }
             return BehaviorState.Success;
         }
@@ -308,7 +310,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 return BehaviorState.Success;
             }
             Speed -= Data.BreakSpeed * Time.deltaTime;
-            return BehaviorState.Running;
+            return BehaviorState.Success;
         }
 
         public BehaviorState ChangeLaneRight()
@@ -349,34 +351,49 @@ namespace Assets.Scripts.Vehicles.Behaviors
             //Behavior Tree
             List<BehaviorComponent> vehicleBehavior = new List<BehaviorComponent>()
             {
-                new Selector(new List<BehaviorComponent>
-                {
-                    new Sequence(new List<BehaviorComponent>
-                    {
-                        new BehaviorConditional(NeedsPath),
-                        new BehaviorAction(GetPath),
-                        new BehaviorAction(SetUpModel)
-                    }.ToArray()),
-                    new Sequence(new List<BehaviorComponent>
-                    {
-                        new BehaviorConditional(IsCloseToPathEnd), //if close to path end, check if route end or just part end
-                        new Selector(new List<BehaviorComponent>
-                        {
-                            new Sequence(new List<BehaviorComponent>
-                            {
-                                new BehaviorConditional(IsNextPathIndexEnd),
-                                new BehaviorConditional(IsRouteEndReached), 
-                                new BehaviorAction(EndJourney)
-                            }.ToArray()),
-                            new Sequence(new List<BehaviorComponent>
-                            {
-                                new BehaviorConditional(IsCurrentPathFinished),
-                                new BehaviorAction(SwitchToNextPathPart)
-                            }.ToArray())
-                        }.ToArray())
-                    }.ToArray()),
-                    new BehaviorAction(FollowRoad)
-                }.ToArray())
+                new Parallel(new List<BehaviorComponent> {
+                   new Selector(new List<BehaviorComponent>
+                   {
+                       new Sequence(new List<BehaviorComponent>
+                       {
+                           new BehaviorConditional(NeedsPath),
+                           new BehaviorAction(GetPath),
+                           new BehaviorAction(SetUpModel)
+                       }.ToArray()),
+                       new Sequence(new List<BehaviorComponent>
+                       {
+                           new BehaviorConditional(IsCloseToPathEnd), //if close to path end, check if route end or just part end
+                           new Selector(new List<BehaviorComponent>
+                           {
+                               new Sequence(new List<BehaviorComponent>
+                               {
+                                   new BehaviorConditional(IsNextPathIndexEnd),
+                                   new BehaviorConditional(IsRouteEndReached), 
+                                   new BehaviorAction(EndJourney)
+                               }.ToArray()),
+                               new Sequence(new List<BehaviorComponent>
+                               {
+                                   new BehaviorConditional(IsCurrentPathFinished),
+                                   new BehaviorAction(SwitchToNextPathPart)
+                               }.ToArray())
+                           }.ToArray())
+                       }.ToArray()),
+                       new Selector(new List<BehaviorComponent>
+                       {
+                           new Sequence(new List<BehaviorComponent>
+                           {
+                               new BehaviorConditional(CheckHitDetection),
+                               new BehaviorAction(SlowDown)
+                           }.ToArray()),
+                           new Sequence(new List<BehaviorComponent>
+                           {
+                               new BehaviorConditional(CheckSpeedLimitReached),
+                               new BehaviorAction(SpeedUp)
+                           }.ToArray())
+                       }.ToArray())
+                   }.ToArray()),
+                   new BehaviorAction(FollowRoad)
+                }.ToArray(),3)
             };
                 
             //Set Default
