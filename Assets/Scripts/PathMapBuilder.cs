@@ -22,6 +22,7 @@ public class PathMapBuilder : MonoBehaviour {
         {
             Nodes = new List<GSDSplineN>();
             StartEndPoint = new List<IntersectionPoint>();
+            RoadData = new RoadData();
         }
 
         public float GetLength()

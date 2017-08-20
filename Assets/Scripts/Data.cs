@@ -9,10 +9,16 @@ namespace Assets.Scripts
     //Datainterfaces
     public class RoadData
     {
-        public List<Vehicle> PosVehicles { get; private set; }
-        public List<Vehicle> NegVehicles { get; private set; }
-        public float MaxSpeed { get; private set; }
-        public int NrOfLanes { get; private set; }
+        public List<Vehicle> PosVehicles;
+        public List<Vehicle> NegVehicles;
+        public float MaxSpeed;
+        public int NrOfLanes;
+
+        public RoadData()
+        {
+            PosVehicles = new List<Vehicle>();
+            NegVehicles = new List<Vehicle>();
+        }
     }
 
     public enum VehicleType
