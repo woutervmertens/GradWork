@@ -228,7 +228,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
             transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
-            transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f))); //0.01f = lookat buffer
+            transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f*_currentPath.Direction))); //0.01f = lookat buffer
             return BehaviorState.Running;
         }
 
