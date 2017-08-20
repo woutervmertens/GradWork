@@ -23,6 +23,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         private GameObject _vehicleChild;
         private bool _isChangingLanes = false;
         private bool _isOnIntersection = false;
+        private bool _wasChangingLeft = false;
         
 
         //PathData
@@ -71,14 +72,9 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return false;
         }
 
-        public bool CheckIsChangingLanes()
-        {
-            return _isChangingLanes;
-        }
-
         public bool CheckLaneChangingNeed()
         {
-            if (_currentPath.RoadData.NrOfLanes == 1) return false;
+            if (_currentPath == null || _currentPath.RoadData.NrOfLanes == 1) return false;
             if (WantedLane < 0)
             {
                 WantedLane = 0;
@@ -89,7 +85,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 WantedLane = CurrentLane;
                 return false;
             }
-            if (Mathf.Abs(WantedLane - CurrentLane) < _laneWidth/2) return false;
+            if (Mathf.Abs(WantedLane - CurrentLane) < 0.5f) return false;
             return true;
         }
 
@@ -161,33 +157,58 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return true;
         }
 
-        //private bool CheckCloseByNeighbours(float buffer)
-        //{
-        //    //if (IsOnIntersection) return false;
-        //    //foreach (Vehicle neighbour in MainManager.Main.GetCon(RoadPath[RoadNodeIndex]).Vehicles)
-        //    //{
-        //    //    if (neighbour == null || neighbour == this.GetComponent<Vehicle>()) continue;
-        //    //    if ((Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position)) < _detectionLength * Speed)
-        //    //        && (neighbour.GetComponent<UnitBehaviorTree>().Lane == CurrentLane))
-        //    //    {
-        //    //        _neighbourDistance = Mathf.Abs(Vector3.Distance(neighbour.transform.position, this.transform.position));
-        //    //        Vector3 fwdPos = transform.TransformPoint(Vector3.forward * (_detectionLength * Speed));
-        //    //        float distFromHereToNB = Vector3.Distance(transform.position, neighbour.transform.position);
-        //    //        float distFromFwdPosToNB = Vector3.Distance(fwdPos, neighbour.transform.position);
-        //    //        return (distFromHereToNB < distFromFwdPosToNB && distFromFwdPosToNB < (_detectionLength * Speed) && Speed > neighbour.Speed);//NB is between this and fwdPos and is slower
-        //    //    }
-        //    //}
-        //    return false;
-        //}
-
-        public bool CheckIntersectionCommingUp()
+        public bool CheckSpeedToLow()
         {
-            if (_path[_currentPathIndex].EndNode.IsIntersection)
+            if (_currentPath == null) return false;
+            int maxLane = _currentPath.RoadData.NrOfLanes;
+            if (maxLane == 1) return false;
+            if ((Speed < _currentPath.RoadData.MaxSpeed / maxLane) && CurrentLane != maxLane - 1)
+            {
+                return true;
+            }
+            if (maxLane == 2) return false;
+            if ((Speed < _currentPath.RoadData.MaxSpeed / maxLane - 1) && CurrentLane == 0)
             {
                 return true;
             }
             return false;
         }
+
+        public bool CheckSpeedToHigh()
+        {
+            if (_currentPath == null) return false;
+            int maxLane = _currentPath.RoadData.NrOfLanes;
+            if (maxLane == 1) return false;
+            if ((Speed > _currentPath.RoadData.MaxSpeed / maxLane) && CurrentLane == maxLane - 1)
+            {
+                return true;
+            }
+            if (maxLane == 2) return false;
+            if ((Speed > _currentPath.RoadData.MaxSpeed / maxLane - 1) && CurrentLane != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool CheckIsChangingLanes()
+        {
+            return _isChangingLanes;
+        }
+
+        public bool CheckWasChangingLeft()
+        {
+            return _wasChangingLeft;
+        }
+
+        //public bool CheckIntersectionCommingUp()
+        //{
+        //    if (_path[_currentPathIndex].EndNode.IsIntersection)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public bool NeedsPath()
         {
@@ -259,9 +280,9 @@ namespace Assets.Scripts.Vehicles.Behaviors
             bool success = RoadManager.VehicleDictionary.TryGetValue(Type,out Data);
             if (!success && RoadManager.DebubMode) Debug.Log("VehicleData fetch failed!");
 
-            CurrentLane = new System.Random().Next(_currentPath.RoadData.NrOfLanes - 1);
-            CurrentLanePos = _laneWidth/2 + _laneWidth * CurrentLane;
-            WantedLane = CurrentLane;
+            CurrentLane = new System.Random().Next(_currentPath.RoadData.NrOfLanes);
+            CurrentLanePos = (_laneWidth/2) + (_laneWidth * CurrentLane);
+            WantedLane = Data.PreferredLane*_currentPath.RoadData.NrOfLanes;
 
             return BehaviorState.Success;
         }
@@ -280,7 +301,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 if (_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Add(_vehicle);
                 else _currentPath.RoadData.NegVehicles.Add(_vehicle);
                 //Get lanewidth
-                _laneWidth = _currentPath.Spline.RoadWidth / 2;
+                _laneWidth = _currentPath.Spline.RoadWidth / (2 * _currentPath.RoadData.NrOfLanes);
                 return BehaviorState.Success;
             }
             else
@@ -300,6 +321,12 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
             //Get lanewidth
             _laneWidth = _currentPath.Spline.RoadWidth/2;
+            if (CurrentLane > _currentPath.RoadData.NrOfLanes - 1)
+            {
+                CurrentLane = _currentPath.RoadData.NrOfLanes - 1;
+                WantedLane = CurrentLane;
+                CurrentLanePos = _laneWidth * CurrentLane;
+            }
 
             //Go out of previous vehicle list and into nextone
             if (_path[_currentPathIndex - 1].Direction > 0)
@@ -362,11 +389,23 @@ namespace Assets.Scripts.Vehicles.Behaviors
             return BehaviorState.Success;
         }
 
+        public BehaviorState IncreaseWantedLane()
+        {
+            WantedLane++;
+            return BehaviorState.Success;
+        }
+
+        public BehaviorState DecreaseWantedLane()
+        {
+            WantedLane--;
+            return BehaviorState.Success;
+        }
+
         public BehaviorState ChangeLaneRight()
         {
             if (!_isChangingLanes)
             {
-                CurrentLane++;
+                if(CurrentLane < _currentPath.RoadData.NrOfLanes - 1)CurrentLane++;
                 _isChangingLanes = true;
             }
             if (CurrentLanePos >= (CurrentLane * _laneWidth) + _laneWidth/2)
@@ -384,12 +423,14 @@ namespace Assets.Scripts.Vehicles.Behaviors
             if (!_isChangingLanes)
             {
                 CurrentLane--;
+                _wasChangingLeft = true;
                 _isChangingLanes = true;
             }
             if (CurrentLanePos <= (CurrentLane * _laneWidth) + _laneWidth / 2)
             {
                 CurrentLanePos = (CurrentLane * _laneWidth) + _laneWidth / 2;
                 _isChangingLanes = false;
+                _wasChangingLeft = false;
                 return BehaviorState.Success;
             }
             CurrentLanePos -= Data.ChangeSpeed * Time.deltaTime;
@@ -453,8 +494,54 @@ namespace Assets.Scripts.Vehicles.Behaviors
                            }.ToArray())
                        }.ToArray())
                    }.ToArray()),
+                   new Selector(new List<BehaviorComponent>//LaneChanging 
+                   {
+                       new Sequence(new List<BehaviorComponent>
+                       {
+                           new BehaviorConditional(CheckIsChangingLanes),
+                           new Selector(new List<BehaviorComponent>
+                           {
+                               new Sequence(new List<BehaviorComponent>
+                               {
+                                   new BehaviorConditional(CheckWasChangingLeft),
+                                   new BehaviorAction(ChangeLaneLeft)
+                               }.ToArray()),
+                               new BehaviorAction(ChangeLaneRight)
+                           }.ToArray())
+                       }.ToArray()),
+                       new Sequence(new List<BehaviorComponent>
+                       {
+                           new BehaviorConditional(CheckLaneChangingNeed),
+                           new Selector(new List<BehaviorComponent>
+                           {
+                               new Sequence(new List<BehaviorComponent>
+                               {
+                                   new BehaviorConditional(CheckNeedLeft),
+                                   new BehaviorConditional(CheckLeftLane),
+                                   new BehaviorAction(ChangeLaneLeft)
+                               }.ToArray()),
+                               new Sequence(new List<BehaviorComponent>
+                               {
+                                   new BehaviorConditional(CheckNeedRight),
+                                   new BehaviorConditional(CheckRightLane),
+                                   new BehaviorAction(ChangeLaneRight)
+                               }.ToArray())
+                           }.ToArray())
+                       }.ToArray())
+                   }.ToArray()),
+                   new Sequence(new List<BehaviorComponent>//Check if to fast for lane
+                   {
+                       new BehaviorConditional(CheckSpeedToHigh),
+                       new BehaviorAction(DecreaseWantedLane)
+                   }.ToArray()),
+                   new Sequence(new List<BehaviorComponent>//Check if to slow for lane
+                   {
+                       new BehaviorConditional(CheckSpeedToLow),
+                       new BehaviorAction(IncreaseWantedLane)
+                   }.ToArray()),
                    new BehaviorAction(FollowRoad) //RoadFollowinConstant
-                }.ToArray(),3)
+                }.ToArray(),15),
+                new BehaviorAction(Idle)
             };
                 
             //Set Default
