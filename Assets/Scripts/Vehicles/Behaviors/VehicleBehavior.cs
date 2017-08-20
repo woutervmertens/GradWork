@@ -187,6 +187,9 @@ namespace Assets.Scripts.Vehicles.Behaviors
             }
             var c = new Color(Random.value, Random.value, Random.value, 1);
             _vehicleChild.GetComponent<Renderer>().material.color = c;
+
+            bool success = RoadManager.VehicleDictionary.TryGetValue(Type,out Data);
+            if (!success && RoadManager.DebubMode) Debug.Log("VehicleData fetch failed!");
             return BehaviorState.Success;
         }
 
