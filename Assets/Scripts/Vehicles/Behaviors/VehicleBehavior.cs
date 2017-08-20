@@ -21,6 +21,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
         private GameObject _vehicleChild;
         public float WantedLane = 0;
         private bool _isOnIntersection = false;
+        private float _laneWidth = 5.0f;
 
         //PathData
         private List<PathData> _path = new List<PathData>();
@@ -43,7 +44,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF > _currentSplinePos &&
-                        nF < _currentSplinePos + (Data.Length / 2 + Data.BufferLength)) return true;
+                        nF < _currentSplinePos + (Data.Length / 2 + Data.BufferLength) &&
+                        n.GetCurrentLane() == CurrentLane) return true;
                 }
             }
             if (_currentPath.Direction < 0)
@@ -53,7 +55,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF < _currentSplinePos &&
-                        nF > _currentSplinePos - (Data.Length / 2 + Data.BufferLength))
+                        nF > _currentSplinePos - (Data.Length / 2 + Data.BufferLength) &&
+                        n.GetCurrentLane() == CurrentLane)
                         return true;
                 }
             }
@@ -68,7 +71,19 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
         public bool CheckLaneChangingNeed()
         {
-            return false;
+            if (_currentPath.RoadData.NrOfLanes == 1) return false;
+            if (WantedLane < 0)
+            {
+                WantedLane = 0;
+                return false;
+            }
+            if (WantedLane > CurrentLane && CurrentLane == _currentPath.RoadData.NrOfLanes - 1)
+            {
+                WantedLane = CurrentLane;
+                return false;
+            }
+            if (Mathf.Abs(WantedLane - CurrentLane) < 0.5f) return false;
+            return true;
         }
 
         public bool CheckNeedLeft()
@@ -220,6 +235,11 @@ namespace Assets.Scripts.Vehicles.Behaviors
 
             bool success = RoadManager.VehicleDictionary.TryGetValue(Type,out Data);
             if (!success && RoadManager.DebubMode) Debug.Log("VehicleData fetch failed!");
+
+            CurrentLane = new System.Random().Next(_currentPath.RoadData.NrOfLanes - 1);
+            CurrentLanePos = _laneWidth/2 + _laneWidth * CurrentLane;
+            WantedLane = CurrentLane;
+
             return BehaviorState.Success;
         }
 
@@ -233,8 +253,11 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 _currentPath = _path[0];
                 _currentPathIndex = 0;
                 _currentSplinePos = _currentPath.StartF;
+                //Add to vehicle list
                 if (_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Add(_vehicle);
                 else _currentPath.RoadData.NegVehicles.Add(_vehicle);
+                //Get lanewidth
+                _laneWidth = _currentPath.Spline.RoadWidth / 2;
                 return BehaviorState.Success;
             }
             else
@@ -251,6 +274,9 @@ namespace Assets.Scripts.Vehicles.Behaviors
             _currentPath = _path[_currentPathIndex];
             //Get F Pos
             _currentSplinePos = _path[_currentPathIndex].StartF;
+
+            //Get lanewidth
+            _laneWidth = _currentPath.Spline.RoadWidth/2;
 
             //Go out of previous vehicle list and into nextone
             if (_path[_currentPathIndex - 1].Direction > 0)

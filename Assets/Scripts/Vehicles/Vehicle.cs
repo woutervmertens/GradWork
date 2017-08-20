@@ -73,6 +73,11 @@ public class Vehicle : MonoBehaviour
         return GetComponent<VehicleBehavior>()._currentSplinePos;
     }
 
+    public int GetCurrentLane()
+    {
+        return GetComponent<VehicleBehavior>().CurrentLane;
+    }
+
     private void UseTestRoute()
     {
         int i = 0;
