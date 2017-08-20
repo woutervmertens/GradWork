@@ -185,6 +185,8 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 GameObject prefab = Resources.Load<GameObject>("Van").transform.GetChild(0).gameObject;
                 _vehicleChild.GetComponent<MeshFilter>().sharedMesh = prefab.GetComponent<MeshFilter>().sharedMesh;
             }
+            var c = new Color(Random.value, Random.value, Random.value, 1);
+            _vehicleChild.GetComponent<Renderer>().material.color = c;
             return BehaviorState.Success;
         }
 
