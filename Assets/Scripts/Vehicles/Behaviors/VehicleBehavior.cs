@@ -320,7 +320,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             _currentSplinePos = _path[_currentPathIndex].StartF;
 
             //Get lanewidth
-            _laneWidth = _currentPath.Spline.RoadWidth/2;
+            _laneWidth = (_currentPath.Spline.RoadWidth/2)/ _currentPath.RoadData.NrOfLanes;
             if (CurrentLane > _currentPath.RoadData.NrOfLanes - 1)
             {
                 CurrentLane = _currentPath.RoadData.NrOfLanes - 1;
@@ -356,6 +356,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             if (RoadManager.DebubMode) Debug.Log("Following : " + _currentPath.Direction);
             _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
+            if ((_currentSplinePos / _currentPath.Spline.distance) > 1 || (_currentSplinePos / _currentPath.Spline.distance) < 0) EndJourney();
             transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
             transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f*_currentPath.Direction))); //0.01f = lookat buffer
             Vector3 localModelPos = new Vector3(CurrentLanePos, 0.5f, 0.0f);
@@ -406,6 +407,7 @@ namespace Assets.Scripts.Vehicles.Behaviors
             if (!_isChangingLanes)
             {
                 if(CurrentLane < _currentPath.RoadData.NrOfLanes - 1)CurrentLane++;
+                if (CurrentLane >= _currentPath.RoadData.NrOfLanes) CurrentLane = _currentPath.RoadData.NrOfLanes - 1;
                 _isChangingLanes = true;
             }
             if (CurrentLanePos >= (CurrentLane * _laneWidth) + _laneWidth/2)
@@ -414,8 +416,9 @@ namespace Assets.Scripts.Vehicles.Behaviors
                 _isChangingLanes = false;
                 return BehaviorState.Success;
             }
+            if (CurrentLane >= _currentPath.RoadData.NrOfLanes) CurrentLane = _currentPath.RoadData.NrOfLanes - 1;
             CurrentLanePos += Data.ChangeSpeed * Time.deltaTime;
-            return BehaviorState.Running;
+            return BehaviorState.Success;
         }
 
         public BehaviorState ChangeLaneLeft()

@@ -154,10 +154,10 @@ class OsmWay : BaseOsm
             {
                 IsRoad = false;
             }
-            else if (key == "maxspeed")
-            {
-                MaxSpeed = GetAttribute<int>("v", t.Attributes);
-            }
+            //else if (key == "maxspeed")
+            //{
+            //    MaxSpeed = GetAttribute<int>("v", t.Attributes);
+            //}
             else if (key == "bridge")
             {
                 IsBridge = true;
