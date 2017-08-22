@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Assets.Scripts.Behaviors;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Vehicles.Behaviors
@@ -47,8 +48,13 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF > _currentSplinePos &&
-                        nF < _currentSplinePos + (Data.Length / 2 + Data.BufferLength) &&
-                        n.GetCurrentLane() == CurrentLane) return true;
+                        n.GetCurrentLane() == CurrentLane)
+                    {
+                        if (nF < _currentSplinePos + Data.Length / 2) return true;
+                        if(nF < _currentSplinePos + ((Data.Length / 2) + Data.BufferLength )&&
+                        n.GetSpeed() < Speed)
+                            return true;
+                    }
                 }
             }
             if (_currentPath.Direction < 0)
@@ -58,9 +64,13 @@ namespace Assets.Scripts.Vehicles.Behaviors
                     if (n == _vehicle) continue;
                     var nF = n.GetFValue();
                     if (nF < _currentSplinePos &&
-                        nF > _currentSplinePos - (Data.Length / 2 + Data.BufferLength) &&
-                        n.GetCurrentLane() == CurrentLane)
-                        return true;
+                        n.GetCurrentLane() == CurrentLane )
+                    {
+                        if (nF > _currentSplinePos - Data.Length / 2) return true;
+                        if(nF > _currentSplinePos - ((Data.Length / 2) + Data.BufferLength) &&
+                           n.GetSpeed() < Speed)
+                            return true;
+                    }
                 }
             }
             return false;
@@ -356,12 +366,22 @@ namespace Assets.Scripts.Vehicles.Behaviors
             if (RoadManager.DebubMode) Debug.Log("Following : " + _currentPath.Direction);
             _currentSplinePos += (Time.deltaTime * Speed) * _currentPath.Direction;
              _normalizedSplinePos = _currentSplinePos / _currentPath.Length;
-            if ((_currentSplinePos / _currentPath.Spline.distance) > 1 || (_currentSplinePos / _currentPath.Spline.distance) < 0) EndJourney();
-            transform.position = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
+            if ((_currentSplinePos / _currentPath.Spline.distance) > 1 ||
+                (_currentSplinePos / _currentPath.Spline.distance) < 0)
+            {
+                SafetyDelete();
+                return BehaviorState.Success;
+            }
+            var wantedPos = _currentPath.Spline.GetSplineValue(_currentSplinePos / _currentPath.Spline.distance);
+            if (float.IsNaN(wantedPos.x) || float.IsNaN(wantedPos.y) || float.IsNaN(wantedPos.z))
+            {
+                int k = 5;
+            }
+            transform.position = wantedPos;
             transform.LookAt(_currentPath.Spline.GetSplineValue(((_currentSplinePos / _currentPath.Spline.distance) + 0.01f*_currentPath.Direction))); //0.01f = lookat buffer
             Vector3 localModelPos = new Vector3(CurrentLanePos, 0.5f, 0.0f);
             _vehicleChild.transform.localPosition = localModelPos;
-            return BehaviorState.Running;
+            return BehaviorState.Success;
         }
 
         public BehaviorState Intersection()
@@ -556,6 +576,16 @@ namespace Assets.Scripts.Vehicles.Behaviors
         {
             Array values = Enum.GetValues(typeof(VehicleType));
             return (VehicleType)values.GetValue(new System.Random().Next(values.Length));
+        }
+
+        private void SafetyDelete()
+        {
+            //Remove from lists
+            RoadManager.NumberOfVehicles--;
+            if (_currentPath.Direction > 0) _currentPath.RoadData.PosVehicles.Remove(_vehicle);
+            else _currentPath.RoadData.NegVehicles.Remove(_vehicle);
+            //Destroy
+            Destroy(this.gameObject);
         }
 	
     }

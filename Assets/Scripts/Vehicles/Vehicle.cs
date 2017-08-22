@@ -78,6 +78,11 @@ public class Vehicle : MonoBehaviour
         return GetComponent<VehicleBehavior>().CurrentLane;
     }
 
+    public float GetSpeed()
+    {
+        return GetComponent<VehicleBehavior>().Speed;
+    }
+
     private void UseTestRoute()
     {
         int i = 0;
